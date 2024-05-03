@@ -1,0 +1,34 @@
+<p-toolbar>
+  <div class="p-toolbar-group-start">
+    <button pButton icon="pi pi-plus" class="mr-2" (click)="create()"></button>
+    <button pButton icon="pi pi-print" class="mr-2"></button>
+    <button pButton icon="pi pi-upload"></button>
+  </div>
+  <div class="p-toolbar-group-center">
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input pInputText placeholder="Search" />
+    </span>
+  </div>
+</p-toolbar>
+<p-table [value]="categories()" [tableStyle]="{ 'min-width': '50rem' }">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Nombre</th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-category>
+    <tr>
+      <td>{{ category.name }}</td>
+      <td>
+        <p-button
+          icon="pi pi-pencil"
+          [rounded]="true"
+          [text]="true"
+          (onClick)="edit(category)"
+        ></p-button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

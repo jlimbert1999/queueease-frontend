@@ -1,0 +1,20 @@
+<div class="p-dialog-content">
+  <div class="field">
+    <label for="name">Nombre categoria</label>
+    <input
+      id="name"
+      type="text"
+      class="w-full"
+      pInputText
+      [formControl]="FormCategory"
+      required
+    />
+  </div>
+</div>
+<div class="p-dialog-footer">
+  <p-button
+    label="Guardar"
+    [disabled]="FormCategory.invalid"
+    (onClick)="save()"
+  />
+</div>

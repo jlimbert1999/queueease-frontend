@@ -1,0 +1,47 @@
+<div class="p-dialog-content">
+  <pre>{{ FormService.value | json }}</pre>
+  <form [formGroup]="FormService">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="category">Categoria</label>
+        <p-dropdown
+          id="category"
+          placeholder="Seleccione la categoria"
+          emptyFilterMessage="Sin resultados"
+          appendTo="body"
+          optionLabel="name"
+          optionValue="id"
+          [style]="{ width: '100%' }"
+          formControlName="category"
+          [filter]="true"
+          [showClear]="true"
+          [autoOptionFocus]="false"
+          [options]="categories()"
+        />
+      </div>
+      <div class="field col-12 md:col-8">
+        <label for="name">Nombre</label>
+        <input
+          id="name"
+          type="text"
+          class="w-full"
+          pInputText
+          formControlName="name"
+        />
+      </div>
+      <div class="field col-12 md:col-4">
+        <label for="code">Codigo</label>
+        <input
+          id="code"
+          type="text"
+          class="w-full"
+          pInputText
+          formControlName="code"
+        />
+      </div>
+    </div>
+  </form>
+</div>
+<div class="p-dialog-footer">
+  <p-button label="Guardar" [disabled]="FormService.invalid" (onClick)="save()" />
+</div>

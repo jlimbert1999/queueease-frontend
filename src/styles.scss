@@ -1,1 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+
+// DIALOG CONFIG
+// .p-dialog .p-dialog-content {
+//     position: relative;
+//     /* Posicionar el contenido de forma relativa */
+// }
+
+.p-dialog-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+}
