@@ -26,6 +26,14 @@ export class AdministrationComponent {
           label: 'Servicios',
           routerLink: 'services',
         },
+        {
+          label: 'Sucursales',
+          routerLink: 'branches',
+        },
+        {
+          label: 'Ventanillas',
+          routerLink: 'desks',
+        },
       ],
     },
   ];

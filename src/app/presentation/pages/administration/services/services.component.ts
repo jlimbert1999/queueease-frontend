@@ -46,7 +46,7 @@ export class ServicesComponent implements OnInit {
     const ref = this.dialogService.open(ServiceComponent, {
       header: 'Crear Servicio',
       focusOnShow: false,
-      width: '40rem',
+      width: '50rem',
     });
     ref.onClose
       .pipe(filter((result?: Service) => !!result))
@@ -59,6 +59,7 @@ export class ServicesComponent implements OnInit {
     const ref = this.dialogService.open(ServiceComponent, {
       header: 'Editar Servicio',
       data: service,
+      width: '50rem',
     });
     ref.onClose
       .pipe(filter((result?: Service) => !!result))

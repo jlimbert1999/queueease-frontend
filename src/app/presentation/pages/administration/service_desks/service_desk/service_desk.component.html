@@ -1,0 +1,106 @@
+<div class="p-dialog-content">
+  <form [formGroup]="FormDesk">
+    <div class="formgrid grid">
+      <div class="field col-12 md:col-9">
+        <label for="name">Nombre</label>
+        <input
+          id="name"
+          type="text"
+          class="w-full"
+          pInputText
+          formControlName="name"
+        />
+      </div>
+
+      <div class="field col-12 md:col-3">
+        <label for="number-desk">Numero</label>
+        <p-inputNumber
+          styleClass="w-full"
+          inputId="number-desk"
+          [showButtons]="true"
+          formControlName="number"
+          [min]="1"
+          [max]="999"
+          [inputStyle]="{ width: '100%' }"
+        />
+      </div>
+      <div class="field col-12 md:col-6">
+        <label for="login">Login</label>
+        <input
+          id="login"
+          type="text"
+          class="w-full"
+          pInputText
+          formControlName="login"
+        />
+      </div>
+      <div class="field col-12 md:col-6">
+        <label for="password">Contraseña</label>
+        <p-password
+          formControlName="password"
+          [feedback]="false"
+          [toggleMask]="true"
+          [inputStyle]="{ width: '100%' }"
+        />
+      </div>
+      <div class="field col-12">
+        <label for="branch">Sucursal</label>
+        @if(!desk){
+        <p-dropdown
+          id="branch"
+          optionValue="id"
+          appendTo="body"
+          optionLabel="name"
+          placeholder="Seleccione la sucursal"
+          filterPlaceholder="Nombre de la sucursal"
+          emptyFilterMessage="Sin resultados"
+          emptyMessage="&nbsp;"
+          [style]="{ width: '100%' }"
+          formControlName="branch"
+          [filter]="true"
+          [autoOptionFocus]="false"
+          [options]="branches()"
+          (onFilter)="onFilter($event.filter)"
+          (onChange)="onSelect($event.value)"
+        />
+        } @else {
+        <input
+          id="branch"
+          type="text"
+          class="w-full"
+          pInputText
+          [value]="desk.branch.name"
+          [disabled]="true"
+        />
+        }
+      </div>
+    </div>
+  </form>
+  <div class="field">
+    <label for="list-services">Servicios</label>
+    <p-multiSelect
+      appendTo="body"
+      [options]="services()"
+      [(ngModel)]="selectedServices"
+      [style]="{ width: '100%' }"
+      optionLabel="name"
+      placeholder="Servicios asignados"
+      [selectedItemsLabel]="'dsds'"
+    />
+    <!-- <p-listbox
+      id="list-services"
+      filterPlaceHolder="Buscar servicio..."
+      [listStyle]="{ height: '300px' }"
+      [style]="{ width: '100%' }"
+      [listStyle]="{ width: '100%' }"
+      [filter]="true"
+      [multiple]="true"
+      optionLabel="name"
+      [options]="services()"
+      [(ngModel)]="selectedServices"
+    /> -->
+  </div>
+</div>
+<div class="p-dialog-footer">
+  <p-button label="Guardar" [disabled]="!isFormValid" (onClick)="save()" />
+</div>

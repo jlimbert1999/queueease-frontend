@@ -1,0 +1,17 @@
+:host ::ng-deep {
+  .p-menubar {
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 0;
+
+    // .p-button {
+    //   height: 30px;
+    //   width: 30px;
+    // }
+  }
+}
+
+.panel {
+  height: 90vh;
+  background-color: silver;
+}

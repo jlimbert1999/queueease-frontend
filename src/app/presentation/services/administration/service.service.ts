@@ -33,16 +33,26 @@ export class ServiceService {
 
   create(form: Object) {
     const serviceDto = ServiceDto.fromForm(form);
-    return this.http.post(`${this.url}`, serviceDto);
+    return this.http
+      .post<serviceResponse>(`${this.url}`, serviceDto)
+      .pipe(map((resp) => Service.fromResponse(resp)));
   }
 
   update(id: number, form: Object) {
-    return this.http.put(`${this.url}/${id}`, form);
+    return this.http
+      .patch<serviceResponse>(`${this.url}/${id}`, form)
+      .pipe(map((resp) => Service.fromResponse(resp)));
   }
 
   getCategories() {
     return this.http
       .get<categoryResponse[]>(`${this.url}/categories`)
       .pipe(map((resp) => resp.map((el) => Category.fromResponse(el))));
+  }
+
+  searchAvailables(term: string) {
+    return this.http
+      .get<serviceResponse[]>(`${this.url}/availbles/${term}`)
+      .pipe(map((resp) => resp.map((el) => Service.fromResponse(el))));
   }
 }

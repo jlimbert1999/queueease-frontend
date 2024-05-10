@@ -39,10 +39,11 @@ export class ServiceComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.service) {
+      console.log(this.service);
       const { category, ...props } = this.service;
       this.FormService.patchValue({ ...props, category: category?.id });
     }
-    this.serviceService.getCategories().subscribe((resp: any) => {
+    this.serviceService.getCategories().subscribe((resp: Category[]) => {
       this.categories.set(resp);
     });
   }
@@ -51,6 +52,6 @@ export class ServiceComponent implements OnInit {
     const subscription = this.service
       ? this.serviceService.update(this.service.id, this.FormService.value)
       : this.serviceService.create(this.FormService.value);
-    subscription.subscribe((resp) => console.log(resp));
+    subscription.subscribe((resp) => this.ref.close(resp));
   }
 }

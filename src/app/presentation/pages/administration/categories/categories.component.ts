@@ -24,7 +24,6 @@ type method = 'create' | 'update';
   providers: [DialogService],
 })
 export class CategoriesComponent implements OnInit {
-  isDialogOpen = signal<boolean>(false);
   category = signal<Category | null>(null);
   categories = signal<Category[]>([]);
 
@@ -33,8 +32,6 @@ export class CategoriesComponent implements OnInit {
   offset = computed(() => this.limit() * this.index());
   length = signal(0);
   private categoryService = inject(CategoryService);
-
-  ref: DynamicDialogRef | undefined;
 
   constructor(public dialogService: DialogService) {}
 

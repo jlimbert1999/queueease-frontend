@@ -1,0 +1,51 @@
+<div class="p-dialog-content">
+  <div class="field">
+    <label for="name">Nombre sucursal</label>
+    <input
+      id="name"
+      type="text"
+      class="w-full"
+      pInputText
+      [formControl]="FormBranch"
+      required
+    />
+  </div>
+
+  <p-dropdown
+    #dropdown
+    placeholder="Buscar un servicio"
+    filterPlaceholder="Nombre..."
+    emptyFilterMessage="Sin resultados"
+    emptyMessage="Sin elementos"
+    optionLabel="name"
+    appendTo="body"
+    [style]="{ width: '100%' }"
+    [filter]="true"
+    [options]="services()"
+    (onFilter)="onFilterDropdown($event.filter)"
+    (onChange)="addService($event.value)"
+  />
+  <p>Servicios seleccionados:</p>
+  <div class="border-round border-1 my-2 p-3">
+    <div class="flex flex-column gap-3">
+      @for (service of selectedServices(); track $index) {
+      <div class="flex overflow-hidden">
+        <div class="flex-grow-1 flex align-items-center">
+          <div>{{ service.name }}</div>
+        </div>
+        <div class="flex-none flex align-items-center justify-content-center">
+          <p-button
+            icon="pi pi-trash"
+            (onClick)="removeService(service)"
+          ></p-button>
+        </div>
+      </div>
+      } @empty {
+      <span>Sin servicios</span>
+      }
+    </div>
+  </div>
+</div>
+<div class="p-dialog-footer">
+  <p-button label="Guardar" [disabled]="!isFormValid" (onClick)="save()" />
+</div>
