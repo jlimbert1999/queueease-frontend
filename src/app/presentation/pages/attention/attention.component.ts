@@ -3,12 +3,16 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  computed,
   inject,
   signal,
 } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { PrimengModule } from '../../../primeng.module';
-import { BranchService } from '../../services';
+import { BranchService, ConfigService } from '../../services';
+import { menuResponse } from '../../../infrastructure/interfaces';
+import { CustomerService } from '../../services/customer/customer.service';
+import { GridButtonsComponent } from '../../components/grid-buttons/grid-buttons.component';
 
 interface menu {
   name: string;
@@ -17,63 +21,54 @@ interface menu {
 @Component({
   selector: 'app-attention',
   standalone: true,
-  imports: [CommonModule, PrimengModule],
+  imports: [CommonModule, PrimengModule, GridButtonsComponent],
   templateUrl: './attention.component.html',
   styleUrl: './attention.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AttentionComponent implements OnInit {
-  private branchService = inject(BranchService);
+  private customerService = inject(CustomerService);
+  private configService = inject(ConfigService);
+  private messageService = inject(MessageService);
+
+  private readonly branch = this.configService.branch;
+
   index = signal(0);
+  prevIndex = signal<number>(0);
+  menu = signal<menuResponse[]>([]);
+  selectedItem = signal<number | null>(null);
+  submenu = signal<any[]>([]);
 
-  items: MenuItem[] | undefined;
+  constructor() {}
 
-    position: string = 'bottom';
-
-    positionOptions = [
-        {
-            label: 'Bottom',
-            value: 'bottom'
-        },
-        {
-            label: 'Top',
-            value: 'top'
-        },
-        {
-            label: 'Left',
-            value: 'left'
-        },
-        {
-            label: 'Right',
-            value: 'right'
-        }
-    ];
-  
   ngOnInit() {
-    this.branchService.getMenu(1).subscribe((data) => {
+    this.setMenu();
+  }
+
+  setMenu() {
+    if (!this.branch) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Sin configuracion',
+        detail: 'No se configuro la sucursal',
+        life: 5000,
+      });
+    }
+    this.customerService.getMenu(this.branch!).subscribe((data) => {
+      this.menu.set(data);
       console.log(data);
     });
-    this.items = [
-      {
-          label: 'Finder',
-          icon: 'https://primefaces.org/cdn/primeng/images/dock/finder.svg',
-          command:()=>{
-            console.log('ds');
-          }
-      },
-      {
-          label: 'App Store',
-          icon: 'https://primefaces.org/cdn/primeng/images/dock/appstore.svg'
-      },
-      {
-          label: 'Photos',
-          icon: 'https://primefaces.org/cdn/primeng/images/dock/photos.svg'
-      },
-      {
-          label: 'Trash',
-          icon: 'https://primefaces.org/cdn/primeng/images/dock/trash.png'
-      }
-  ];
+  }
+
+  handleClick(item: menuResponse) {
+    if (item.value) {
+      this.index.set(2);
+      this.prevIndex.set(0);
+    } else {
+      this.index.set(1);
+      this.prevIndex.set(0);
+      this.submenu.set(item.services);
+    }
   }
 
   setFinal() {

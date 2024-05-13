@@ -20,6 +20,7 @@ import { StepperModule } from 'primeng/stepper';
 import { PasswordModule } from 'primeng/password';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { ToastModule } from 'primeng/toast';
 @NgModule({
   declarations: [],
   imports: [],
@@ -45,6 +46,7 @@ import { InputIconModule } from 'primeng/inputicon';
     PasswordModule,
     IconFieldModule,
     InputIconModule,
+    ToastModule
   ],
 })
 export class PrimengModule {}

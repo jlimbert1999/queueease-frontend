@@ -21,19 +21,21 @@
     >
       <div class="p-dialog-content">
         <div class="field">
-          <label for="firstname1">Sucursal</label>
+          <label for="branch">Sucursal</label>
           <p-dropdown
+            id="branch"
             [style]="{ width: '100%' }"
             [options]="branches()"
             [(ngModel)]="brach"
             optionLabel="name"
             placeholder="Seleccione una sucursal"
             appendTo="body"
+            optionValue="id"
           />
         </div>
       </div>
       <div class="p-dialog-footer">
-        <p-button label="Aceptar" />
+        <p-button label="Aceptar" (onClick)="save()" />
       </div>
     </p-dialog>
   </div>

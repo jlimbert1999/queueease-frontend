@@ -81,7 +81,6 @@ export class MainComponent {
   ];
 
   setupConfig() {
-    this.brach.set(this.config.branch());
     this.isConfigDialogVisible.set(true);
     this.branchService.findAll(20, 0).subscribe(({ branches }) => {
       console.log(branches);
@@ -89,7 +88,7 @@ export class MainComponent {
     });
   }
 
-  setBranch() {
-    this.config.setBranch(this.brach()!);
+  save() {
+    this.config.branch = this.brach() ?? null;
   }
 }
