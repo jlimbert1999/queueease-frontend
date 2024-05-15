@@ -9,7 +9,7 @@ import { ToastModule } from 'primeng/toast';
   imports: [RouterOutlet, ToastModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [MessageService],
+  providers: [MessageService, MessageService],
 })
 export class AppComponent {
   title = 'queueease-front';

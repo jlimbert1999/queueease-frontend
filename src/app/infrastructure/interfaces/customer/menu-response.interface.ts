@@ -1,10 +1,5 @@
 export interface menuResponse {
-  value: number | null;
+  value?: number;
   name: string;
-  services: Service[];
-}
-
-export interface Service {
-  value: number;
-  name: string;
+  services: menuResponse[];
 }

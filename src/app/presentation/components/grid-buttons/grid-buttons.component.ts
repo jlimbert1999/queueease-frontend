@@ -20,7 +20,13 @@ export class GridButtonsComponent {
   elements = input<menuResponse[]>([]);
   onSelect = output<menuResponse>();
 
+  selectedElements = signal<menuResponse[]>([]);
+
   select(item: menuResponse) {
     this.onSelect.emit(item);
+  }
+
+  selectCategory(){
+    
   }
 }

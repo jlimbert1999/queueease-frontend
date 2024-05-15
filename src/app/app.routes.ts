@@ -8,6 +8,9 @@ import { BranchesComponent } from './presentation/pages/administration/branches/
 import { AttentionComponent } from './presentation/pages/attention/attention.component';
 import { InformationComponent } from './presentation/layouts/information/information.component';
 import { MainComponent } from './presentation/pages/main/main.component';
+import { LoginComponent } from './presentation/pages/auth/login/login.component';
+import { isAuthenticatedGuard } from './presentation/guards/is-authenticated.guard';
+import { QueueManagementComponent } from './presentation/pages/queue-management/queue-management.component';
 
 export const routes: Routes = [
   // {
@@ -16,7 +19,12 @@ export const routes: Routes = [
   //   children: [],
   // },
   {
+    path: 'login',
+    component: LoginComponent,
+  },
+  {
     path: 'administration',
+    canActivate: [isAuthenticatedGuard],
     component: AdministrationComponent,
     children: [
       { path: 'categories', component: CategoriesComponent },
@@ -32,6 +40,11 @@ export const routes: Routes = [
   {
     path: 'information',
     component: InformationComponent,
+  },
+  {
+    path: 'queue',
+    canActivate: [isAuthenticatedGuard],
+    component: QueueManagementComponent,
   },
   {
     path: 'main',

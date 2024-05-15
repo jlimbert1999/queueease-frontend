@@ -21,6 +21,11 @@ import { PasswordModule } from 'primeng/password';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ToastModule } from 'primeng/toast';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarGroupModule } from 'primeng/avatargroup';
+import { MenuModule } from 'primeng/menu';
+import { DividerModule } from 'primeng/divider';
+import { TagModule } from 'primeng/tag';
 @NgModule({
   declarations: [],
   imports: [],
@@ -46,7 +51,12 @@ import { ToastModule } from 'primeng/toast';
     PasswordModule,
     IconFieldModule,
     InputIconModule,
-    ToastModule
+    ToastModule,
+    AvatarModule,
+    AvatarGroupModule,
+    MenuModule,
+    DividerModule,
+    TagModule
   ],
 })
 export class PrimengModule {}

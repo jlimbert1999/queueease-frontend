@@ -1,62 +1,48 @@
-<div class="h-screen">
-  <p-stepper [linear]="true" [activeStep]="index()">
-    <p-stepperPanel header="CATEGORIAS">
-      <ng-template pTemplate="content" let-index="index">
-        <grid-buttons
-          [elements]="menu()"
-          (onSelect)="handleClick($event)"
-        ></grid-buttons>
-      </ng-template>
-    </p-stepperPanel>
-    <p-stepperPanel header="SERVICIOS">
-      <ng-template
-        pTemplate="content"
-        let-prevCallback="prevCallback"
-        let-nextCallback="nextCallback"
-        let-index="index"
-      >
-        <grid-buttons [elements]="submenu()"></grid-buttons>
-        <div class="flex py-4 gap-2">
-          <p-button label="Back" severity="secondary" />
-          <p-button label="Next" />
-        </div>
-      </ng-template>
-    </p-stepperPanel>
-    <p-stepperPanel header="PREFERENCIAS" [tabIndex]="2">
-      <ng-template
-        pTemplate="content"
-        let-prevCallback="prevCallback"
-        let-index="index"
-        class="fadeinleft animation-duration-1000"
-      >
-        <div
-          class="fb-video"
-          data-href="VIDEO_URL"
-          data-show-text="true"
-          data-width="560"
-          data-height="315"
-        ></div>
+<div class="flex justify-content-between flex-wrap">
+  <div class="flex align-items-center justify-content-center w-4rem h-4rem m-2">
+    @if(selectedItems().length>0){
+    <p-button icon="pi pi-arrow-left" (onClick)="goBack()" />
 
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube.com/embed/OJFJWtOzIQ0"
-          frameborder="0"
-          allowfullscreen
-        ></iframe>
-
-        <iframe
-          src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2Fsevensharp%2Fvideos%2F1107499423069458%2F&show_text=false&width=560"
-          width="800"
-          height="314"
-          style="border: none; overflow: hidden"
-          scrolling="no"
-          frameborder="0"
-          allowfullscreen="true"
-          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-          allowFullScreen="true"
-        ></iframe>
-      </ng-template>
-    </p-stepperPanel>
-  </p-stepper>
+    }
+  </div>
+  <div
+    class="flex align-items-center justify-content-center w-auto h-4rem border-round m-2"
+  >
+    <p class="text-4xl font-bold block">Bienvenido</p>
+  </div>
+  <div
+    class="flex align-items-center justify-content-center w-4rem h-4rem bg-primary font-bold border-round m-2"
+  >
+    -
+  </div>
 </div>
+@if(!sleectedService()){ @if(selectedItems().length===0){
+<grid-buttons [elements]="data" (onSelect)="selectItem($event)"></grid-buttons>
+
+} @else{
+<grid-buttons
+  [elements]="selectedItems()[lastIndex].services"
+  (onSelect)="selectItem($event)"
+></grid-buttons>
+
+} } @else {
+<div
+  class="flex justify-content-center align-content-center flex-wrap gap-6 border-1"
+  style="height: 80vh"
+>
+  <div class="flex flex-wrap gap-1 md:gap-4 xl:gap-8">
+    <div
+      class="border-round w-12rem h-6rem bg-primary font-bold flex align-items-center justify-content-center"
+    >
+      PERSONA NATURAL
+    </div>
+    <div
+      class="shadow-2 hover:shadow-8 border-round w-16rem h-6rem bg-primary font-bold flex align-items-center justify-content-center p-4"
+    >
+      TERCERA EDAD / EMBARAZADAS / DISCAPACIDAD
+    </div>
+  </div>
+</div>
+}
+
+<button (click)="print()">print</button>
