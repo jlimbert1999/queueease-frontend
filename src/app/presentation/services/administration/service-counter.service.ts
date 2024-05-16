@@ -9,7 +9,7 @@ import { ServiceDesk, serviceProps } from '../../../domain/models';
 @Injectable({
   providedIn: 'root',
 })
-export class ServiceDeskService {
+export class ServiceCounterService {
   private readonly url = `${environment.base_url}/service-desks`;
   private http = inject(HttpClient);
 

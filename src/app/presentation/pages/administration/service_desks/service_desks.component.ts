@@ -10,7 +10,7 @@ import {
 import { filter } from 'rxjs';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ServiceDeskComponent } from './service_desk/service_desk.component';
-import { ServiceDeskService } from '../../../services';
+import { ServiceCounterService } from '../../../services';
 import { PrimengModule } from '../../../../primeng.module';
 import { ServiceDesk } from '../../../../domain/models';
 
@@ -24,10 +24,10 @@ import { ServiceDesk } from '../../../../domain/models';
   providers: [DialogService],
 })
 export class ServiceDesksComponent implements OnInit {
-  private servideDeskService = inject(ServiceDeskService);
+  private servideDeskService = inject(ServiceCounterService);
   private dialogService = inject(DialogService);
 
-  limit = signal(1);
+  limit = signal(10);
   index = signal(0);
   offset = computed(() => this.limit() * this.index());
   length = signal(0);
@@ -35,6 +35,7 @@ export class ServiceDesksComponent implements OnInit {
 
   ngOnInit(): void {
     this.getData();
+    
   }
 
   getData() {

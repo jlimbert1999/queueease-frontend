@@ -57,6 +57,7 @@ export class AuthService {
 
   private _setAuthentication(token: string): boolean {
     this._user.set(jwtDecode(token));
+    console.log(this.user());
     localStorage.setItem('token', token);
     return true;
   }

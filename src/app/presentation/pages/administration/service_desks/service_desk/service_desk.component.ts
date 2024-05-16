@@ -18,7 +18,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, debounceTime } from 'rxjs';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { BranchService, ServiceDeskService } from '../../../../services';
+import { BranchService, ServiceCounterService } from '../../../../services';
 import {
   Branch,
   ServiceDesk,
@@ -38,7 +38,7 @@ export class ServiceDeskComponent implements OnInit {
   private ref = inject(DynamicDialogRef);
   private destroyRef = inject(DestroyRef);
   private branchService = inject(BranchService);
-  private serviceDesk = inject(ServiceDeskService);
+  private serviceDesk = inject(ServiceCounterService);
   private branch: ServiceDesk | undefined = inject(DynamicDialogConfig).data;
 
   desk: ServiceDesk | undefined = inject(DynamicDialogConfig).data;

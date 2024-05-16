@@ -24,7 +24,7 @@ export const routes: Routes = [
   },
   {
     path: 'administration',
-    canActivate: [isAuthenticatedGuard],
+    // canActivate: [isAuthenticatedGuard],
     component: AdministrationComponent,
     children: [
       { path: 'categories', component: CategoriesComponent },

@@ -11,31 +11,77 @@
   </ng-template>
 </p-menubar>
 
-<div class="flex flex-wrap w-screen" style="height: 90vh">
-  <div class="flex border-1 w-10">1</div>
-  <div class="flex flex-column border-1 w-2">
-    <div class="flex align-items-center justify-content-center h-4rem m-2">
-      <p-button
-        label="Siguiente ficha"
-        icon="pi pi-angle-double-right"
-        size="large"
-        styleClass="w-full"
-        class="w-full"
-        [rounded]="true"
-      />
+<div class="m-2 border-1" style="height: 92vh">
+  <div class="grid nested-grid">
+    <div class="col-12 md:col-9">
+      <div class="grid">
+        <div class="col-12">
+          <div class="text-center border-round-sm border-1">
+            <p class="font-bold text-sm md:text-6xl">ARC0002</p>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="border-round border-2">
+            <p-table
+              [value]="requests()"
+              styleClass="w-full"
+              class="w-full"
+              [scrollable]="true"
+              scrollHeight="400px"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Nro.</th>
+                  <th>Codigo</th>
+                  <th>Estado</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-request let-rowIndex="rowIndex">
+                <tr>
+                  <td>{{ rowIndex + 1 }}</td>
+                  <td>{{ request.code }}</td>
+                  <td>{{ request.status }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="flex align-items-center justify-content-center h-4rem m-2">
-      <p-button
-        label="Llamar"
-        icon="pi pi-volume-up"
-        size="large"
-        styleClass="w-full"
-        class="w-full"
-        [rounded]="true"
-      />
-    </div>
-    <div class="flex align-items-center justify-content-center h-4rem m-2">
-      3
+    <div class="col-12 md:col-3">
+      <div class="text-center p-3 border-round-sm h-full border-1">
+        <div class="flex flex-column">
+          <div
+            class="flex align-items-center justify-content-center h-4rem m-2"
+          >
+            <p-button
+              label="Siguiente ficha"
+              icon="pi pi-angle-double-right"
+              size="large"
+              styleClass="w-full"
+              class="w-full"
+              [rounded]="true"
+            />
+          </div>
+          <div
+            class="flex align-items-center justify-content-center h-4rem m-2"
+          >
+            <p-button
+              label="Llamar"
+              icon="pi pi-volume-up"
+              size="large"
+              styleClass="w-full"
+              class="w-full"
+              [rounded]="true"
+            />
+          </div>
+          <div
+            class="flex align-items-center justify-content-center h-4rem m-2"
+          >
+            3
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
