@@ -23,4 +23,13 @@ export class SocketService {
       });
     });
   }
+
+  listenQueueEvent() {
+    return new Observable((observable) => {
+      this.socket?.on('attention', (data: any) => {
+        console.log(data);
+        observable.next(data);
+      });
+    });
+  }
 }

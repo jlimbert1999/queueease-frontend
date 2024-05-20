@@ -27,6 +27,7 @@ export class ProfileComponent {
     {
       label: 'Cerrar sesion',
       icon: 'pi pi-sign-out',
+      command: () => this.logout(),
     },
   ];
 

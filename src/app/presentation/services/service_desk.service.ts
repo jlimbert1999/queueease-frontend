@@ -13,4 +13,8 @@ export class ServiceDeskService {
   getServiceRequests() {
     return this.http.get<any[]>(this.url);
   }
+
+  nextRequest() {
+    return this.http.get(`${this.url}/next`);
+  }
 }

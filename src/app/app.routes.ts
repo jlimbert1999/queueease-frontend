@@ -11,6 +11,7 @@ import { MainComponent } from './presentation/pages/main/main.component';
 import { LoginComponent } from './presentation/pages/auth/login/login.component';
 import { isAuthenticatedGuard } from './presentation/guards/is-authenticated.guard';
 import { QueueManagementComponent } from './presentation/pages/queue-management/queue-management.component';
+import { AdvertisementComponent } from './presentation/pages/advertisement/advertisement.component';
 
 export const routes: Routes = [
   // {
@@ -32,6 +33,10 @@ export const routes: Routes = [
       { path: 'branches', component: BranchesComponent },
       { path: 'desks', component: ServiceDesksComponent },
     ],
+  },
+  {
+    path: 'advertisement',
+    component: AdvertisementComponent,
   },
   {
     path: 'attention',

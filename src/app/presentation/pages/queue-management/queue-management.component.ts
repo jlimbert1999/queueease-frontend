@@ -25,20 +25,24 @@ export class QueueManagementComponent implements OnInit {
   private serviceDeksService = inject(ServiceDeskService);
   items: MenuItem[] = [];
 
-
   requests = signal<any[]>([]);
   ngOnInit(): void {
-    this.socketSrevice.connect();
     this.socketSrevice.listenServiceRequests().subscribe((resp) => {
       this.requests.update((val) => [resp, ...val]);
     });
-    this.getRequests()
+    this.getRequests();
   }
 
   getRequests() {
     this.serviceDeksService.getServiceRequests().subscribe((data) => {
       console.log(data);
       this.requests.set(data);
+    });
+  }
+
+  next() {
+    this.serviceDeksService.nextRequest().subscribe((data) => {
+      console.log(data);
     });
   }
 }

@@ -1,0 +1,49 @@
+<div class="h-full w-full border-1 p-2" style="background-color: #14213d">
+  <div class="grid w-full">
+    <div class="col-6 border-2">
+      <div style="height: 85vh" class="overflow-scroll">
+        @for (item of list(); track $index) {
+        <!-- <div class="relative">
+          <div
+            class="static bg-primary-100 p-4 border-round text-gray-800 flex justify-content-end flex-wrap"
+            style="min-width: 300px; height: 100px"
+          >
+            <p class="font-bold text-gray-900">{{ item.code }}</p>
+            <div
+              class="absolute bottom-0 left-0 bg-primary border-round p-4 font-bold"
+              style="min-width: 120px; min-height: 30px"
+            >
+              VENTANILLA 1
+            </div>
+          </div>
+        </div> -->
+        <div class="relative mb-2">
+          <div
+            class="static bg-primary-100 p-1 border-round text-gray-800"
+            style="height: 80px"
+          >
+            <p class="font-bold text-2xl text-gray-900 text-right">
+              {{ item.code }}
+            </p>
+            <div
+              class="absolute bottom-0 left-0 bg-primary border-round font-bold p-2"
+            >
+              VENTANILLA 1
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    <div class="col-6 border-1">
+      <div class="text-center p-3 border-round-sm bg-primary font-bold">4</div>
+    </div>
+    <div class="col-12" style="background-color: #d00000; color: white">
+      <div class="marquee-container">
+        <div class="marquee-text text-5xl font-bold">
+          TEXTO A DESPLEGAR: EJEMPLO
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
