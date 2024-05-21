@@ -34,26 +34,6 @@ export class PdfService {
       ],
     };
 
-    const dfp = pdfMake.createPdf(docDefinition);
-    // Convertir el documento PDF a Blob
-    dfp.getBlob((blob) => {
-      // Crear un objeto URL del Blob
-      const blobUrl = URL.createObjectURL(blob);
-
-      // Crear un iframe oculto
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-
-      // Establecer la URL del iframe al objeto URL del Blob
-      iframe.src = blobUrl;
-
-      // Esperar un momento para que se cargue el PDF en el iframe
-      iframe.onload = () => {
-        // Llamar a la función de impresión silenciosa
-        iframe.contentWindow?.print();
-        URL.revokeObjectURL(blobUrl);
-      };
-    });
+    pdfMake.createPdf(docDefinition).print();
   }
 }

@@ -12,13 +12,9 @@ import { LoginComponent } from './presentation/pages/auth/login/login.component'
 import { isAuthenticatedGuard } from './presentation/guards/is-authenticated.guard';
 import { QueueManagementComponent } from './presentation/pages/queue-management/queue-management.component';
 import { AdvertisementComponent } from './presentation/pages/advertisement/advertisement.component';
+import { branchConfigGuard } from './presentation/guards/branch-config.guard';
 
 export const routes: Routes = [
-  // {
-  //   path: '',
-  //   component: AppComponent,
-  //   children: [],
-  // },
   {
     path: 'login',
     component: LoginComponent,
@@ -34,12 +30,10 @@ export const routes: Routes = [
       { path: 'desks', component: ServiceDesksComponent },
     ],
   },
-  {
-    path: 'advertisement',
-    component: AdvertisementComponent,
-  },
+
   {
     path: 'attention',
+    canActivate: [branchConfigGuard],
     component: AttentionComponent,
   },
   {
@@ -52,8 +46,13 @@ export const routes: Routes = [
     component: QueueManagementComponent,
   },
   {
+    path: 'advertisement',
+    canActivate: [branchConfigGuard],
+    component: AdvertisementComponent,
+  },
+  {
     path: 'main',
     component: MainComponent,
   },
-  { path: '', redirectTo: 'administration', pathMatch: 'full' },
+  { path: '', redirectTo: 'main', pathMatch: 'full' },
 ];

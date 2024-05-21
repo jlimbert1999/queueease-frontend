@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { SocketService } from './presentation/services';
 
@@ -10,7 +9,6 @@ import { SocketService } from './presentation/services';
   imports: [RouterOutlet, ToastModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [MessageService, MessageService],
 })
 export class AppComponent implements OnInit {
   title = 'queueease-front';

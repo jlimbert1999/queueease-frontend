@@ -1,18 +1,27 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConfigService {
-  constructor() {}
+  private _branch = new BehaviorSubject<number | null>(this._getSavedBranch());
+  branch$ = this._branch.asObservable();
 
-  set branch(id: number | null) {
-    if (!id) return;
-    localStorage.setItem('branch', id.toString());
+  constructor() {
+    const config = localStorage.getItem('branch');
+    if (!config) return;
+    if (isNaN(+config)) return;
+    this._branch.next(parseInt(config));
   }
 
-  get branch(): number | null {
-    const branch = localStorage.getItem('branch');
-    return branch ? parseInt(branch) : null;
+  setupBranch(id: number) {
+    localStorage.setItem('branch', id.toString());
+    this._branch.next(id);
+  }
+
+  private _getSavedBranch(): number | null {
+    const branch = parseInt(localStorage.getItem('brach') ?? '');
+    return isNaN(branch) ? null : branch;
   }
 }

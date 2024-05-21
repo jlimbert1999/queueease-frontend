@@ -9,13 +9,15 @@ import { inject } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { AuthService } from '../presentation/services';
 import { MessageService } from 'primeng/api';
+import { handleHttpErrorMessage } from '../helpers';
 
 export function loggingInterceptor(
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> {
-  const authService = inject(AuthService);
   const router = inject(Router);
+  const authService = inject(AuthService);
+  const messageService = inject(MessageService);
 
   const reqWithHeader = req.clone({
     headers: req.headers.append(
@@ -26,10 +28,12 @@ export function loggingInterceptor(
   return next(reqWithHeader).pipe(
     catchError((error) => {
       if (error instanceof HttpErrorResponse) {
-        if (error.status === 401) {
-          authService.logout();
-          router.navigate(['/login']);
-        }
+        handleHttpErrorMessage({
+          error,
+          router,
+          messageService,
+          authService,
+        });
       }
       return throwError(() => Error);
     })

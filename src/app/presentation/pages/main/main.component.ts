@@ -32,7 +32,21 @@ export class MainComponent {
   isConfigDialogVisible = signal<boolean>(false);
   dockItems: MenuItem[] = [
     {
-      label: 'Finder',
+      label: 'Settings',
+      tooltipOptions: {
+        tooltipLabel: 'Configuraciones',
+        tooltipPosition: 'top',
+        positionTop: -15,
+        positionLeft: 15,
+        showDelay: 1000,
+      },
+      icon: '../../../../assets/img/apps/cogwheel.png',
+      command: () => {
+        this.setupConfig();
+      },
+    },
+    {
+      label: 'Administration',
       tooltipOptions: {
         tooltipLabel: 'Administracion',
         tooltipPosition: 'top',
@@ -40,55 +54,46 @@ export class MainComponent {
         positionLeft: 15,
         showDelay: 1000,
       },
-      icon: 'https://primefaces.org/cdn/primeng/images/dock/finder.svg',
+      icon: '../../../../assets/img/apps/user-gear.png',
       command: () => {
-        this.router.navigate(['administration']);
+        this.router.navigate(['login']);
       },
     },
     {
-      label: 'Terminal',
+      label: 'Attention',
       tooltipOptions: {
-        tooltipLabel: 'Configuraciones',
+        tooltipLabel: 'Atencion',
         tooltipPosition: 'top',
         positionTop: -15,
         positionLeft: 15,
         showDelay: 1000,
       },
-      icon: 'https://primefaces.org/cdn/primeng/images/dock/terminal.svg',
-      command: () => {
-        this.setupConfig();
-      },
+      icon: '../../../../assets/img/apps/choice.png',
+      command: () => this.router.navigate(['attention']),
     },
     {
-      label: 'Panel',
+      label: 'Publicity',
       tooltipOptions: {
-        tooltipLabel: 'Configuraciones',
+        tooltipLabel: 'Anuncios',
         tooltipPosition: 'top',
         positionTop: -15,
         positionLeft: 15,
         showDelay: 1000,
       },
-      icon: 'https://primefaces.org/cdn/primeng/images/dock/terminal.svg',
-      command: () => {},
-    },
-  ];
-
-  menubarItems = [
-    {
-      label: 'Finder',
-      styleClass: 'menubar-root',
+      icon: '../../../../assets/img/apps/web-advertising.png',
+      command: () => this.router.navigate(['advertisement']),
     },
   ];
 
   setupConfig() {
     this.isConfigDialogVisible.set(true);
     this.branchService.findAll(20, 0).subscribe(({ branches }) => {
-      console.log(branches);
       this.branches.set(branches);
     });
   }
 
   save() {
-    this.config.branch = this.brach() ?? null;
+    if (!this.brach()) return;
+    this.config.setupBranch(this.brach()!);
   }
 }

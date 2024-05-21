@@ -1,0 +1,29 @@
+.option-button {
+    font-size: 50px;
+}
+
+/* Ejemplo de estilos */
+h3 {
+    font-size: 1.2em;
+    margin-top: 20px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  li {
+    margin: 5px 0;
+  }
+  
+  button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+  }
+  
+  button + button {
+    margin-left: 10px;
+  }
+  

@@ -4,29 +4,22 @@ import {
   Component,
   input,
   output,
-  signal,
 } from '@angular/core';
 import { menuResponse } from '../../../infrastructure/interfaces';
 import { PrimengModule } from '../../../primeng.module';
 
 @Component({
-  selector: 'grid-buttons',
+  selector: 'grid-options',
   standalone: true,
   imports: [CommonModule, PrimengModule],
-  templateUrl: './grid-buttons.component.html',
+  templateUrl: './grid-options.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GridButtonsComponent {
+export class GridOptionsComponent {
   elements = input<menuResponse[]>([]);
   onSelect = output<menuResponse>();
 
-  selectedElements = signal<menuResponse[]>([]);
-
   select(item: menuResponse) {
     this.onSelect.emit(item);
-  }
-
-  selectCategory(){
-    
   }
 }

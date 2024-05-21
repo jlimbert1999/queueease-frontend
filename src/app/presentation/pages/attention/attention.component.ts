@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   OnInit,
   computed,
   inject,
@@ -12,7 +13,9 @@ import { PrimengModule } from '../../../primeng.module';
 import { BranchService, ConfigService, PdfService } from '../../services';
 import { menuResponse } from '../../../infrastructure/interfaces';
 import { CustomerService } from '../../services/customer/customer.service';
-import { GridButtonsComponent } from '../../components/grid-buttons/grid-buttons.component';
+import { GridOptionsComponent } from '../../components/grid-options/grid-options.component';
+import { filter, switchMap, takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 interface menu {
   name: string;
@@ -21,7 +24,7 @@ interface menu {
 @Component({
   selector: 'app-attention',
   standalone: true,
-  imports: [CommonModule, PrimengModule, GridButtonsComponent],
+  imports: [CommonModule, PrimengModule, GridOptionsComponent],
   templateUrl: './attention.component.html',
   styleUrl: './attention.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,13 +34,7 @@ export class AttentionComponent implements OnInit {
   private configService = inject(ConfigService);
   private messageService = inject(MessageService);
   private pdfService = inject(PdfService);
-
-  private readonly branch = this.configService.branch;
-
-  index = signal(0);
-  prevIndex = signal<number>(0);
-  menu = signal<menuResponse[]>([]);
-  submenu = signal<menuResponse[]>([]);
+  private destroyRef = inject(DestroyRef);
 
   data: menuResponse[] = [
     {
@@ -124,63 +121,81 @@ export class AttentionComponent implements OnInit {
       services: [],
     },
   ];
-  selectedItems = signal<menuResponse[]>([]);
-  sleectedService = signal<number | null>(null);
-  currentOption = computed(() => {
-    const length = this.selectedItems().length - 1;
-    return this.selectedItems()[length];
+
+  // selectedService = signal<number | null>(null);
+  menu = signal<menuResponse[]>([{ name: '', services: [] }]);
+
+  currentMenuOption = computed(() => {
+    const index = this.menu().length;
+    return this.menu()[index - 1];
   });
+
+  mainOptions: menuResponse[] = [
+    
+  ];
+
+  currentOptions: menuResponse[] = [...this.mainOptions];
+  parentStack: menuResponse[] = [];
+
+  selectedService: menuResponse | null = null;
 
   constructor() {}
 
   ngOnInit() {
-    // this.setMenu();
+    this._setupMenu();
   }
 
-  setMenu() {
-    if (!this.branch) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Sin configuracion',
-        detail: 'No se configuro la sucursal',
-        life: 5000,
+  private _setupMenu() {
+    this.configService.branch$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        switchMap((id) => this.customerService.getMenu(id!))
+      )
+      .subscribe((resp) => {
+        this.mainOptions = [...resp];
+        this.currentOptions = [...this.mainOptions];
+        console.log(this.currentOptions);
+        // this.menu.set([{ name: 'Home', services: resp }]);
       });
-    }
-    this.customerService.getMenu(this.branch!).subscribe((data) => {
-      this.menu.set(data);
-      console.log(data);
-    });
-  }
-
-  setFinal() {
-    this.index.set(2);
   }
 
   selectItem(item: menuResponse) {
-    if (item.value) return this.confirmSelection(item);
-    if (item.services.length === 0) return;
-    this.selectedItems.update((values) => [...values, item]);
-    console.log(item);
+    // if (item.value) return this.selectedService.set(item.value);
+    // if (item.services.length === 0) return;
+    this.menu.update((values) => [...values, item]);
   }
 
-  confirmSelection(item: menuResponse) {
-    this.sleectedService.set(item.value!);
+  // goBack() {
+  //   // if (this.selectedService()) {
+  //   //   return this.selectedService.set(null);
+  //   // }
+  //   // if (this.menu().length === 1) return;
+  //   // this.menu.update((val) => {
+  //   //   val.pop();
+  //   //   return [...val];
+  //   // });
+  // }
+
+  selectOption(option: menuResponse) {
+    if (option.value) {
+      this.selectedService = option;
+    } else {
+      this.parentStack.push({ name: 'Back', services: this.currentOptions });
+      this.currentOptions = option.services;
+      this.selectedService = null;
+    }
   }
 
   goBack() {
-    if (this.sleectedService()) return this.sleectedService.set(null);
-    this.selectedItems.update((val) => {
-      val.pop();
-      return val;
-    });
-  }
-
-  handleClick(e: any) {}
-
-  get lastIndex() {
-    return this.selectedItems().length - 1;
-  }
-  print(){
-    this.pdfService.generateTicket({name:'MI servic', code:'', date:'10/12/2024'})
+    if (this.selectedService) {
+      this.selectedService = null;
+    } else if (this.parentStack.length > 0) {
+      const previous = this.parentStack.pop();
+      if (previous) {
+        this.currentOptions = previous.services;
+      }
+    } else {
+      this.currentOptions = [...this.mainOptions];
+    }
   }
 }
