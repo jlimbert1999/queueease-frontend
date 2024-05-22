@@ -17,4 +17,12 @@ export class CustomerService {
       .get<menuResponse[]>(`${this.url}/menu/${id_branch}`)
       .pipe();
   }
+
+  requestService(id_service: number, id_branch: number, priority: number) {
+    return this.http.post(`${this.url}/request`, {
+      id_service,
+      id_branch,
+      priority,
+    });
+  }
 }

@@ -8,23 +8,17 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { MenuItem, MessageService } from 'primeng/api';
-import { PrimengModule } from '../../../primeng.module';
-import { BranchService, ConfigService, PdfService } from '../../services';
-import { menuResponse } from '../../../infrastructure/interfaces';
-import { CustomerService } from '../../services/customer/customer.service';
-import { GridOptionsComponent } from '../../components/grid-options/grid-options.component';
-import { filter, switchMap, takeUntil } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, Subscription, debounceTime, finalize, switchMap } from 'rxjs';
+import { PrimengModule } from '../../../primeng.module';
+import { ConfigService, PdfService, CustomerService } from '../../services';
+import { menuResponse } from '../../../infrastructure/interfaces';
+import { LoaderComponent } from '../../components';
 
-interface menu {
-  name: string;
-  category?: string;
-}
 @Component({
   selector: 'app-attention',
   standalone: true,
-  imports: [CommonModule, PrimengModule, GridOptionsComponent],
+  imports: [CommonModule, PrimengModule, LoaderComponent],
   templateUrl: './attention.component.html',
   styleUrl: './attention.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,170 +26,69 @@ interface menu {
 export class AttentionComponent implements OnInit {
   private customerService = inject(CustomerService);
   private configService = inject(ConfigService);
-  private messageService = inject(MessageService);
   private pdfService = inject(PdfService);
   private destroyRef = inject(DestroyRef);
 
-  data: menuResponse[] = [
-    {
-      name: 'ARCHIVOS',
-      services: [
-        {
-          value: 10,
-          name: 'Servicio A',
-          services: [],
-        },
-        {
-          value: 11,
-          name: 'Servicio B',
-          services: [],
-        },
-      ],
-    },
-    {
-      name: 'CAJA',
-      services: [],
-    },
-    {
-      name: 'RUAT',
-      services: [
-        {
-          value: 1,
-          name: 'VEHICULOS',
-          services: [],
-        },
-        {
-          value: 2,
-          name: 'ACTIVIDADES ECONOMICAS',
-          services: [],
-        },
-        {
-          name: 'SUBNIVEL RUAT',
-          services: [
-            {
-              value: 12,
-              name: 'Servicio C',
-              services: [],
-            },
-            {
-              name: 'Servicio D',
-              services: [
-                {
-                  name: 'neste serv',
-                  services: [{ name: 'ds', services: [] }],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'CATASTRO',
-      services: [
-        {
-          value: 3,
-          name: 'INSCRIPCION CATRASTRAL',
-          services: [],
-        },
-        {
-          value: 5,
-          name: 'VISACIONES',
-          services: [],
-        },
-        {
-          value: 6,
-          name: 'EMPADRONAMIENTO',
-          services: [],
-        },
-        {
-          value: 7,
-          name: 'DECLARACION JURADA',
-          services: [],
-        },
-      ],
-    },
-    {
-      value: 4,
-      name: 'VENTANILLA UNICA',
-      services: [],
-    },
-  ];
-
-  // selectedService = signal<number | null>(null);
-  menu = signal<menuResponse[]>([{ name: '', services: [] }]);
-
-  currentMenuOption = computed(() => {
-    const index = this.menu().length;
-    return this.menu()[index - 1];
+  selectedService = signal<number | null>(null);
+  stackOptions = signal<menuResponse[]>([]);
+  currentOption = computed(() => {
+    const index = this.stackOptions().length;
+    if (index === 0) return [];
+    return this.stackOptions()[index - 1].services;
   });
 
-  mainOptions: menuResponse[] = [
-    
-  ];
-
-  currentOptions: menuResponse[] = [...this.mainOptions];
-  parentStack: menuResponse[] = [];
-
-  selectedService: menuResponse | null = null;
+  requestServiceSubscription$ = new Subject<number>();
+  isLoading = signal(false);
 
   constructor() {}
 
   ngOnInit() {
     this._setupMenu();
-  }
-
-  private _setupMenu() {
-    this.configService.branch$
+    this.requestServiceSubscription$
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        switchMap((id) => this.customerService.getMenu(id!))
+        debounceTime(2000),
+        switchMap((value) =>
+          this.customerService.requestService(
+            this.selectedService()!,
+            this.configService.branch()!,
+            value
+          )
+        )
       )
-      .subscribe((resp) => {
-        this.mainOptions = [...resp];
-        this.currentOptions = [...this.mainOptions];
-        console.log(this.currentOptions);
-        // this.menu.set([{ name: 'Home', services: resp }]);
+      .subscribe((data) => {
+        this.stackOptions.update((values) => values.slice(0, 1));
       });
   }
 
-  selectItem(item: menuResponse) {
-    // if (item.value) return this.selectedService.set(item.value);
-    // if (item.services.length === 0) return;
-    this.menu.update((values) => [...values, item]);
+  createRequest(priority: number) {
+    this.requestServiceSubscription$.next(priority);
   }
 
-  // goBack() {
-  //   // if (this.selectedService()) {
-  //   //   return this.selectedService.set(null);
-  //   // }
-  //   // if (this.menu().length === 1) return;
-  //   // this.menu.update((val) => {
-  //   //   val.pop();
-  //   //   return [...val];
-  //   // });
-  // }
-
   selectOption(option: menuResponse) {
-    if (option.value) {
-      this.selectedService = option;
-    } else {
-      this.parentStack.push({ name: 'Back', services: this.currentOptions });
-      this.currentOptions = option.services;
-      this.selectedService = null;
-    }
+    if (option.value) return this.selectedService.set(option.value);
+    this.stackOptions.update((values) => [...values, option]);
+    this.selectedService.set(null);
   }
 
   goBack() {
-    if (this.selectedService) {
-      this.selectedService = null;
-    } else if (this.parentStack.length > 0) {
-      const previous = this.parentStack.pop();
-      if (previous) {
-        this.currentOptions = previous.services;
-      }
-    } else {
-      this.currentOptions = [...this.mainOptions];
-    }
+    if (this.selectedService()) return this.selectedService.set(null);
+    if (this.stackOptions().length === 1) return;
+    this.stackOptions.update((values) => {
+      values.pop();
+      return [...values];
+    });
+  }
+
+  get isBackDisabled() {
+    return this.stackOptions().length === 1 && !this.selectedService();
+  }
+
+  private _setupMenu() {
+    const id = this.configService.branch();
+    if (!id) return;
+    this.customerService.getMenu(id!).subscribe((resp) => {
+      this.stackOptions.set([{ name: 'Inicio', services: resp }]);
+    });
   }
 }

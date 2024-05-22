@@ -7,3 +7,4 @@ export * from './socket.service';
 export * from './auth.service';
 export * from './pdf.service';
 export * from './service_desk.service';
+export * from './customer/customer.service';

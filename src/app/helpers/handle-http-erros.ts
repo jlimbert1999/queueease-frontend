@@ -39,6 +39,15 @@ export function handleHttpErrorMessage({
       });
       break;
 
+    case 403:
+      messageService.add({
+        severity: 'contrast',
+        summary: 'Acceso denegado',
+        detail: error.error['message'],
+        life: 3000,
+      });
+      break;
+
     default:
       messageService.add({
         severity: 'warn',

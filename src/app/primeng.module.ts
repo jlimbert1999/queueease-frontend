@@ -26,6 +26,7 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
 import { MenuModule } from 'primeng/menu';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 @NgModule({
   declarations: [],
   imports: [],
@@ -56,7 +57,8 @@ import { TagModule } from 'primeng/tag';
     AvatarGroupModule,
     MenuModule,
     DividerModule,
-    TagModule
+    TagModule,
+    ProgressSpinnerModule,
   ],
 })
 export class PrimengModule {}

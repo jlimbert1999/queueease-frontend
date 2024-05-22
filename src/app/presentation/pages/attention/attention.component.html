@@ -1,28 +1,26 @@
-<div class="flex justify-content-between flex-wrap">
-  <div class="flex align-items-center justify-content-center w-4rem h-4rem m-2">
-    <p-button icon="pi pi-arrow-left" (onClick)="goBack()" />
-  </div>
-  <div
-    class="flex align-items-center justify-content-center w-auto h-4rem border-round m-2"
-  >
-    <p class="text-4xl font-bold block">Bienvenido</p>
-  </div>
-  <div
-    class="flex align-items-center justify-content-center w-4rem h-4rem bg-primary font-bold border-round m-2"
-  >
-    -
-  </div>
+<div class="card flex justify-content-between flex-wrap" style="height: 6rem">
+  <p-button class="flex p-3" (onClick)="goBack()" [disabled]="isBackDisabled">
+    <i class="pi pi-arrow-left" style="font-size: 1.5rem"></i>
+  </p-button>
 </div>
-@if(!selectedService){
-<grid-options
-  [elements]="currentOptions"
-  (onSelect)="selectOption($event)"
-></grid-options>
-} @else {
+
 <div
-  class="flex align-items-center justify-content-center border-1"
+  class="flex justify-content-center align-content-center flex-wrap gap-2 sm:gap-6"
   style="height: 85vh"
 >
+  @if(!selectedService()){ @for (item of currentOption(); track $index) {
+  <div class="w-30rem h-6rem mx-4 sm:mx-0">
+    <p-button
+      class="w-full h-full"
+      styleClass="text-lg md:text-4xl w-full h-full shadow-2 hover:shadow-8"
+      [label]="item.name"
+      [raised]="true"
+      (onClick)="selectOption(item)"
+    ></p-button>
+  </div>
+  } @empty {
+  <p class="t-4xl">SIN OPCIONES</p>
+  } } @else {
   <div class="flex flex-column row-gap-6">
     <button
       class="font-bold option-button"
@@ -31,6 +29,7 @@
       [text]="true"
       [raised]="true"
       [rounded]="true"
+      (click)="createRequest(0)"
     >
       ATENCION GENERAL
     </button>
@@ -41,51 +40,12 @@
       [text]="true"
       [raised]="true"
       [rounded]="true"
+      (click)="createRequest(1)"
     >
       3RA. EDAD / DISCAPACIDAD / EMBARAZADAS
     </button>
   </div>
+  }
 </div>
-}
 
-<!-- @if(!sleectedService()){ @if(selectedItems().length===0){
-<grid-buttons [elements]="data" (onSelect)="selectItem($event)"></grid-buttons>
-
-} @else{
-<grid-buttons
-  [elements]="selectedItems()[lastIndex].services"
-  (onSelect)="selectItem($event)"
-></grid-buttons>
-
-} } @else {
-
-<div
-  class="flex align-items-center justify-content-center border-1"
-  style="height: 85vh"
->
-  <div class="flex flex-column row-gap-6">
-    <button
-      class="font-bold option-button"
-      pButton
-      size="large"
-      [text]="true"
-      [raised]="true"
-      [rounded]="true"
-    >
-      ATENCION GENERAL
-    </button>
-    <button
-      class="font-bold option-button"
-      pButton
-      size="large"
-      [text]="true"
-      [raised]="true"
-      [rounded]="true"
-    >
-      3RA. EDAD / DISCAPACIDAD / EMBARAZADAS
-    </button>
-  </div>
-</div>
-} -->
-
-
+<loader text="Generando Ticket" [isOpenend]="isLoading()" />
