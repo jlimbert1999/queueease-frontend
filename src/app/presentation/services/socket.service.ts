@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
+import { serviceRequestResponse } from '../../infrastructure/interfaces';
+import { ServiceRequest } from '../../domain/models';
 
 @Injectable({
   providedIn: 'root',
@@ -16,10 +18,10 @@ export class SocketService {
     });
   }
 
-  listenServiceRequests(): Observable<any[]> {
+  listenServiceRequests(): Observable<ServiceRequest> {
     return new Observable((observable) => {
-      this.socket?.on('new-request', (data: any[]) => {
-        observable.next(data);
+      this.socket?.on('new-request', (data: serviceRequestResponse) => {
+        observable.next(ServiceRequest.fromResponse(data));
       });
     });
   }

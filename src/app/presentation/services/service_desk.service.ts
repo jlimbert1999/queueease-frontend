@@ -1,6 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { serviceRequestResponse } from '../../infrastructure/interfaces';
+import { ServiceRequest } from '../../domain/models';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +14,9 @@ export class ServiceDeskService {
   constructor() {}
 
   getServiceRequests() {
-    return this.http.get<any[]>(this.url);
+    return this.http
+      .get<serviceRequestResponse[]>(this.url)
+      .pipe(map((resp) => resp.map((el) => ServiceRequest.fromResponse(el))));
   }
 
   nextRequest() {

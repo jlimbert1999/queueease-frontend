@@ -39,26 +39,68 @@ export class AttentionComponent implements OnInit {
 
   requestServiceSubscription$ = new Subject<number>();
   isLoading = signal(false);
+  files = [
+    '../../../../assets/audio/FICHA.m4a',
+    '../../../../assets/audio/B.m4a',
+    '../../../../assets/audio/A.m4a',
+    '../../../../assets/audio/C.m4a',
+    // '../../../../assets/audio/1.m4a',
+    '../../../../assets/audio/PASE A LA VENTANILLA.m4a',
+    // '../../../../assets/audio/PASE A LA VENTANILLA.m4a',
+    '../../../../assets/audio/1.m4a',
+  ];
 
-  constructor() {}
+  constructor() {
+    // this.playAudioFilesSequentially(this.files);
+  }
+
+  // playAudioFilesSequentially(files: string[]) {
+  //   let index = 0;
+  //   const playNext = () => {
+  //     if (index < files.length) {
+  //       const audio = new Audio(files[index]);
+  //       audio.play();
+  //       audio.onended = playNext;
+  //       index++;
+  //     }
+  //   };
+  //   playNext();
+  // }
 
   ngOnInit() {
-    this._setupMenu();
-    this.requestServiceSubscription$
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        debounceTime(2000),
-        switchMap((value) =>
-          this.customerService.requestService(
-            this.selectedService()!,
-            this.configService.branch()!,
-            value
-          )
-        )
-      )
-      .subscribe((data) => {
-        this.stackOptions.update((values) => values.slice(0, 1));
-      });
+    // this.playNext()
+    // this._setupMenu();
+    // this.requestServiceSubscription$
+    //   .pipe(
+    //     takeUntilDestroyed(this.destroyRef),
+    //     switchMap((value) =>
+    //       this.customerService.requestService(
+    //         this.selectedService()!,
+    //         this.configService.branch()!,
+    //         value
+    //       )
+    //     )
+    //   )
+    //   .subscribe((data) => {
+    //     this.stackOptions.update((values) => values.slice(0, 1));
+    //     this.selectedService.set(null);
+    //   });
+    // Obtener lista de voces disponibles
+    this.playAudioSequence(this.files);
+  }
+
+  playAudioSequence(files: string[]) {
+    // Itera sobre los archivos de audio
+    files.forEach((file, index) => {
+      // Crea un nuevo objeto de audio
+      const audio = new Audio(file);
+      const time = index === files.length - 1 ? 1200 : 1000;
+      // Reproduce el audio después de un intervalo de tiempo basado en el índice
+
+      setTimeout(() => {
+        audio.play();
+      }, index * time); // Ajusta el intervalo según sea necesario
+    });
   }
 
   createRequest(priority: number) {
@@ -90,5 +132,51 @@ export class AttentionComponent implements OnInit {
     this.customerService.getMenu(id!).subscribe((resp) => {
       this.stackOptions.set([{ name: 'Inicio', services: resp }]);
     });
+  }
+
+  generarFrase(numero: number) {
+    let frase: string = '';
+    const numerosTexto: string[] = [
+      'y',
+      'uno',
+      'dos',
+      'tres',
+      'cuatro',
+      'cinco',
+      'seis',
+      'siete',
+      'ocho',
+      'nueve',
+      'diez',
+      'once',
+      'doce',
+      'trece',
+      'catorce',
+      'quince',
+      'dieciséis',
+      'diecisiete',
+      'dieciocho',
+      'diecinueve',
+      'veinte',
+      'veinti',
+      'treinta',
+      'cuarenta',
+      'cincuenta',
+      'sesenta',
+      'setenta',
+      'ochenta',
+      'noventa',
+      'ciento',
+      'cientos',
+      'doscientos',
+      'trescientos',
+      'cuatrocientos',
+      'quinientos',
+      'seiscientos',
+      'setecientos',
+      'ochocientos',
+      'novecientos',
+      'mil',
+    ];
   }
 }

@@ -6,3 +6,4 @@ export * from './administration/service-desk-response.interface';
 export * from './customer/menu-response.interface';
 
 export * from './auth/jwt-payload.interface';
+export * from './customer/service-request-response.interface';

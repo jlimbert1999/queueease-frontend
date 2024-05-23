@@ -10,6 +10,7 @@ import { MenuItem } from 'primeng/api';
 import { PrimengModule } from '../../../primeng.module';
 import { ProfileComponent } from '../../components';
 import { AuthService, ServiceDeskService, SocketService } from '../../services';
+import { ServiceRequest } from '../../../domain/models';
 
 @Component({
   selector: 'app-queue-management',
@@ -25,7 +26,7 @@ export class QueueManagementComponent implements OnInit {
   private serviceDeksService = inject(ServiceDeskService);
   items: MenuItem[] = [];
 
-  requests = signal<any[]>([]);
+  requests = signal<ServiceRequest[]>([]);
   ngOnInit(): void {
     this.socketSrevice.listenServiceRequests().subscribe((resp) => {
       this.requests.update((val) => [resp, ...val]);
@@ -35,7 +36,6 @@ export class QueueManagementComponent implements OnInit {
 
   getRequests() {
     this.serviceDeksService.getServiceRequests().subscribe((data) => {
-      console.log(data);
       this.requests.set(data);
     });
   }
