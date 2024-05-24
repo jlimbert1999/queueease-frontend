@@ -44,9 +44,7 @@ export class AttentionComponent implements OnInit {
     '../../../../assets/audio/B.m4a',
     '../../../../assets/audio/A.m4a',
     '../../../../assets/audio/C.m4a',
-    // '../../../../assets/audio/1.m4a',
     '../../../../assets/audio/PASE A LA VENTANILLA.m4a',
-    // '../../../../assets/audio/PASE A LA VENTANILLA.m4a',
     '../../../../assets/audio/1.m4a',
   ];
 
@@ -90,16 +88,12 @@ export class AttentionComponent implements OnInit {
   }
 
   playAudioSequence(files: string[]) {
-    // Itera sobre los archivos de audio
     files.forEach((file, index) => {
-      // Crea un nuevo objeto de audio
       const audio = new Audio(file);
       const time = index === files.length - 1 ? 1200 : 1000;
-      // Reproduce el audio después de un intervalo de tiempo basado en el índice
-
       setTimeout(() => {
         audio.play();
-      }, index * time); // Ajusta el intervalo según sea necesario
+      }, index * time);
     });
   }
 
