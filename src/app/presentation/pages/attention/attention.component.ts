@@ -14,6 +14,8 @@ import { PrimengModule } from '../../../primeng.module';
 import { ConfigService, PdfService, CustomerService } from '../../services';
 import { menuResponse } from '../../../infrastructure/interfaces';
 import { LoaderComponent } from '../../components';
+import { numerToWords } from '../../../helpers';
+import { TextToSpeekService } from '../../services/text-to-speek.service';
 
 @Component({
   selector: 'app-attention',
@@ -28,6 +30,7 @@ export class AttentionComponent implements OnInit {
   private configService = inject(ConfigService);
   private pdfService = inject(PdfService);
   private destroyRef = inject(DestroyRef);
+  private textToSpeekService = inject(TextToSpeekService);
 
   selectedService = signal<number | null>(null);
   stackOptions = signal<menuResponse[]>([]);
@@ -39,35 +42,19 @@ export class AttentionComponent implements OnInit {
 
   requestServiceSubscription$ = new Subject<number>();
   isLoading = signal(false);
-  files = [
-    '../../../../assets/audio/FICHA.m4a',
-    '../../../../assets/audio/B.m4a',
-    '../../../../assets/audio/A.m4a',
-    '../../../../assets/audio/C.m4a',
-    '../../../../assets/audio/PASE A LA VENTANILLA.m4a',
-    '../../../../assets/audio/1.m4a',
-  ];
 
   constructor() {
     // this.playAudioFilesSequentially(this.files);
   }
 
-  // playAudioFilesSequentially(files: string[]) {
-  //   let index = 0;
-  //   const playNext = () => {
-  //     if (index < files.length) {
-  //       const audio = new Audio(files[index]);
-  //       audio.play();
-  //       audio.onended = playNext;
-  //       index++;
-  //     }
-  //   };
-  //   playNext();
-  // }
+  play(){
+    this.textToSpeekService.speek('ARC73', 2)
+
+  }
 
   ngOnInit() {
-    // this.playNext()
-    // this._setupMenu();
+    this._setupMenu();
+
     // this.requestServiceSubscription$
     //   .pipe(
     //     takeUntilDestroyed(this.destroyRef),
@@ -84,17 +71,14 @@ export class AttentionComponent implements OnInit {
     //     this.selectedService.set(null);
     //   });
     // Obtener lista de voces disponibles
-    this.playAudioSequence(this.files);
+    // this.playAudioSequence(this.files);
   }
 
-  playAudioSequence(files: string[]) {
-    files.forEach((file, index) => {
-      const audio = new Audio(file);
-      const time = index === files.length - 1 ? 1200 : 1000;
-      setTimeout(() => {
-        audio.play();
-      }, index * time);
-    });
+  speak(text: string): void {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    synth.speak(utterance);
   }
 
   createRequest(priority: number) {
@@ -128,49 +112,4 @@ export class AttentionComponent implements OnInit {
     });
   }
 
-  generarFrase(numero: number) {
-    let frase: string = '';
-    const numerosTexto: string[] = [
-      'y',
-      'uno',
-      'dos',
-      'tres',
-      'cuatro',
-      'cinco',
-      'seis',
-      'siete',
-      'ocho',
-      'nueve',
-      'diez',
-      'once',
-      'doce',
-      'trece',
-      'catorce',
-      'quince',
-      'dieciséis',
-      'diecisiete',
-      'dieciocho',
-      'diecinueve',
-      'veinte',
-      'veinti',
-      'treinta',
-      'cuarenta',
-      'cincuenta',
-      'sesenta',
-      'setenta',
-      'ochenta',
-      'noventa',
-      'ciento',
-      'cientos',
-      'doscientos',
-      'trescientos',
-      'cuatrocientos',
-      'quinientos',
-      'seiscientos',
-      'setecientos',
-      'ochocientos',
-      'novecientos',
-      'mil',
-    ];
-  }
 }

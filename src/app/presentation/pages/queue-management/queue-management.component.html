@@ -11,8 +11,8 @@
   </ng-template>
 </p-menubar>
 
-<div class="m-2 border-1" style="height: 92vh">
-  <div class="grid nested-grid">
+<div style="height: calc(100% - 3.5rem); display: flex; flex-direction: column">
+  <div class="grid grid-nogutter nested-grid" style="flex: 1">
     <div class="col-12 md:col-9">
       <div class="grid">
         <div class="col-12">
@@ -21,7 +21,7 @@
           </div>
         </div>
         <div class="col-12">
-          <div class="border-round border-2">
+          <div class="border-round">
             <p-table
               [value]="requests()"
               styleClass="w-full"
@@ -29,12 +29,16 @@
               [scrollable]="true"
               scrollHeight="400px"
             >
+              <ng-template pTemplate="caption">
+                <span>LISTADO DE SOLICITUDES</span>
+              </ng-template>
               <ng-template pTemplate="header">
                 <tr>
                   <th>Nro.</th>
                   <th>Codigo</th>
                   <th>Servicio</th>
                   <th>Estado</th>
+                  <th>Fecha</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-request let-rowIndex="rowIndex">
@@ -42,8 +46,29 @@
                   <td>{{ rowIndex + 1 }}</td>
                   <td>{{ request.code }}</td>
                   <td>{{ request.service.name }}</td>
-                  <td>{{ request.statusLabel }}</td>
+                  <td>
+                    @switch (request.status) { @case ('pending') {
+                    <p-tag severity="warning" value="PENDIENTE" />
+                    } @case ('attended') {
+                    <p-tag severity="success" value="ATENDIDO" />
+                    } @case ('absent') {
+                    <p-tag severity="danger" value="AUSENTE" />
+                    } @case ('servicing') {
+                    <p-tag severity="info" value="EN ATENCION" />
+                    } @default {
+                    <p-tag severity="contrast" value="Desconocido" />
+                    } }
+                  </td>
+                  <td>{{ request.date | date : "shortTime" }}</td>
                 </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="5">SIN SOLI</td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="summary">
+                <span> EN COLA: {{ requests().length }}</span>
               </ng-template>
             </p-table>
           </div>
@@ -51,10 +76,10 @@
       </div>
     </div>
     <div class="col-12 md:col-3">
-      <div class="text-center p-3 border-round-sm h-full border-1">
-        <div class="flex flex-column">
+      <div class="h-full p-3 border-1">
+        <div class="flex flex-column justify-content-center flex-wrap  row-gap-2">
           <div
-            class="flex align-items-center justify-content-center h-4rem m-2"
+            class="flex align-items-center border-1 justify-content-center h-4rem m-2"
           >
             <p-button
               label="Siguiente ficha"
