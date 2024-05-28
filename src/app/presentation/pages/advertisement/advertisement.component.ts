@@ -2,42 +2,54 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   OnInit,
   inject,
   signal,
 } from '@angular/core';
-import { SocketService } from '../../services';
+import { concatMap, filter, finalize, tap } from 'rxjs';
+import { SocketService, TextToSpeekService } from '../../services';
+import { ServiceRequest } from '../../../domain/models';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-advertisement',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './advertisement.component.html',
+  styleUrl: './advertisement.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: `
-  .marquee-container {
-  width: 100%;
-  overflow: hidden;
-}
-
-.marquee-text {
-  white-space: nowrap;
-  animation: marquee 30s linear infinite;
-}
-
-@keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-
-  `,
 })
 export class AdvertisementComponent implements OnInit {
-  list = signal<any[]>([]);
+  list = signal<ServiceRequest[]>([]);
   private socketService = inject(SocketService);
+  private textToSpeekService = inject(TextToSpeekService);
+  private soundList: Record<number, string> = {};
+  private destroyRef = inject(DestroyRef);
+
+  constructor() {}
+
   ngOnInit(): void {
-    this.socketService.listenQueueEvent().subscribe((data) => {
-      this.list.update((val) => [data, ...val]);
-    });
+    this._listenQueueEvent();
+  }
+
+  private _listenQueueEvent(): void {
+    this.socketService
+      .onQueueEvent()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((request) => {
+          console.log('listen');
+          this.list.update((values) => [request, ...values]);
+        }),
+        filter((request) => !this.soundList[request.id]),
+        tap((request) => (this.soundList[request.id] = request.code)),
+        concatMap((request) =>
+          this.textToSpeekService
+            .speek(request)
+            .pipe(finalize(() => delete this.soundList[request.id]))
+        )
+      )
+      .subscribe();
   }
 }

@@ -1,6 +1,20 @@
 import { Injectable, signal } from '@angular/core';
 import { numerToWords } from '../../helpers';
-import { Observable, concatMap, delay, from, mapTo, timer } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  concatMap,
+  delay,
+  finalize,
+  from,
+  mapTo,
+  of,
+  repeat,
+  share,
+  tap,
+  timer,
+} from 'rxjs';
+import { ServiceRequest } from '../../domain/models';
 
 interface playlist {
   path: string;
@@ -10,11 +24,10 @@ interface playlist {
   providedIn: 'root',
 })
 export class TextToSpeekService {
-  isPlaying = signal<boolean>(false);
   constructor() {}
 
-  speek(text: string, counterNumber: number) {
-    this._codeToSpeek(text, counterNumber);
+  speek({ code }: ServiceRequest) {
+    return this._codeToSpeek(code, 2);
   }
 
   private _codeToSpeek(text: string, counterNumber: number) {
@@ -27,7 +40,7 @@ export class TextToSpeekService {
         path: '../../../assets/audio/phrases/notification.mp3',
         duration: 1400,
       },
-      { path: '../../../assets/audio/phrases/FICHA.mp3', duration: 1200 },
+      { path: '../../../assets/audio/phrases/FICHA.mp3', duration: 1000 },
       ...this._generatePlayList(firstPart, 'letters'),
       ...this._generatePlayList(secondPart, 'numbers'),
       {
@@ -39,15 +52,13 @@ export class TextToSpeekService {
         duration: 1000,
       },
     ];
-    this.playSound(playlist);
+    return this.playSound(playlist);
   }
 
   private _generatePlayList(characters: string[], type: 'letters' | 'numbers') {
     return characters.map((el) => {
       let duration: number = 900;
-      if (el === 'Y') {
-        duration = 500;
-      }
+      if (el === 'Y') duration = 600;
       return {
         path: `../../../assets/audio/${type}/${el}.mp3`,
         duration: duration,
@@ -62,23 +73,17 @@ export class TextToSpeekService {
   }
 
   private playSound(playlist: playlist[]) {
-    if (this.isPlaying()) return;
-    this.isPlaying.set(true);
-    from(playlist)
-      .pipe(concatMap((item) => this.playAudio(item)))
-      .subscribe({
-        complete: () => {
-          this.isPlaying.set(false);
-        },
-      });
-  }
-
-  private playAudio(item: playlist): Observable<void> {
-    return new Observable<void>((observer) => {
-      const audio = new Audio(item.path);
-      audio.play();
-      observer.next();
-      observer.complete();
-    }).pipe(delay(item.duration));
+    return from(playlist).pipe(
+      concatMap((item) =>
+        of(item).pipe(
+          tap((item) => {
+            const audio = new Audio(item.path);
+            audio.play();
+            // console.log('playing audio', item.path);
+          }),
+          delay(item.duration)
+        )
+      )
+    );
   }
 }

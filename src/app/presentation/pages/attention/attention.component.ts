@@ -11,7 +11,12 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, Subscription, debounceTime, finalize, switchMap } from 'rxjs';
 import { PrimengModule } from '../../../primeng.module';
-import { ConfigService, PdfService, CustomerService } from '../../services';
+import {
+  ConfigService,
+  PdfService,
+  CustomerService,
+  SocketService,
+} from '../../services';
 import { menuResponse } from '../../../infrastructure/interfaces';
 import { LoaderComponent } from '../../components';
 import { numerToWords } from '../../../helpers';
@@ -43,14 +48,7 @@ export class AttentionComponent implements OnInit {
   requestServiceSubscription$ = new Subject<number>();
   isLoading = signal(false);
 
-  constructor() {
-    // this.playAudioFilesSequentially(this.files);
-  }
-
-  play(){
-    this.textToSpeekService.speek('ARC73', 2)
-
-  }
+  constructor() {}
 
   ngOnInit() {
     this._setupMenu();
@@ -111,5 +109,4 @@ export class AttentionComponent implements OnInit {
       this.stackOptions.set([{ name: 'Inicio', services: resp }]);
     });
   }
-
 }

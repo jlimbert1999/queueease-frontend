@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { environment } from '../../../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { serviceRequestResponse } from '../../infrastructure/interfaces';
 import { ServiceRequest } from '../../domain/models';
 
@@ -26,11 +26,10 @@ export class SocketService {
     });
   }
 
-  listenQueueEvent() {
+  onQueueEvent(): Observable<ServiceRequest> {
     return new Observable((observable) => {
-      this.socket?.on('attention', (data: any) => {
-        console.log(data);
-        observable.next(data);
+      this.socket?.on('attention', (data: serviceRequestResponse) => {
+        observable.next(ServiceRequest.fromResponse(data));
       });
     });
   }
