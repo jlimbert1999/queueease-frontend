@@ -1,20 +1,7 @@
-import { Injectable, signal } from '@angular/core';
-import { numerToWords } from '../../helpers';
-import {
-  BehaviorSubject,
-  Observable,
-  concatMap,
-  delay,
-  finalize,
-  from,
-  mapTo,
-  of,
-  repeat,
-  share,
-  tap,
-  timer,
-} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { concatMap, delay, from, of, tap } from 'rxjs';
 import { ServiceRequest } from '../../domain/models';
+import { numerToWords } from '../../helpers';
 
 interface playlist {
   path: string;

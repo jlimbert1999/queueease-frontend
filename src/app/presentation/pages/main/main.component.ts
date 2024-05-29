@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   model,
   signal,
@@ -12,7 +13,12 @@ import { MenuItem } from 'primeng/api';
 import { Router } from '@angular/router';
 import { BranchService, ConfigService } from '../../services';
 import { Branch } from '../../../domain/models';
+import { brachResponse } from '../../../infrastructure/interfaces';
 
+interface branch {
+  id: number;
+  name: string;
+}
 @Component({
   selector: 'app-main',
   standalone: true,
@@ -24,12 +30,12 @@ import { Branch } from '../../../domain/models';
 export class MainComponent {
   private router = inject(Router);
   private branchService = inject(BranchService);
-  private config = inject(ConfigService);
+  private configService = inject(ConfigService);
 
   branches = signal<Branch[]>([]);
-  brach = model<number>();
-
+  selectedBranch = this.configService.branch();
   isConfigDialogVisible = signal<boolean>(false);
+  
   dockItems: MenuItem[] = [
     {
       label: 'Settings',
@@ -93,7 +99,8 @@ export class MainComponent {
   }
 
   save() {
-    if (!this.brach()) return;
-    this.config.setupBranch(this.brach()!);
+    if (!this.selectedBranch) return;
+    this.configService.updateBranch(this.selectedBranch);
+    this.isConfigDialogVisible.set(false);
   }
 }

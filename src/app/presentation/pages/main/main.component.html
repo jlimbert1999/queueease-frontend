@@ -23,14 +23,13 @@
         <div class="field">
           <label for="branch">Sucursal</label>
           <p-dropdown
+            [(ngModel)]="selectedBranch"
             id="branch"
             [style]="{ width: '100%' }"
             [options]="branches()"
-            [(ngModel)]="brach"
             optionLabel="name"
             placeholder="Seleccione una sucursal"
             appendTo="body"
-            optionValue="id"
           />
         </div>
       </div>

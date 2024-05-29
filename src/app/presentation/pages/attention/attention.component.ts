@@ -11,12 +11,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, Subscription, debounceTime, finalize, switchMap } from 'rxjs';
 import { PrimengModule } from '../../../primeng.module';
-import {
-  ConfigService,
-  PdfService,
-  CustomerService,
-  SocketService,
-} from '../../services';
+import { ConfigService, PdfService, CustomerService } from '../../services';
 import { menuResponse } from '../../../infrastructure/interfaces';
 import { LoaderComponent } from '../../components';
 import { numerToWords } from '../../../helpers';
@@ -52,24 +47,6 @@ export class AttentionComponent implements OnInit {
 
   ngOnInit() {
     this._setupMenu();
-
-    // this.requestServiceSubscription$
-    //   .pipe(
-    //     takeUntilDestroyed(this.destroyRef),
-    //     switchMap((value) =>
-    //       this.customerService.requestService(
-    //         this.selectedService()!,
-    //         this.configService.branch()!,
-    //         value
-    //       )
-    //     )
-    //   )
-    //   .subscribe((data) => {
-    //     this.stackOptions.update((values) => values.slice(0, 1));
-    //     this.selectedService.set(null);
-    //   });
-    // Obtener lista de voces disponibles
-    // this.playAudioSequence(this.files);
   }
 
   speak(text: string): void {
@@ -103,9 +80,9 @@ export class AttentionComponent implements OnInit {
   }
 
   private _setupMenu() {
-    const id = this.configService.branch();
-    if (!id) return;
-    this.customerService.getMenu(id!).subscribe((resp) => {
+    const branch = this.configService.branch();
+    if (!branch) return;
+    this.customerService.getMenu(branch.id).subscribe((resp) => {
       this.stackOptions.set([{ name: 'Inicio', services: resp }]);
     });
   }

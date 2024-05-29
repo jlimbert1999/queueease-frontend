@@ -11,7 +11,7 @@ import { MainComponent } from './presentation/pages/main/main.component';
 import { LoginComponent } from './presentation/pages/auth/login/login.component';
 import { isAuthenticatedGuard } from './presentation/guards/is-authenticated.guard';
 import { QueueManagementComponent } from './presentation/pages/queue-management/queue-management.component';
-import { AdvertisementComponent } from './presentation/pages/advertisement/advertisement.component';
+import { AnnouncementComponent } from './presentation/pages/announcement/announcement.component';
 import { branchConfigGuard } from './presentation/guards/branch-config.guard';
 
 export const routes: Routes = [
@@ -48,7 +48,7 @@ export const routes: Routes = [
   {
     path: 'advertisement',
     canActivate: [branchConfigGuard],
-    component: AdvertisementComponent,
+    component: AnnouncementComponent,
   },
   {
     path: 'main',

@@ -9,7 +9,11 @@ import {
 import { MenuItem } from 'primeng/api';
 import { PrimengModule } from '../../../primeng.module';
 import { ProfileComponent } from '../../components';
-import { AuthService, ServiceDeskService, SocketService } from '../../services';
+import {
+  AttentionSocketService,
+  AuthService,
+  ServiceDeskService,
+} from '../../services';
 import { ServiceRequest } from '../../../domain/models';
 
 @Component({
@@ -22,15 +26,18 @@ import { ServiceRequest } from '../../../domain/models';
 })
 export class QueueManagementComponent implements OnInit {
   private authService = inject(AuthService);
-  private socketSrevice = inject(SocketService);
   private serviceDeksService = inject(ServiceDeskService);
+  private attentionSocketService = inject(AttentionSocketService);
   items: MenuItem[] = [];
 
   requests = signal<ServiceRequest[]>([]);
+
+  constructor() {}
+
   ngOnInit(): void {
-    this.socketSrevice.listenServiceRequests().subscribe((resp) => {
-      this.requests.update((val) => [resp, ...val]);
-    });
+    // this.socketSrevice.listenServiceRequests().subscribe((resp) => {
+    //   this.requests.update((val) => [resp, ...val]);
+    // });
     this.getRequests();
   }
 

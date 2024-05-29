@@ -7,25 +7,31 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { concatMap, filter, finalize, tap } from 'rxjs';
-import { SocketService, TextToSpeekService } from '../../services';
-import { ServiceRequest } from '../../../domain/models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { concatMap, filter, finalize, tap } from 'rxjs';
+import {
+  AnnouncementsSocketService,
+  ConfigService,
+  TextToSpeekService,
+} from '../../services';
+import { ServiceRequest } from '../../../domain/models';
 
 @Component({
-  selector: 'app-advertisement',
+  selector: 'app-announcement',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './advertisement.component.html',
-  styleUrl: './advertisement.component.scss',
+  templateUrl: './announcement.component.html',
+  styleUrl: './announcement.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdvertisementComponent implements OnInit {
-  list = signal<ServiceRequest[]>([]);
-  private socketService = inject(SocketService);
+export class AnnouncementComponent implements OnInit {
+  private announcementssocketService = inject(AnnouncementsSocketService);
   private textToSpeekService = inject(TextToSpeekService);
-  private soundList: Record<number, string> = {};
+  private configService = inject(ConfigService);
   private destroyRef = inject(DestroyRef);
+
+  private soundList: Record<number, string> = {};
+  requests = signal<ServiceRequest[]>([]);
 
   constructor() {}
 
@@ -34,13 +40,13 @@ export class AdvertisementComponent implements OnInit {
   }
 
   private _listenQueueEvent(): void {
-    this.socketService
+    this.announcementssocketService
       .onQueueEvent()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((request) => {
-          console.log('listen');
-          this.list.update((values) => [request, ...values]);
+          console.log(request);
+          this.requests.update((values) => [request, ...values]);
         }),
         filter((request) => !this.soundList[request.id]),
         tap((request) => (this.soundList[request.id] = request.code)),
