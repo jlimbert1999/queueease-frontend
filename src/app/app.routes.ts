@@ -47,7 +47,7 @@ export const routes: Routes = [
   },
   {
     path: 'advertisement',
-    canActivate: [branchConfigGuard],
+    // canActivate: [branchConfigGuard],
     component: AnnouncementComponent,
   },
   {

@@ -27,7 +27,7 @@ import { ServiceRequest } from '../../../domain/models';
 export class AnnouncementComponent implements OnInit {
   private announcementssocketService = inject(AnnouncementsSocketService);
   private textToSpeekService = inject(TextToSpeekService);
-  private configService = inject(ConfigService);
+  // private configService = inject(ConfigService);
   private destroyRef = inject(DestroyRef);
 
   private soundList: Record<number, string> = {};
@@ -36,7 +36,7 @@ export class AnnouncementComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this._listenQueueEvent();
+    // this._listenQueueEvent();
   }
 
   private _listenQueueEvent(): void {
