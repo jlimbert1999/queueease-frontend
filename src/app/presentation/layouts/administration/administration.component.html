@@ -1,7 +1,6 @@
-<div class="card">
-  <p-menubar [model]="items"></p-menubar>
-</div>
-
-<div class="p-2">
-  <router-outlet></router-outlet>
+<div class="h-screen">
+  <app-toolbar></app-toolbar>
+  <div class="m-2 md:m-2">
+    <router-outlet />
+  </div>
 </div>

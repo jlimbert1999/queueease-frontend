@@ -1,0 +1,16 @@
+<p-menubar [model]="items">
+  <ng-template pTemplate="item" let-item let-root="root">
+    <a
+      pRipple
+      class="flex align-items-center p-menuitem-link"
+      routerLinkActive="bg-blue-100 border-round"
+      [routerLink]="item.routerLink"
+    >
+      <span [class]="item.icon"></span>
+      <span class="ml-2">{{ item.label }}</span>
+    </a>
+  </ng-template>
+  <ng-template pTemplate="end">
+    <profile />
+  </ng-template>
+</p-menubar>

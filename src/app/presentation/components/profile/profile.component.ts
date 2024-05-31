@@ -13,7 +13,7 @@ import { AuthService } from '../../services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileComponent {
-  private authService = inject(AuthService);
+  public authService = inject(AuthService);
   private router = inject(Router);
   user = this.authService.user();
   avatarLabel = this.user?.fullname.trim()[0];

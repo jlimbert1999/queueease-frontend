@@ -1,16 +1,16 @@
 <p-toolbar>
   <div class="p-toolbar-group-start">
-    <button pButton icon="pi pi-plus" class="mr-2" (click)="create()"></button>
-    <button pButton icon="pi pi-print" class="mr-2"></button>
-    <button pButton icon="pi pi-upload"></button>
+    <p-button icon="pi pi-plus" class="mr-2" (onClick)="create()" />
   </div>
-  <div class="p-toolbar-group-center">
-    <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
-      <input pInputText placeholder="Search" />
-    </span>
+  <div class="p-toolbar-group-center"></div>
+  <div class="p-toolbar-group-end">
+    <p-iconField iconPosition="left">
+      <p-inputIcon styleClass="pi pi-search" />
+      <input type="text" pInputText placeholder="Buscar categoria" />
+    </p-iconField>
   </div>
 </p-toolbar>
+
 <p-table [value]="categories()" [tableStyle]="{ 'min-width': '50rem' }">
   <ng-template pTemplate="header">
     <tr>

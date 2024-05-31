@@ -13,6 +13,7 @@ import { isAuthenticatedGuard } from './presentation/guards/is-authenticated.gua
 import { QueueManagementComponent } from './presentation/pages/queue-management/queue-management.component';
 import { AnnouncementComponent } from './presentation/pages/announcement/announcement.component';
 import { branchConfigGuard } from './presentation/guards/branch-config.guard';
+import { HomeComponent } from './presentation/layouts/home/home.component';
 
 export const routes: Routes = [
   {
@@ -20,8 +21,13 @@ export const routes: Routes = [
     component: LoginComponent,
   },
   {
+    path: 'home',
+    canActivate: [isAuthenticatedGuard],
+    component: HomeComponent,
+  },
+  {
     path: 'administration',
-    // canActivate: [isAuthenticatedGuard],
+    canActivate: [isAuthenticatedGuard],
     component: AdministrationComponent,
     children: [
       { path: 'categories', component: CategoriesComponent },

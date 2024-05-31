@@ -22,6 +22,7 @@ type method = 'create' | 'update';
   templateUrl: './categories.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
+
 })
 export class CategoriesComponent implements OnInit {
   category = signal<Category | null>(null);

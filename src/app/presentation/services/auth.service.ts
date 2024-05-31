@@ -1,6 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { environment } from '../../../environments/environment';
 import { JwtPayload } from '../../infrastructure/interfaces';
@@ -49,6 +49,7 @@ export class AuthService {
       }>(this.url)
       .pipe(
         map(({ token }) => this._setAuthentication(token)),
+        tap(console.log),
         catchError(() => {
           return of(false);
         })

@@ -1,11 +1,5 @@
 @import "primeicons/primeicons.css";
 
-// DIALOG CONFIG
-// .p-dialog .p-dialog-content {
-//     position: relative;
-//     /* Posicionar el contenido de forma relativa */
-// }
-
 .p-dialog-footer {
     position: absolute;
     bottom: 0;
@@ -17,4 +11,12 @@
 body {
     margin: 0px;
     height: 100%;
+}
+
+.p-toolbar {
+    padding: 5px;
+}
+
+.p-datatable-header {
+    padding: px;
 }
