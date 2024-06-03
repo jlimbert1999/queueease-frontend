@@ -12,11 +12,12 @@ import { BranchService } from '../../../services';
 import { brachResponse } from '../../../../infrastructure/interfaces';
 import { BranchComponent } from './branch/branch.component';
 import { PrimengModule } from '../../../../primeng.module';
+import { SecureUrlPipe } from '../../../pipes/secure-url.pipe';
 
 @Component({
   selector: 'app-branches',
   standalone: true,
-  imports: [CommonModule, PrimengModule],
+  imports: [CommonModule, PrimengModule, SecureUrlPipe],
   templateUrl: './branches.component.html',
   styleUrl: './branches.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +32,8 @@ export class BranchesComponent {
 
   datasource = signal<brachResponse[]>([]);
   datasize = signal(0);
+  showVideo: boolean = false;
+  selectedElement: brachResponse | null = null;
   ngOnInit(): void {
     this.getData();
   }
@@ -39,6 +42,7 @@ export class BranchesComponent {
     this.branchService
       .findAll(this.limit(), this.offset())
       .subscribe(({ branches, length }) => {
+        console.log(branches);
         this.datasource.set(branches);
         this.datasize.set(length);
       });
@@ -71,5 +75,10 @@ export class BranchesComponent {
           return [...values];
         });
       });
+  }
+
+  viewVideo(value: brachResponse) {
+    this.selectedElement = value;
+    this.showVideo = true;
   }
 }

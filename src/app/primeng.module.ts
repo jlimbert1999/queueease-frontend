@@ -27,6 +27,8 @@ import { MenuModule } from 'primeng/menu';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { FileUploadModule } from 'primeng/fileupload';
+import { GalleriaModule } from 'primeng/galleria';
 @NgModule({
   declarations: [],
   imports: [],
@@ -59,6 +61,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     DividerModule,
     TagModule,
     ProgressSpinnerModule,
+    FileUploadModule,
+    GalleriaModule,
   ],
 })
 export class PrimengModule {}

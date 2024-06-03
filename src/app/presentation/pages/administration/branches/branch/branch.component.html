@@ -1,15 +1,67 @@
 <div class="p-dialog-content">
-  <div class="field">
-    <label for="name">Nombre sucursal</label>
-    <input
-      id="name"
-      type="text"
-      class="w-full"
-      pInputText
-      [formControl]="FormBranch"
-      required
-    />
-  </div>
+  <pre>{{ FormBranch.value | json }}</pre>
+  <form [formGroup]="FormBranch">
+    <div class="formgrid grid">
+      <div class="field col-12 sm:col-4">
+        <label for="name">Nombre</label>
+        <input
+          id="name"
+          type="text"
+          class="w-full"
+          pInputText
+          formControlName="name"
+        />
+      </div>
+      <div class="field col-12 sm:col-8">
+        <label for="message">Mensaje</label>
+        <input
+          id="message"
+          type="text"
+          class="w-full"
+          pInputText
+          formControlName="marqueeMessage"
+        />
+      </div>
+      <div class="field col-12 sm:col-4">
+        <label for="platform">Plataforma</label>
+        <p-dropdown
+          styleClass="w-full"
+          inputId="platform"
+          [options]="videoPlatforms"
+          formControlName="videoPlatform"
+          placeholder="Fuente del video"
+          (onChange)="onPlatformChange($event.value)"
+        />
+      </div>
+      <div class="field col-12 sm:col-8">
+        @if(platform==='Local'){
+        <label for="platform">Seleccione un video</label>
+        <p-fileUpload
+          mode="advanced"
+          [multiple]="false"
+          accept=".mp4"
+          [maxFileSize]="maxFileSize"
+          [showCancelButton]="false"
+          [showUploadButton]="false"
+          chooseLabel="Seleccionar"
+          (onSelect)="onFileSelect($event)"
+          (onRemove)="onFileRemove()"
+        >
+          <ng-template pTemplate="content"> mI ARC </ng-template>
+        </p-fileUpload>
+        } @else {
+        <label for="video_id">Identificador del video</label>
+        <input
+          id="video_id"
+          type="text"
+          class="w-full"
+          pInputText
+          formControlName="videoUrl"
+        />
+        }
+      </div>
+    </div>
+  </form>
 
   <p-dropdown
     #dropdown
@@ -44,6 +96,9 @@
       <span>Sin servicios</span>
       }
     </div>
+  </div>
+  <div class="card flex justify-content-center">
+    <p-toast />
   </div>
 </div>
 <div class="p-dialog-footer">

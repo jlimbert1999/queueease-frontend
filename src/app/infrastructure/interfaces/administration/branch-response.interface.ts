@@ -1,7 +1,7 @@
 import { serviceResponse } from './service-response.interface';
 
 export interface brachResponse {
-  id: number;
+  id: string;
   name: string;
   videoUrl?: string;
   videoPlatform?: string;

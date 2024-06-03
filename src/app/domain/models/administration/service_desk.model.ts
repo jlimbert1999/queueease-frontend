@@ -5,7 +5,7 @@ interface service {
   name: string;
 }
 interface branch {
-  id: number;
+  id: string;
   name: string;
 }
 interface serviceDeskProps {

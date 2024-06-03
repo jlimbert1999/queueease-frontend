@@ -32,16 +32,14 @@ export class BranchService {
     );
   }
 
-  create(name: string, services: string[]) {
-    const branchDto = CreateBranchDto.fromForm(name, services);
+  create(form: Object, services: string[]) {
+    const branchDto = CreateBranchDto.fromForm(form, services);
     return this.http.post<brachResponse>(`${this.url}`, branchDto);
   }
 
-  update(id: number, name: string, services: string[]) {
-    return this.http.patch<brachResponse>(`${this.url}/${id}`, {
-      name,
-      services,
-    });
+  update(id: string, form: Partial<CreateBranchDto>, services: string[]) {
+    const branchDto = { ...form, services };
+    return this.http.patch<brachResponse>(`${this.url}/${id}`, branchDto);
   }
 
   searchAvaibles(term: string) {
@@ -52,5 +50,14 @@ export class BranchService {
     return this.http
       .get<serviceResponse[]>(`${this.url}/menu/${id}`)
       .pipe(map((resp) => resp.map((el) => Service.fromResponse(el))));
+  }
+
+  uploadVideo(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ file: string }>(
+      `${environment.base_url}/files/branch`,
+      formData
+    );
   }
 }
