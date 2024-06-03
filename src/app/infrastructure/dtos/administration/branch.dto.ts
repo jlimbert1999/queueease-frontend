@@ -1,11 +1,6 @@
-import { serviceProps } from '../../../domain/models';
-
 export class CreateBranchDto {
-  static fromForm(name: string, services: serviceProps[]) {
-    return new CreateBranchDto(
-      name,
-      services.map((el) => el.id)
-    );
+  static fromForm(name: string, services: string[]) {
+    return new CreateBranchDto(name, services);
   }
-  constructor(public name: string, public services: number[]) {}
+  constructor(public name: string, public services: string[]) {}
 }

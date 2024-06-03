@@ -12,7 +12,6 @@ import { BranchService } from '../../../services';
 import { brachResponse } from '../../../../infrastructure/interfaces';
 import { BranchComponent } from './branch/branch.component';
 import { PrimengModule } from '../../../../primeng.module';
-import { Branch } from '../../../../domain/models';
 
 @Component({
   selector: 'app-branches',
@@ -29,8 +28,9 @@ export class BranchesComponent {
   limit = signal(10);
   index = signal(0);
   offset = computed(() => this.limit() * this.index());
-  length = signal(0);
-  branches = signal<Branch[]>([]);
+
+  datasource = signal<brachResponse[]>([]);
+  datasize = signal(0);
   ngOnInit(): void {
     this.getData();
   }
@@ -39,8 +39,8 @@ export class BranchesComponent {
     this.branchService
       .findAll(this.limit(), this.offset())
       .subscribe(({ branches, length }) => {
-        this.branches.set(branches);
-        this.length.set(length);
+        this.datasource.set(branches);
+        this.datasize.set(length);
       });
   }
 
@@ -52,20 +52,20 @@ export class BranchesComponent {
     ref.onClose
       .pipe(filter((result?: brachResponse) => !!result))
       .subscribe((category) => {
-        this.branches.update((values) => [category!, ...values]);
+        this.datasource.update((values) => [category!, ...values]);
       });
   }
 
-  update(branch: Branch) {
+  update(branch: brachResponse) {
     const ref = this.dialogService.open(BranchComponent, {
       header: 'Edicion Sucursal',
       width: '50rem',
       data: branch,
     });
     ref.onClose
-      .pipe(filter((result?: Branch) => !!result))
+      .pipe(filter((result?: brachResponse) => !!result))
       .subscribe((result) => {
-        this.branches.update((values) => {
+        this.datasource.update((values) => {
           const index = values.findIndex((el) => el.id === branch.id);
           values[index] = result!;
           return [...values];

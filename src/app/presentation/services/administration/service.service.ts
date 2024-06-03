@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   categoryResponse,
   serviceResponse,
 } from '../../../infrastructure/interfaces';
-import { Category, Service } from '../../../domain/models';
+import { Service } from '../../../domain/models';
 import { ServiceDto } from '../../../infrastructure/dtos';
 
 @Injectable({
@@ -31,6 +31,21 @@ export class ServiceService {
       );
   }
 
+  search(term: string, limit: number, offset: number) {
+    const params = new HttpParams({ fromObject: { limit, offset } });
+    return this.http
+      .get<{ services: serviceResponse[]; length: number }>(
+        `${this.url}/search/${term}`,
+        { params }
+      )
+      .pipe(
+        map(({ services, length }) => ({
+          services: services.map((el) => Service.fromResponse(el)),
+          length,
+        }))
+      );
+  }
+
   create(form: Object) {
     const serviceDto = ServiceDto.fromForm(form);
     return this.http
@@ -38,21 +53,18 @@ export class ServiceService {
       .pipe(map((resp) => Service.fromResponse(resp)));
   }
 
-  update(id: number, form: Object) {
-    return this.http
-      .patch<serviceResponse>(`${this.url}/${id}`, form)
-      .pipe(map((resp) => Service.fromResponse(resp)));
+  update(id: string, form: Object) {
+    return this.http.patch<serviceResponse>(`${this.url}/${id}`, form).pipe(
+      tap((rep) => console.log(rep)),
+      map((resp) => Service.fromResponse(resp))
+    );
   }
 
   getCategories() {
-    return this.http
-      .get<categoryResponse[]>(`${this.url}/categories`)
-      .pipe(map((resp) => resp.map((el) => Category.fromResponse(el))));
+    return this.http.get<categoryResponse[]>(`${this.url}/categories`);
   }
 
   searchAvailables(term: string) {
-    return this.http
-      .get<serviceResponse[]>(`${this.url}/availbles/${term}`)
-      .pipe(map((resp) => resp.map((el) => Service.fromResponse(el))));
+    return this.http.get<serviceResponse[]>(`${this.url}/availbles/${term}`);
   }
 }

@@ -12,7 +12,6 @@ import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { Router } from '@angular/router';
 import { BranchService, ConfigService } from '../../services';
-import { Branch } from '../../../domain/models';
 import { brachResponse } from '../../../infrastructure/interfaces';
 
 interface branch {
@@ -32,7 +31,7 @@ export class MainComponent {
   private branchService = inject(BranchService);
   private configService = inject(ConfigService);
 
-  branches = signal<Branch[]>([]);
+  branches = signal<brachResponse[]>([]);
   selectedBranch = this.configService.branch();
   isConfigDialogVisible = signal<boolean>(false);
   

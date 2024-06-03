@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
@@ -14,8 +15,10 @@ import {
 } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PrimengModule } from '../../../../../primeng.module';
-import { Category, Service } from '../../../../../domain/models';
+import { Service } from '../../../../../domain/models';
 import { ServiceService } from '../../../../services';
+import { categoryResponse } from '../../../../../infrastructure/interfaces';
+import { handleFormErrorMessages } from '../../../../../helpers';
 
 @Component({
   selector: 'app-service',
@@ -30,22 +33,19 @@ export class ServiceComponent implements OnInit {
   private service?: Service = inject(DynamicDialogConfig).data;
   private ref = inject(DynamicDialogRef);
 
-  categories = signal<Category[]>([]);
+  categories = signal<categoryResponse[]>([]);
   FormService: FormGroup = this.fb.group({
     name: ['', Validators.required],
-    code: ['', Validators.required],
+    code: ['', [Validators.required, Validators.pattern(/^[a-zA-Z-]*$/)]],
     category: [],
   });
 
   ngOnInit(): void {
+    this._getCategories();
     if (this.service) {
-      console.log(this.service);
       const { category, ...props } = this.service;
       this.FormService.patchValue({ ...props, category: category?.id });
     }
-    this.serviceService.getCategories().subscribe((resp: Category[]) => {
-      this.categories.set(resp);
-    });
   }
 
   save() {
@@ -53,5 +53,15 @@ export class ServiceComponent implements OnInit {
       ? this.serviceService.update(this.service.id, this.FormService.value)
       : this.serviceService.create(this.FormService.value);
     subscription.subscribe((resp) => this.ref.close(resp));
+  }
+
+  private _getCategories() {
+    this.serviceService.getCategories().subscribe((categories) => {
+      this.categories.set(categories);
+    });
+  }
+
+  errorFormMessage(control: AbstractControl) {
+    return handleFormErrorMessages(control);
   }
 }

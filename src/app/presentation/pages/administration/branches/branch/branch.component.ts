@@ -21,9 +21,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { brachResponse } from '../../../../../infrastructure/interfaces';
 import { BranchService, ServiceService } from '../../../../services';
 import { PrimengModule } from '../../../../../primeng.module';
-import { Branch, Service } from '../../../../../domain/models';
 interface serviceProps {
-  id: number;
+  id: string;
   name: string;
 }
 @Component({
@@ -36,7 +35,7 @@ interface serviceProps {
 export class BranchComponent implements OnInit {
   private brachService = inject(BranchService);
   private serviceService = inject(ServiceService);
-  private branch?: Branch = inject(DynamicDialogConfig).data;
+  private branch?: brachResponse = inject(DynamicDialogConfig).data;
   private ref = inject(DynamicDialogRef);
   private dropdown = viewChild.required<Dropdown>('dropdown');
 
@@ -62,17 +61,17 @@ export class BranchComponent implements OnInit {
   }
 
   save() {
-    const subscription = this.branch
-      ? this.brachService.update(
-          this.branch.id,
-          this.FormBranch.value,
-          this.selectedServices()
-        )
-      : this.brachService.create(
-          this.FormBranch.value,
-          this.selectedServices()
-        );
-    subscription.subscribe((resp) => this.ref.close(resp));
+    // const subscription = this.branch
+    //   ? this.brachService.update(
+    //       this.branch.id,
+    //       this.FormBranch.value,
+    //       this.selectedServices()
+    //     )
+    //   : this.brachService.create(
+    //       this.FormBranch.value,
+    //       this.selectedServices()
+    //     );
+    // subscription.subscribe((resp) => this.ref.close(resp));
   }
 
   onFilterDropdown(term?: string) {

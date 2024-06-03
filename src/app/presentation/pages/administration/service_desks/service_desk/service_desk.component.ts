@@ -19,12 +19,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, debounceTime } from 'rxjs';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BranchService, ServiceCounterService } from '../../../../services';
-import {
-  Branch,
-  ServiceDesk,
-  serviceProps,
-} from '../../../../../domain/models';
+import { ServiceDesk } from '../../../../../domain/models';
 import { PrimengModule } from '../../../../../primeng.module';
+import { brachResponse } from '../../../../../infrastructure/interfaces';
 
 @Component({
   selector: 'service-desk',
@@ -43,9 +40,7 @@ export class ServiceDeskComponent implements OnInit {
 
   desk: ServiceDesk | undefined = inject(DynamicDialogConfig).data;
   searchSubject$ = new Subject<string>();
-  branches = signal<Branch[]>([]);
-  services = model<serviceProps[]>([]);
-  selectedServices = signal<serviceProps[]>([]);
+  branches = signal<brachResponse[]>([]);
   FormDesk: FormGroup = this.fb.nonNullable.group({
     name: ['', Validators.required],
     number: ['', Validators.required],
@@ -57,15 +52,15 @@ export class ServiceDeskComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    if (this.desk) {
-      const { services, branch, ...props } = this.desk;
-      this._getServicesByBranch(branch.id);
-      this.FormDesk.removeControl('branch');
-      this.FormDesk.patchValue(props);
-      this.selectedServices.set(services);
-    } else {
-      this._observeChangesDrowpdown();
-    }
+    // if (this.desk) {
+    //   const { services, branch, ...props } = this.desk;
+    //   this._getServicesByBranch(branch.id);
+    //   this.FormDesk.removeControl('branch');
+    //   this.FormDesk.patchValue(props);
+    //   this.selectedServices.set(services);
+    // } else {
+    //   this._observeChangesDrowpdown();
+    // }
   }
 
   onFilter(term?: string) {
@@ -74,18 +69,18 @@ export class ServiceDeskComponent implements OnInit {
   }
 
   onSelect(id: number) {
-    this.selectedServices.set([]);
-    this._getServicesByBranch(id);
+    // this.selectedServices.set([]);
+    // this._getServicesByBranch(id);
   }
 
   save() {
-    const subscription = this.branch
-      ? this.serviceDesk.update(this.branch.id, {
-          ...this.FormDesk.value,
-          services: this.selectedServices().map((el) => el.id),
-        })
-      : this.serviceDesk.create(this.FormDesk.value, this.selectedServices());
-    subscription.subscribe((resp) => this.ref.close(resp));
+    // const subscription = this.branch
+    //   ? this.serviceDesk.update(this.branch.id, {
+    //       ...this.FormDesk.value,
+    //       services: this.selectedServices().map((el) => el.id),
+    //     })
+    //   : this.serviceDesk.create(this.FormDesk.value, this.selectedServices());
+    // subscription.subscribe((resp) => this.ref.close(resp));
   }
 
   private _observeChangesDrowpdown() {
@@ -100,13 +95,13 @@ export class ServiceDeskComponent implements OnInit {
     });
   }
 
-  private _getServicesByBranch(id: number) {
-    this.branchService.getServicesByBranch(id).subscribe((resp) => {
-      this.services.set(resp);
-    });
+  private _getServicesByBranch(id: string) {
+    // this.branchService.getServicesByBranch(id).subscribe((resp) => {
+    //   this.services.set(resp);
+    // });
   }
 
   get isFormValid() {
-    return this.FormDesk.valid && this.selectedServices().length > 0;
+    return this.FormDesk.valid
   }
 }

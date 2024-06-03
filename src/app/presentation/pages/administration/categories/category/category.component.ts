@@ -8,13 +8,9 @@ import {
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PrimengModule } from '../../../../../primeng.module';
-import { Category } from '../../../../../domain/models';
 import { CategoryService } from '../../../../services';
+import { categoryResponse } from '../../../../../infrastructure/interfaces';
 
-interface SaveEvent {
-  method: 'create' | 'update';
-  category: Category;
-}
 @Component({
   selector: 'category',
   standalone: true,
@@ -29,7 +25,7 @@ export class CategoryComponent implements OnInit {
   });
 
   private categoryService = inject(CategoryService);
-  private category?: Category = inject(DynamicDialogConfig).data;
+  private category?: categoryResponse = inject(DynamicDialogConfig).data;
   private ref = inject(DynamicDialogRef);
 
   ngOnInit(): void {

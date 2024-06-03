@@ -1,22 +1,16 @@
 @import "primeicons/primeicons.css";
 
 .p-dialog-footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 10px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+}
+.p-dialog-content {
+  margin-bottom: 10px;
 }
 
 body {
-    margin: 0px;
-    height: 100%;
-}
-
-.p-toolbar {
-    padding: 5px;
-}
-
-.p-datatable-header {
-    padding: px;
+  margin: 0px;
 }

@@ -1,10 +1,8 @@
+import { categoryResponse } from './category-response.interface';
+
 export interface serviceResponse {
-  id: number;
+  id: string;
   name: string;
   code: string;
-  category?: category;
-}
-interface category {
-  id: number;
-  name: string;
+  category?: categoryResponse;
 }

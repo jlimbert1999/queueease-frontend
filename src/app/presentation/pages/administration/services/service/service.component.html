@@ -10,7 +10,7 @@
           appendTo="body"
           optionLabel="name"
           optionValue="id"
-          [style]="{ width: '100%' }"
+          styleClass="w-full"
           formControlName="category"
           [filter]="true"
           [showClear]="true"
@@ -37,10 +37,19 @@
           pInputText
           formControlName="code"
         />
+        @if(FormService.get('code')?.hasError){
+        <small class="text-red-500">
+          {{ errorFormMessage(FormService.get("code")!) }}
+        </small>
+        }
       </div>
     </div>
   </form>
 </div>
 <div class="p-dialog-footer">
-  <p-button label="Guardar" [disabled]="FormService.invalid" (onClick)="save()" />
+  <p-button
+    label="Guardar"
+    [disabled]="FormService.invalid"
+    (onClick)="save()"
+  />
 </div>

@@ -7,14 +7,13 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { filter } from 'rxjs';
+import { DialogService } from 'primeng/dynamicdialog';
 import { PrimengModule } from '../../../../primeng.module';
 import { CategoryComponent } from './category/category.component';
-import { Category } from '../../../../domain/models';
 import { CategoryService } from '../../../services';
-import { filter } from 'rxjs';
+import { categoryResponse } from '../../../../infrastructure/interfaces';
 
-type method = 'create' | 'update';
 @Component({
   selector: 'app-categories',
   standalone: true,
@@ -22,27 +21,21 @@ type method = 'create' | 'update';
   templateUrl: './categories.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
-
 })
 export class CategoriesComponent implements OnInit {
-  category = signal<Category | null>(null);
-  categories = signal<Category[]>([]);
+  private categoryService = inject(CategoryService);
+  private dialogService = inject(DialogService);
+
+  datasource = signal<categoryResponse[]>([]);
+  datasize = signal(0);
 
   limit = signal(10);
   index = signal(0);
   offset = computed(() => this.limit() * this.index());
-  length = signal(0);
-  private categoryService = inject(CategoryService);
-
-  constructor(public dialogService: DialogService) {}
+  term = '';
 
   ngOnInit(): void {
-    this.categoryService
-      .findAll(this.limit(), this.offset())
-      .subscribe(({ categories, length }) => {
-        this.categories.set(categories);
-        this.length.set(length);
-      });
+    this.getData();
   }
 
   create() {
@@ -50,21 +43,22 @@ export class CategoriesComponent implements OnInit {
       header: 'Crear Categoría',
     });
     ref.onClose
-      .pipe(filter((result?: Category) => !!result))
+      .pipe(filter((result?: categoryResponse) => !!result))
       .subscribe((category) => {
-        this.categories.update((values) => [category!, ...values]);
+        this.datasource.update((values) => [category!, ...values]);
+        this.datasize.update((value) => (value += 1));
       });
   }
 
-  edit(category: Category) {
+  edit(category: categoryResponse) {
     const ref = this.dialogService.open(CategoryComponent, {
       header: 'Editar Categoría',
       data: category,
     });
     ref.onClose
-      .pipe(filter((result?: Category) => !!result))
+      .pipe(filter((result?: categoryResponse) => !!result))
       .subscribe((result) => {
-        this.categories.update((values) => {
+        this.datasource.update((values) => {
           const index = values.findIndex((el) => el.id === category.id);
           values[index] = result!;
           return [...values];
@@ -72,10 +66,14 @@ export class CategoriesComponent implements OnInit {
       });
   }
 
-  handleSave(event: { method: 'create' | 'update'; category: Category }) {
-    if (event.method === 'create') {
-      this.categories.update((values) => [event.category, ...values]);
-    } else {
-    }
+  getData() {
+    const supscription =
+      this.term !== ''
+        ? this.categoryService.search(this.term, this.limit(), this.offset())
+        : this.categoryService.findAll(this.limit(), this.offset());
+    supscription.subscribe(({ categories, length }) => {
+      this.datasource.set(categories);
+      this.datasize.set(length);
+    });
   }
 }

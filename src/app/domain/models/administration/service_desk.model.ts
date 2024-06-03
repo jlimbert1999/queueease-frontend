@@ -1,7 +1,7 @@
 import { serviceDeskResponse } from '../../../infrastructure/interfaces';
 
 interface service {
-  id: number;
+  id: string;
   name: string;
 }
 interface branch {

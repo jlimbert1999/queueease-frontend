@@ -7,39 +7,36 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { DialogService } from 'primeng/dynamicdialog';
-import { PrimengModule } from '../../../../primeng.module';
-import { ServiceService } from '../../../services';
-import { ServiceComponent } from './service/service.component';
-import { Service } from '../../../../domain/models';
 import { filter } from 'rxjs';
+import { DialogService } from 'primeng/dynamicdialog';
+import { PageProps, PaginatorComponent } from '../../../components';
+import { ServiceComponent } from './service/service.component';
+import { PrimengModule } from '../../../../primeng.module';
+import { Service } from '../../../../domain/models';
+import { ServiceService } from '../../../services';
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [CommonModule, PrimengModule],
+  imports: [CommonModule, PrimengModule, PaginatorComponent],
   templateUrl: './services.component.html',
   styleUrl: './services.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
 export class ServicesComponent implements OnInit {
-  private categoryService = inject(ServiceService);
   private dialogService = inject(DialogService);
+  private serviceService = inject(ServiceService);
 
-  services = signal<Service[]>([]);
+  datasource = signal<Service[]>([]);
+  datasize = signal(0);
   limit = signal(10);
   index = signal(0);
   offset = computed(() => this.limit() * this.index());
-  length = signal(0);
+  term = '';
 
   ngOnInit(): void {
-    this.categoryService
-      .findAll(this.limit(), this.offset())
-      .subscribe(({ services, length }) => {
-        this.services.set(services);
-        this.length.set(length);
-      });
+    this.getData();
   }
 
   create() {
@@ -51,7 +48,8 @@ export class ServicesComponent implements OnInit {
     ref.onClose
       .pipe(filter((result?: Service) => !!result))
       .subscribe((service) => {
-        this.services.update((values) => [service!, ...values]);
+        this.datasource.update((values) => [service!, ...values]);
+        this.datasize.update((value) => (value += 1));
       });
   }
 
@@ -64,11 +62,28 @@ export class ServicesComponent implements OnInit {
     ref.onClose
       .pipe(filter((result?: Service) => !!result))
       .subscribe((result) => {
-        this.services.update((values) => {
+        this.datasource.update((values) => {
           const index = values.findIndex((el) => el.id === service.id);
           values[index] = result!;
           return [...values];
         });
       });
+  }
+
+  getData() {
+    const supscription =
+      this.term !== ''
+        ? this.serviceService.search(this.term, this.limit(), this.offset())
+        : this.serviceService.findAll(this.limit(), this.offset());
+    supscription.subscribe(({ services, length }) => {
+      this.datasource.set(services);
+      this.datasize.set(length);
+    });
+  }
+
+  chagePage({ pageIndex, pageSize }: PageProps) {
+    this.index.set(pageIndex);
+    this.limit.set(pageSize);
+    this.getData();
   }
 }

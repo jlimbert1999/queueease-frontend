@@ -7,7 +7,7 @@ import {
   serviceResponse,
 } from '../../../infrastructure/interfaces';
 import { CreateBranchDto } from '../../../infrastructure/dtos';
-import { Branch, Service, serviceProps } from '../../../domain/models';
+import { Service } from '../../../domain/models';
 
 @Injectable({
   providedIn: 'root',
@@ -18,40 +18,34 @@ export class BranchService {
 
   findAll(limit: number, offset: number) {
     const params = new HttpParams({ fromObject: { limit, offset } });
-    return this.http.get<[brachResponse[], number]>(this.url, { params }).pipe(
-      map((resp) => ({
-        branches: resp[0].map((el) => Branch.fromResponse(el)),
-        length: resp[1],
-      }))
+    return this.http.get<{ branches: brachResponse[]; length: number }>(
+      this.url,
+      { params }
     );
   }
 
-  create(name: string, services: serviceProps[]) {
-    const branchDto = CreateBranchDto.fromForm(name, services);
-    return this.http
-      .post<brachResponse>(`${this.url}`, branchDto)
-      .pipe(map((resp) => Branch.fromResponse(resp)));
+  search(term: string, limit: number, offset: number) {
+    const params = new HttpParams({ fromObject: { limit, offset } });
+    return this.http.get<{ branches: brachResponse[]; length: number }>(
+      `${this.url}/search/${term}`,
+      { params }
+    );
   }
 
-  update(id: number, name: string, services: serviceProps[]) {
-    return this.http
-      .patch<brachResponse>(`${this.url}/${id}`, {
-        name,
-        services: services.map((el) => el.id),
-      })
-      .pipe(map((resp) => Branch.fromResponse(resp)));
+  create(name: string, services: string[]) {
+    const branchDto = CreateBranchDto.fromForm(name, services);
+    return this.http.post<brachResponse>(`${this.url}`, branchDto);
+  }
+
+  update(id: number, name: string, services: string[]) {
+    return this.http.patch<brachResponse>(`${this.url}/${id}`, {
+      name,
+      services,
+    });
   }
 
   searchAvaibles(term: string) {
-    return this.http
-      .get<brachResponse[]>(`${this.url}/availables/${term}`)
-      .pipe(map((resp) => resp.map((el) => Branch.fromResponse(el))));
-  }
-
-  getServicesByBranch(id: number) {
-    return this.http
-      .get<serviceResponse[]>(`${this.url}/services/${id}`)
-      .pipe(map((resp) => resp.map(({ id, name }) => ({ id, name }))));
+    return this.http.get<brachResponse[]>(`${this.url}/availables/${term}`);
   }
 
   getMenu(id: number) {

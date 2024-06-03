@@ -2,7 +2,7 @@ interface serviveProps {
   name: string;
   number: number;
   branch: number;
-  services: number[];
+  services: string[];
   login: string;
   password: string;
 }
@@ -10,16 +10,16 @@ export class CreateServiceDeskDto {
   name: string;
   number: number;
   branch: number;
-  services: number[];
+  services: string[];
   login: string;
   password: string;
 
-  static fromForm(form: any, services: { id: number; name: string }[]) {
+  static fromForm(form: any, services: string[]) {
     return new CreateServiceDeskDto({
       name: form['name'],
       number: parseInt(form['number']),
       branch: form['branch'],
-      services: services.map((el) => el.id),
+      services: services,
       login: form['login'],
       password: form['password'],
     });

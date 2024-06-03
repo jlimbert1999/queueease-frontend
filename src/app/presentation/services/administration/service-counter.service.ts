@@ -4,7 +4,7 @@ import { map } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { serviceDeskResponse } from '../../../infrastructure/interfaces';
 import { CreateServiceDeskDto } from '../../../infrastructure/dtos';
-import { ServiceDesk, serviceProps } from '../../../domain/models';
+import { ServiceDesk } from '../../../domain/models';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +27,7 @@ export class ServiceCounterService {
       );
   }
 
-  create(form: Object, services: serviceProps[]) {
+  create(form: Object, services: string[]) {
     const deskDto = CreateServiceDeskDto.fromForm(form, services);
     return this.http
       .post<serviceDeskResponse>(`${this.url}`, deskDto)
