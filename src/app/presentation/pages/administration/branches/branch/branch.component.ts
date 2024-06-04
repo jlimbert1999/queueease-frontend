@@ -17,22 +17,23 @@ import {
   Validators,
 } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, concat, debounceTime, switchMap } from 'rxjs';
+import { Subject, debounceTime, switchMap } from 'rxjs';
 import { Dropdown } from 'primeng/dropdown';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { brachResponse } from '../../../../../infrastructure/interfaces';
+import {
+  brachResponse,
+  serviceResponse,
+} from '../../../../../infrastructure/interfaces';
 import { BranchService, ServiceService } from '../../../../services';
 import { PrimengModule } from '../../../../../primeng.module';
 import { FileSelectEvent } from 'primeng/fileupload';
-interface serviceProps {
-  id: string;
-  name: string;
-}
+
 enum platforms {
   Local = 'Local',
   YouTube = 'YouTube',
   Facebook = 'Facebook',
 }
+
 @Component({
   selector: 'app-branch',
   standalone: true,
@@ -43,20 +44,20 @@ enum platforms {
 export class BranchComponent implements OnInit {
   private brachService = inject(BranchService);
   private serviceService = inject(ServiceService);
-  private fb = inject(FormBuilder);
-  private branch?: brachResponse = inject(DynamicDialogConfig).data;
   private ref = inject(DynamicDialogRef);
-  private dropdown = viewChild.required<Dropdown>('dropdown');
-
-  private searchSubject$ = new Subject<string>();
+  private fb = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
+  private branch?: brachResponse = inject(DynamicDialogConfig).data;
+
+  private dropdown = viewChild.required<Dropdown>('dropdown');
+  private searchSubject$ = new Subject<string>();
 
   readonly maxFileSize = 1 * 1024 * 1024 * 2024;
+  readonly videoPlatforms = Object.values(platforms);
 
   platform: platforms = platforms.Local;
-
-  services = signal<serviceProps[]>([]);
-  selectedServices = signal<serviceProps[]>([]);
+  services = signal<serviceResponse[]>([]);
+  selectedServices = signal<serviceResponse[]>([]);
   FormBranch: FormGroup = this.fb.group({
     name: ['', Validators.required],
     marqueeMessage: ['', Validators.required],
@@ -64,19 +65,21 @@ export class BranchComponent implements OnInit {
     videoUrl: [''],
   });
 
-  videoPlatforms = Object.values(platforms);
-  fileToUpload: File | null = null;
+  video: File | null = null;
+  videoUrl = signal<string | ArrayBuffer | null>(null);
+
+  constructor() {
+    this._listenDropdowChange();
+  }
 
   ngOnInit(): void {
-    this.searchSubject$
-      .pipe(takeUntilDestroyed(this.destroyRef), debounceTime(350))
-      .subscribe((text) => this.searchServices(text));
+    this._loadFormData();
   }
 
   save() {
     if (this.platform === platforms.Local) {
       this.brachService
-        .uploadVideo(this.fileToUpload!)
+        .uploadVideo(this.video!)
         .pipe(
           switchMap(({ file }) => {
             this.FormBranch.patchValue({ videoUrl: file });
@@ -91,7 +94,7 @@ export class BranchComponent implements OnInit {
     }
   }
 
-  onFilterDropdown(term?: string) {
+  onFilterDropdown(term: string = '') {
     if (!term) return;
     this.searchSubject$.next(term);
   }
@@ -102,16 +105,19 @@ export class BranchComponent implements OnInit {
       .subscribe((services) => this.services.set(services));
   }
 
-  addService(service: serviceProps) {
+  addService(service: serviceResponse) {
+    console.log('exec');
     this.dropdown().resetFilter();
-    const duplicate = this.selectedServices().find(
+
+    const duplicate = this.selectedServices().some(
       ({ id }) => id === service.id
     );
     if (duplicate) return;
     this.selectedServices.update((values) => [service, ...values]);
+    this.dropdown().clear();
   }
 
-  removeService(service: serviceProps) {
+  removeService(service: serviceResponse) {
     this.selectedServices.update((values) =>
       values.filter((el) => el.id !== service.id)
     );
@@ -125,16 +131,21 @@ export class BranchComponent implements OnInit {
 
   onFileSelect(event: FileSelectEvent) {
     const file = event.files[0];
-    this.fileToUpload = file;
+    this.video = file;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      this.videoUrl.set((<FileReader>event.target).result);
+    };
   }
 
   onFileRemove() {
-    this.fileToUpload = null;
+    this.video = null;
   }
 
   get isFormValid(): boolean {
     const isValidFile =
-      this.platform === platforms.Local ? this.fileToUpload != null : true;
+      this.platform === platforms.Local ? this.video != null : true;
     return (
       this.FormBranch.valid && this.selectedServices().length > 0 && isValidFile
     );
@@ -151,5 +162,38 @@ export class BranchComponent implements OnInit {
           this.FormBranch.value,
           this.selectedServices().map(({ id }) => id)
         );
+  }
+
+  private _saveBranch() {
+    const subcription = this.branch
+      ? this.brachService.update(
+          this.branch.id,
+          this.FormBranch.value,
+          this.selectedServices().map(({ id }) => id)
+        )
+      : this.brachService.create(
+          this.FormBranch.value,
+          this.selectedServices().map(({ id }) => id)
+        );
+
+    subcription.subscribe((branch) => this.ref.close(branch));
+  }
+  private _saveBranchWithtFile() {}
+
+  private _listenDropdowChange() {
+    this.searchSubject$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        debounceTime(350),
+        switchMap((value) => this.serviceService.searchAvailables(value))
+      )
+      .subscribe((services) => this.services.set(services));
+  }
+
+  private _loadFormData() {
+    if (!this.branch) return;
+    const { services, ...props } = this.branch;
+    this.FormBranch.patchValue({ ...props });
+    this.selectedServices.set([...services]);
   }
 }

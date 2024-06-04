@@ -1,5 +1,4 @@
 <div class="p-dialog-content">
-  <pre>{{ FormBranch.value | json }}</pre>
   <form [formGroup]="FormBranch">
     <div class="formgrid grid">
       <div class="field col-12 sm:col-4">
@@ -36,19 +35,29 @@
       <div class="field col-12 sm:col-8">
         @if(platform==='Local'){
         <label for="platform">Seleccione un video</label>
+
         <p-fileUpload
-          mode="advanced"
+          [customUpload]="true"
           [multiple]="false"
-          accept=".mp4"
+          accept="video/*"
           [maxFileSize]="maxFileSize"
-          [showCancelButton]="false"
-          [showUploadButton]="false"
-          chooseLabel="Seleccionar"
           (onSelect)="onFileSelect($event)"
-          (onRemove)="onFileRemove()"
         >
-          <ng-template pTemplate="content"> mI ARC </ng-template>
+          <ng-template pTemplate="header"></ng-template>
+          <ng-template pTemplate="content">
+            @if(videoUrl()){
+              <video [src]="videoUrl()"  height="200" controls></video> 
+            }
+            <p-button
+              icon="pi pi-times"
+             
+              [outlined]="true"
+              [rounded]="true"
+              severity="danger"
+            />
+          </ng-template>
         </p-fileUpload>
+
         } @else {
         <label for="video_id">Identificador del video</label>
         <input
@@ -70,7 +79,6 @@
     emptyFilterMessage="Sin resultados"
     emptyMessage="Sin elementos"
     optionLabel="name"
-    appendTo="body"
     [style]="{ width: '100%' }"
     [filter]="true"
     [options]="services()"
