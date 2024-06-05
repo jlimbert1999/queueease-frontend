@@ -29,6 +29,10 @@ import { TagModule } from 'primeng/tag';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FileUploadModule } from 'primeng/fileupload';
 import { GalleriaModule } from 'primeng/galleria';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { TabViewModule } from 'primeng/tabview';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 @NgModule({
   declarations: [],
   imports: [],
@@ -63,6 +67,10 @@ import { GalleriaModule } from 'primeng/galleria';
     ProgressSpinnerModule,
     FileUploadModule,
     GalleriaModule,
+    AutoCompleteModule,
+    TabViewModule,
+    InputGroupModule,
+    InputGroupAddonModule,
   ],
 })
 export class PrimengModule {}

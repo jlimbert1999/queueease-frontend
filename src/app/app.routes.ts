@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { AdministrationComponent } from './presentation/pages';
 import { AppComponent } from './app.component';
-import { ServiceDesksComponent } from './presentation/pages/administration/service_desks/service_desks.component';
+import { CountersComponent } from './presentation/pages/administration/counters/counters.component';
 import { CategoriesComponent } from './presentation/pages/administration/categories/categories.component';
 import { ServicesComponent } from './presentation/pages/administration/services/services.component';
 import { BranchesComponent } from './presentation/pages/administration/branches/branches.component';
@@ -33,7 +33,7 @@ export const routes: Routes = [
       { path: 'categories', component: CategoriesComponent },
       { path: 'services', component: ServicesComponent },
       { path: 'branches', component: BranchesComponent },
-      { path: 'desks', component: ServiceDesksComponent },
+      { path: 'counters', component: CountersComponent },
     ],
   },
 

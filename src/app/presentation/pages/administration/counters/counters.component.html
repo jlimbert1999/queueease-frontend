@@ -1,0 +1,51 @@
+<div class="fadein animation-duration-500">
+  <p-toolbar>
+    <div class="p-toolbar-group-start">
+      <button pButton icon="pi pi-plus" (click)="create()"></button>
+    </div>
+    <div class="p-toolbar-group-center">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input pInputText placeholder="Search" />
+      </span>
+    </div>
+  </p-toolbar>
+  <p-table [value]="desks()" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nombre</th>
+        <th>Numero</th>
+        <th>Sucursal</th>
+        <th>Servicios</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-desk>
+      <tr>
+        <td>{{ desk.name }}</td>
+        <td>Nro. {{ desk.number }}</td>
+        <td>{{ desk.branch.name }}</td>
+        <td>
+          <ul>
+            @for (item of desk.services; track $index) {
+            <li>{{ item.name }}</li>
+            } @empty { -- SIN SERVICIOS -- }
+          </ul>
+        </td>
+        <td>
+          <p-button
+            icon="pi pi-pencil"
+            [rounded]="true"
+            [text]="true"
+            (onClick)="update(desk)"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5">Sin registros</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

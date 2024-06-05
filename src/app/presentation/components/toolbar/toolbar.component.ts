@@ -36,7 +36,7 @@ export class ToolbarComponent {
     {
       icon: 'pi pi-shop',
       label: 'Ventanillas',
-      routerLink: 'desks',
+      routerLink: 'counters',
     },
     {
       icon: 'pi pi-users',

@@ -24,28 +24,10 @@
           [inputStyle]="{ width: '100%' }"
         />
       </div>
-      <div class="field col-12 md:col-6">
-        <label for="login">Login</label>
-        <input
-          id="login"
-          type="text"
-          class="w-full"
-          pInputText
-          formControlName="login"
-        />
-      </div>
-      <div class="field col-12 md:col-6">
-        <label for="password">Contraseña</label>
-        <p-password
-          formControlName="password"
-          [feedback]="false"
-          [toggleMask]="true"
-          [inputStyle]="{ width: '100%' }"
-        />
-      </div>
+     
       <div class="field col-12">
         <label for="branch">Sucursal</label>
-        @if(!desk){
+        @if(!counter){
         <p-dropdown
           id="branch"
           optionValue="id"
@@ -69,7 +51,7 @@
           type="text"
           class="w-full"
           pInputText
-          [value]="desk.branch.name"
+          [value]="counter.branch.name"
           [disabled]="true"
         />
         }

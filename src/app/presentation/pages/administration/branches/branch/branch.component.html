@@ -1,113 +1,102 @@
 <div class="p-dialog-content">
-  <form [formGroup]="FormBranch">
-    <div class="formgrid grid">
-      <div class="field col-12 sm:col-4">
-        <label for="name">Nombre</label>
-        <input
-          id="name"
-          type="text"
-          class="w-full"
-          pInputText
-          formControlName="name"
-        />
-      </div>
-      <div class="field col-12 sm:col-8">
-        <label for="message">Mensaje</label>
-        <input
-          id="message"
-          type="text"
-          class="w-full"
-          pInputText
-          formControlName="marqueeMessage"
-        />
-      </div>
-      <div class="field col-12 sm:col-4">
-        <label for="platform">Plataforma</label>
-        <p-dropdown
-          styleClass="w-full"
-          inputId="platform"
-          [options]="videoPlatforms"
-          formControlName="videoPlatform"
-          placeholder="Fuente del video"
-          (onChange)="onPlatformChange($event.value)"
-        />
-      </div>
-      <div class="field col-12 sm:col-8">
-        @if(platform==='Local'){
-        <label for="platform">Seleccione un video</label>
-
-        <p-fileUpload
-          [customUpload]="true"
-          [multiple]="false"
-          accept="video/*"
-          [maxFileSize]="maxFileSize"
-          (onSelect)="onFileSelect($event)"
-        >
-          <ng-template pTemplate="header"></ng-template>
-          <ng-template pTemplate="content">
-            @if(videoUrl()){
-              <video [src]="videoUrl()"  height="200" controls></video> 
-            }
-            <p-button
-              icon="pi pi-times"
-             
-              [outlined]="true"
-              [rounded]="true"
-              severity="danger"
+  <p-tabView>
+    <p-tabPanel header="Datos sucursal">
+      <form [formGroup]="FormBranch">
+        <div class="formgrid grid">
+          <div class="field col-12">
+            <label for="name">Nombre</label>
+            <input
+              id="name"
+              type="text"
+              class="w-full"
+              pInputText
+              formControlName="name"
             />
-          </ng-template>
-        </p-fileUpload>
-
-        } @else {
-        <label for="video_id">Identificador del video</label>
-        <input
-          id="video_id"
-          type="text"
-          class="w-full"
-          pInputText
-          formControlName="videoUrl"
-        />
-        }
-      </div>
-    </div>
-  </form>
-
-  <p-dropdown
-    #dropdown
-    placeholder="Buscar un servicio"
-    filterPlaceholder="Nombre..."
-    emptyFilterMessage="Sin resultados"
-    emptyMessage="Sin elementos"
-    optionLabel="name"
-    [style]="{ width: '100%' }"
-    [filter]="true"
-    [options]="services()"
-    (onFilter)="onFilterDropdown($event.filter)"
-    (onChange)="addService($event.value)"
-  />
-  <p>Servicios seleccionados:</p>
-  <div class="border-round border-1 my-2 p-3">
-    <div class="flex flex-column gap-3">
-      @for (service of selectedServices(); track $index) {
-      <div class="flex overflow-hidden">
-        <div class="flex-grow-1 flex align-items-center">
-          <div>{{ service.name }}</div>
+          </div>
+          <div class="field col-12">
+            <label for="message">Mensaje</label>
+            <input
+              id="message"
+              type="text"
+              class="w-full"
+              pInputText
+              formControlName="marqueeMessage"
+            />
+          </div>
         </div>
-        <div class="flex-none flex align-items-center justify-content-center">
-          <p-button
-            icon="pi pi-trash"
-            (onClick)="removeService(service)"
-          ></p-button>
-        </div>
+      </form>
+      <div class="card mt-3">
+        <span class="p-fluid">
+          <p-autoComplete
+            #autoComplete
+            styleClass="w-full"
+            appendTo="body"
+            [(ngModel)]="selectedServices"
+            [suggestions]="services()"
+            (completeMethod)="searchServices($event.query)"
+            field="name"
+            [multiple]="true"
+            [forceSelection]="true"
+            placeholder="Buscar servicios"
+            emptyMessage="Sin resultados"
+          ></p-autoComplete>
+        </span>
       </div>
-      } @empty {
-      <span>Sin servicios</span>
+    </p-tabPanel>
+    <p-tabPanel header="Multimedia">
+      <p-fileUpload
+       
+        [multiple]="true"
+        accept="video/*"
+        [maxFileSize]="maxFileSize"
+      >
+        <ng-template pTemplate="content">
+          <ul *ngIf="uploadedFiles.length">
+            <li *ngFor="let file of uploadedFiles">
+              {{ file.name }} - {{ file.size }} bytes
+            </li>
+          </ul>
+        </ng-template>
+      </p-fileUpload>
+
+      @for (item of previewVideos(); track $index) {
+      <video controls [src]="item" width="300" height="150"></video>
       }
-    </div>
-  </div>
-  <div class="card flex justify-content-center">
-    <p-toast />
-  </div>
+      <!-- <div class="video-container">
+        <iframe
+          src="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/watch/?v=1013388277012217&show_text=0&width=560"
+          scrolling="no"
+          frameborder="0"
+          allowfullscreen="true"
+          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+          allowFullScreen="true"
+        ></iframe>
+      </div> -->
+
+      <!-- <p-fileUpload
+        (onSelect)="onUpload($event.currentFiles)"
+        [multiple]="true"
+        accept="video/*"
+        [maxFileSize]="maxFileSize"
+      >
+        <ng-template pTemplate="header"></ng-template>
+        <ng-template pTemplate="content">
+          <div class="overflow-y-scroll h-20rem">
+            @for (item of myFiles; track $index) {
+            <div class="flex border-1 p-2 mb-4">
+              <div class="flex-1">
+                <video controls [src]="item" width="300" height="150"></video>
+              </div>
+              <div class="flex align-items-center justify-content-center">
+                <p-button icon="pi pi-check" />
+              </div>
+            </div>
+            }
+          </div>
+        </ng-template>
+      </p-fileUpload> -->
+    </p-tabPanel>
+  </p-tabView>
 </div>
 <div class="p-dialog-footer">
   <p-button label="Guardar" [disabled]="!isFormValid" (onClick)="save()" />

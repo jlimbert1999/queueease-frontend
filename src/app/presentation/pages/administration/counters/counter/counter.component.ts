@@ -27,10 +27,10 @@ import { brachResponse } from '../../../../../infrastructure/interfaces';
   selector: 'service-desk',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, PrimengModule],
-  templateUrl: './service_desk.component.html',
+  templateUrl: './counter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ServiceDeskComponent implements OnInit {
+export class CounterComponent implements OnInit {
   private fb = inject(FormBuilder);
   private ref = inject(DynamicDialogRef);
   private destroyRef = inject(DestroyRef);
@@ -38,29 +38,27 @@ export class ServiceDeskComponent implements OnInit {
   private serviceDesk = inject(ServiceCounterService);
   private branch: ServiceDesk | undefined = inject(DynamicDialogConfig).data;
 
-  desk: ServiceDesk | undefined = inject(DynamicDialogConfig).data;
+  counter: ServiceDesk | undefined = inject(DynamicDialogConfig).data;
   searchSubject$ = new Subject<string>();
   branches = signal<brachResponse[]>([]);
   FormDesk: FormGroup = this.fb.nonNullable.group({
     name: ['', Validators.required],
     number: ['', Validators.required],
     branch: ['', Validators.required],
-    login: ['', Validators.required],
-    password: ['', Validators.required],
   });
 
   constructor() {}
 
   ngOnInit(): void {
-    // if (this.desk) {
-    //   const { services, branch, ...props } = this.desk;
-    //   this._getServicesByBranch(branch.id);
-    //   this.FormDesk.removeControl('branch');
-    //   this.FormDesk.patchValue(props);
-    //   this.selectedServices.set(services);
-    // } else {
-    //   this._observeChangesDrowpdown();
-    // }
+    if (this.counter) {
+      // const { services, branch, ...props } = this.desk;
+      // this._getServicesByBranch(branch.id);
+      // this.FormDesk.removeControl('branch');
+      // this.FormDesk.patchValue(props);
+      // this.selectedServices.set(services);
+    } else {
+      this._observeChangesDrowpdown();
+    }
   }
 
   onFilter(term?: string) {
@@ -102,6 +100,6 @@ export class ServiceDeskComponent implements OnInit {
   }
 
   get isFormValid() {
-    return this.FormDesk.valid
+    return this.FormDesk.valid;
   }
 }

@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { filter } from 'rxjs';
 import { DialogService } from 'primeng/dynamicdialog';
-import { ServiceDeskComponent } from './service_desk/service_desk.component';
+import { CounterComponent } from './counter/counter.component';
 import { ServiceCounterService } from '../../../services';
 import { PrimengModule } from '../../../../primeng.module';
 import { ServiceDesk } from '../../../../domain/models';
@@ -18,12 +18,12 @@ import { ServiceDesk } from '../../../../domain/models';
   selector: 'app-service-desks',
   standalone: true,
   imports: [CommonModule, PrimengModule],
-  templateUrl: './service_desks.component.html',
-  styleUrl: './service_desks.component.scss',
+  templateUrl: './counters.component.html',
+  styleUrl: './counters.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
-export class ServiceDesksComponent implements OnInit {
+export class CountersComponent implements OnInit {
   private servideDeskService = inject(ServiceCounterService);
   private dialogService = inject(DialogService);
 
@@ -48,7 +48,7 @@ export class ServiceDesksComponent implements OnInit {
   }
 
   create() {
-    const ref = this.dialogService.open(ServiceDeskComponent, {
+    const ref = this.dialogService.open(CounterComponent, {
       header: 'Crear Ventanilla',
       width: '40rem',
     });
@@ -60,7 +60,7 @@ export class ServiceDesksComponent implements OnInit {
   }
 
   update(desk: ServiceDesk) {
-    const ref = this.dialogService.open(ServiceDeskComponent, {
+    const ref = this.dialogService.open(CounterComponent, {
       header: 'Edicion Ventanilla',
       width: '40rem',
       data: desk,
