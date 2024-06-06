@@ -32,26 +32,27 @@ export class BranchesComponent {
 
   datasource = signal<brachResponse[]>([]);
   datasize = signal(0);
-  showVideo: boolean = false;
-  selectedElement: brachResponse | null = null;
+  term = '';
+
   ngOnInit(): void {
     this.getData();
   }
 
   getData() {
-    this.branchService
-      .findAll(this.limit(), this.offset())
-      .subscribe(({ branches, length }) => {
-        console.log(branches);
-        this.datasource.set(branches);
-        this.datasize.set(length);
-      });
+    const supscription =
+      this.term !== ''
+        ? this.branchService.search(this.term, this.limit(), this.offset())
+        : this.branchService.findAll(this.limit(), this.offset());
+    supscription.subscribe(({ branches, length }) => {
+      this.datasource.set(branches);
+      this.datasize.set(length);
+    });
   }
 
   create() {
     const ref = this.dialogService.open(BranchComponent, {
       header: 'Crear Sucursal',
-      width: '50rem',
+      width: '60rem',
     });
     ref.onClose
       .pipe(filter((result?: brachResponse) => !!result))
@@ -63,7 +64,7 @@ export class BranchesComponent {
   update(branch: brachResponse) {
     const ref = this.dialogService.open(BranchComponent, {
       header: 'Edicion Sucursal',
-      width: '50rem',
+      width: '60rem',
       data: branch,
     });
     ref.onClose
@@ -75,10 +76,5 @@ export class BranchesComponent {
           return [...values];
         });
       });
-  }
-
-  viewVideo(value: brachResponse) {
-    this.selectedElement = value;
-    this.showVideo = true;
   }
 }

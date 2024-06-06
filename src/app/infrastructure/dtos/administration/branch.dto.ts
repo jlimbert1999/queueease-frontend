@@ -1,38 +1,28 @@
 interface branchProps {
   name: string;
   services: string[];
-  videoUrl: string;
-  videoPlatform: string;
+  videos: string[];
   marqueeMessage: string;
 }
 
 export class CreateBranchDto {
   name: string;
   services: string[];
-  videoUrl: string;
-  videoPlatform: string;
+  videos: string[];
   marqueeMessage: string;
 
-  static fromForm(form: any, services: string[]) {
+  static fromForm(form: any, services: string[], videos: string[]) {
     return new CreateBranchDto({
       name: form['name'],
-      services: services,
-      videoUrl: form['videoUrl'],
-      videoPlatform: form['videoPlatform'],
       marqueeMessage: form['marqueeMessage'],
+      services: services,
+      videos: videos,
     });
   }
-  constructor({
-    name,
-    services,
-    videoUrl,
-    videoPlatform,
-    marqueeMessage,
-  }: branchProps) {
+  constructor({ name, services, videos, marqueeMessage }: branchProps) {
     this.name = name;
     this.services = services;
-    this.videoUrl = videoUrl;
-    this.videoPlatform = videoPlatform;
+    this.videos = videos;
     this.marqueeMessage = marqueeMessage;
   }
 }

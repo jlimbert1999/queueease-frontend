@@ -7,11 +7,9 @@ import {
   ViewChild,
   inject,
   signal,
-  viewChild,
 } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -19,17 +17,15 @@ import {
 } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, debounceTime, switchMap } from 'rxjs';
-import { Dropdown } from 'primeng/dropdown';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { FileUpload } from 'primeng/fileupload';
 import {
   brachResponse,
   serviceResponse,
 } from '../../../../../infrastructure/interfaces';
 import { BranchService, ServiceService } from '../../../../services';
 import { PrimengModule } from '../../../../../primeng.module';
-import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import { SecureUrlPipe } from '../../../../pipes/secure-url.pipe';
-import { FactoryTarget } from '@angular/compiler';
 
 @Component({
   selector: 'app-branch',
@@ -51,10 +47,7 @@ export class BranchComponent implements OnInit {
   private fb = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
   private branch?: brachResponse = inject(DynamicDialogConfig).data;
-
   private searchSubject$ = new Subject<string>();
-
-  readonly maxFileSize = 1 * 1024 * 1024 * 2024;
 
   services = signal<serviceResponse[]>([]);
   selectedServices: serviceResponse[] = [];
@@ -65,9 +58,7 @@ export class BranchComponent implements OnInit {
   });
 
   @ViewChild('fileUpload') fileUpload!: FileUpload;
-
   videos: File[] = [];
-
   previewVideos = signal<string[]>([]);
 
   constructor() {
@@ -78,7 +69,24 @@ export class BranchComponent implements OnInit {
     this._loadFormData();
   }
 
-  save() {}
+  save() {
+    const services = this.selectedServices.map(({ id }) => id);
+    this.brachService
+      .uploadVideos(this.videos)
+      .pipe(
+        switchMap(({ files }) =>
+          this.branch
+            ? this.brachService.update({
+                id: this.branch.id,
+                videos: files,
+                services: services,
+                form: this.FormBranch.value,
+              })
+            : this.brachService.create(this.FormBranch.value, services, files)
+        )
+      )
+      .subscribe((branch) => this.ref.close(branch));
+  }
 
   onFilterDropdown(term: string) {
     if (!term) return;
@@ -91,43 +99,28 @@ export class BranchComponent implements OnInit {
       .subscribe((services) => this.services.set(services));
   }
 
+  onSelectFiles(files: File[]) {
+    this.videos = files;
+    this.previewVideos.set(files.map((el) => URL.createObjectURL(el)));
+    this.fileUpload.clear();
+  }
+
+  onSelectService(service: serviceResponse) {
+    const duplicate = this.selectedServices.find(({ id }) => id === service.id);
+    if (duplicate) {
+      this.selectedServices = [...this.selectedServices];
+    } else {
+      this.selectedServices.push(service);
+    }
+  }
+
   get isFormValid(): boolean {
-    return true;
-    // const isValidFile =
-    //   this.platform === platforms.Local ? this.video != null : true;
-    // return (
-    //   this.FormBranch.valid && this.selectedServices.length > 0 && isValidFile
-    // );
+    return this.FormBranch.valid && this.selectedServices.length > 0;
   }
 
-  private _createSaveSubscription() {
-    return this.branch
-      ? this.brachService.update(
-          this.branch.id,
-          this.FormBranch.value,
-          this.selectedServices.map(({ id }) => id)
-        )
-      : this.brachService.create(
-          this.FormBranch.value,
-          this.selectedServices.map(({ id }) => id)
-        );
+  get maxFileSize() {
+    return 1 * 1024 * 1024 * 2024;
   }
-
-  private _saveBranch() {
-    const subcription = this.branch
-      ? this.brachService.update(
-          this.branch.id,
-          this.FormBranch.value,
-          this.selectedServices.map(({ id }) => id)
-        )
-      : this.brachService.create(
-          this.FormBranch.value,
-          this.selectedServices.map(({ id }) => id)
-        );
-
-    subcription.subscribe((branch) => this.ref.close(branch));
-  }
-  private _saveBranchWithtFile() {}
 
   private _listenDropdowChange() {
     this.searchSubject$
@@ -141,17 +134,9 @@ export class BranchComponent implements OnInit {
 
   private _loadFormData() {
     if (!this.branch) return;
-    const { services, ...props } = this.branch;
+    const { services, videos, ...props } = this.branch;
     this.FormBranch.patchValue({ ...props });
-    // this.selectedServices.
-  }
-
-  addVideos(files: File[]) {
-    this.videos = files;
-    this.previewVideos.update((values) => [
-      ...values,
-      ...files.map((el) => URL.createObjectURL(el)),
-    ]);
-    this.fileUpload.clear();
+    this.selectedServices = services;
+    this.previewVideos.set(videos);
   }
 }

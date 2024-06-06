@@ -35,7 +35,6 @@ export class CountersComponent implements OnInit {
 
   ngOnInit(): void {
     this.getData();
-    
   }
 
   getData() {

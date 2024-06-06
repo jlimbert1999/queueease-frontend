@@ -9,6 +9,12 @@ import {
 import { CreateBranchDto } from '../../../infrastructure/dtos';
 import { Service } from '../../../domain/models';
 
+interface updateBranchProps {
+  id: string;
+  form: Partial<CreateBranchDto>;
+  services: string[];
+  videos: string[];
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -32,13 +38,13 @@ export class BranchService {
     );
   }
 
-  create(form: Object, services: string[]) {
-    const branchDto = CreateBranchDto.fromForm(form, services);
+  create(form: Object, services: string[], videos: string[]) {
+    const branchDto = CreateBranchDto.fromForm(form, services, videos);
     return this.http.post<brachResponse>(`${this.url}`, branchDto);
   }
 
-  update(id: string, form: Partial<CreateBranchDto>, services: string[]) {
-    const branchDto = { ...form, services };
+  update({ id, videos, services, form }: updateBranchProps) {
+    const branchDto = { ...form, services, videos };
     return this.http.patch<brachResponse>(`${this.url}/${id}`, branchDto);
   }
 
@@ -52,10 +58,10 @@ export class BranchService {
       .pipe(map((resp) => resp.map((el) => Service.fromResponse(el))));
   }
 
-  uploadVideo(file: File) {
+  uploadVideos(files: File[]) {
     const formData = new FormData();
-    formData.append('file', file);
-    return this.http.post<{ file: string }>(
+    files.forEach((file) => formData.append('files', file));
+    return this.http.post<{ files: string[] }>(
       `${environment.base_url}/files/branch`,
       formData
     );

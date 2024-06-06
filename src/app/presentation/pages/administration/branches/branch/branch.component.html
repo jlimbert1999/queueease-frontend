@@ -31,9 +31,11 @@
             #autoComplete
             styleClass="w-full"
             appendTo="body"
-            [(ngModel)]="selectedServices"
+            [forceSelection]="true" 
+            [ngModel]="selectedServices"
             [suggestions]="services()"
             (completeMethod)="searchServices($event.query)"
+            (onSelect)="onSelectService($event.value)"
             field="name"
             [multiple]="true"
             [forceSelection]="true"
@@ -45,56 +47,24 @@
     </p-tabPanel>
     <p-tabPanel header="Multimedia">
       <p-fileUpload
-       
+        #fileUpload
+        (onSelect)="onSelectFiles($event.currentFiles)"
         [multiple]="true"
+        mode="basic"
         accept="video/*"
+        chooseLabel="Seleccionar archivos"
+        styleClass="w-full mb-3"
         [maxFileSize]="maxFileSize"
-      >
-        <ng-template pTemplate="content">
-          <ul *ngIf="uploadedFiles.length">
-            <li *ngFor="let file of uploadedFiles">
-              {{ file.name }} - {{ file.size }} bytes
-            </li>
-          </ul>
-        </ng-template>
-      </p-fileUpload>
-
-      @for (item of previewVideos(); track $index) {
-      <video controls [src]="item" width="300" height="150"></video>
-      }
-      <!-- <div class="video-container">
-        <iframe
-          src="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/watch/?v=1013388277012217&show_text=0&width=560"
-          scrolling="no"
-          frameborder="0"
-          allowfullscreen="true"
-          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-          allowFullScreen="true"
-        ></iframe>
-      </div> -->
-
-      <!-- <p-fileUpload
-        (onSelect)="onUpload($event.currentFiles)"
-        [multiple]="true"
-        accept="video/*"
-        [maxFileSize]="maxFileSize"
-      >
-        <ng-template pTemplate="header"></ng-template>
-        <ng-template pTemplate="content">
-          <div class="overflow-y-scroll h-20rem">
-            @for (item of myFiles; track $index) {
-            <div class="flex border-1 p-2 mb-4">
-              <div class="flex-1">
-                <video controls [src]="item" width="300" height="150"></video>
-              </div>
-              <div class="flex align-items-center justify-content-center">
-                <p-button icon="pi pi-check" />
-              </div>
-            </div>
-            }
+      />
+      <div class="card overflow-y-scroll max-h-30rem">
+        <div class="grid w-full">
+          @for (item of previewVideos(); track $index) {
+          <div class="col-12 md:col-6">
+            <video controls [src]="item" class="w-full"></video>
           </div>
-        </ng-template>
-      </p-fileUpload> -->
+          }
+        </div>
+      </div>
     </p-tabPanel>
   </p-tabView>
 </div>

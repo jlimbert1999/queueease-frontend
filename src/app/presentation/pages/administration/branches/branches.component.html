@@ -8,11 +8,17 @@
         (click)="create()"
       ></button>
     </div>
-    <div class="p-toolbar-group-center">
-      <span class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input pInputText placeholder="Buscar sucursal" />
-      </span>
+    <div class="p-toolbar-group-end">
+      <p-iconField iconPosition="left">
+        <p-inputIcon styleClass="pi pi-search" />
+        <input
+          type="text"
+          [(ngModel)]="term"
+          (keyup.enter)="getData()"
+          pInputText
+          placeholder="Buscar sucursal"
+        />
+      </p-iconField>
     </div>
   </p-toolbar>
   <p-table [value]="datasource()" [tableStyle]="{ 'min-width': '50rem' }">
@@ -21,7 +27,6 @@
         <th>Nombre</th>
         <th>Servicios</th>
         <th>Mensaje</th>
-        <th>Video</th>
         <th style="width: 50px"></th>
       </tr>
     </ng-template>
@@ -38,13 +43,7 @@
         <td style="width: 40%" class="line-height-1">
           {{ branch.marqueeMessage }}
         </td>
-        <td>
-          <p-button
-            label="Video"
-            icon="pi pi-play-circle"
-            (onClick)="viewVideo(branch)"
-          />
-        </td>
+
         <td>
           <p-button
             icon="pi pi-pencil"
@@ -62,30 +61,3 @@
     </ng-template>
   </p-table>
 </div>
-
-<p-dialog
-  header="Fuente"
-  [modal]="true"
-  [draggable]="false"
-  [(visible)]="showVideo"
-  [style]="{ width: '60rem' }"
-  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
->
-  @if(selectedElement){ @switch (selectedElement!.videoPlatform) { @case
-  ('FaceBook') { } @case ('YouTube') {
-  <iframe
-    [src]="selectedElement!.videoUrl! | safe"
-    allow="autoplay; encrypted-media"
-    class="w-full h-28rem"
-  ></iframe>
-  } @default {
-  <video
-    [controls]="true"
-    [autoplay]="true"
-    [loop]="true"
-    [muted]="true"
-    class="w-full"
-    [src]="selectedElement!.videoUrl"
-  ></video>
-  } } }
-</p-dialog>
