@@ -49,7 +49,6 @@ export class AuthService {
       }>(this.url)
       .pipe(
         map(({ token }) => this._setAuthentication(token)),
-        tap(console.log),
         catchError(() => {
           return of(false);
         })

@@ -24,21 +24,19 @@
           [inputStyle]="{ width: '100%' }"
         />
       </div>
-     
+
       <div class="field col-12">
         <label for="branch">Sucursal</label>
         @if(!counter){
         <p-dropdown
           id="branch"
-          optionValue="id"
           appendTo="body"
           optionLabel="name"
           placeholder="Seleccione la sucursal"
           filterPlaceholder="Nombre de la sucursal"
           emptyFilterMessage="Sin resultados"
-          emptyMessage="&nbsp;"
+          emptyMessage="Busqueda..."
           [style]="{ width: '100%' }"
-          formControlName="branch"
           [filter]="true"
           [autoOptionFocus]="false"
           [options]="branches()"
@@ -60,27 +58,18 @@
   </form>
   <div class="field">
     <label for="list-services">Servicios</label>
-    <!-- <p-multiSelect
+    <p-multiSelect
       appendTo="body"
       [options]="services()"
       [(ngModel)]="selectedServices"
       [style]="{ width: '100%' }"
+      [disabled]="!FormDesk.get('branch')?.value"
       optionLabel="name"
       placeholder="Servicios asignados"
-      [selectedItemsLabel]="'dsds'"
-    /> -->
-    <!-- <p-listbox
-      id="list-services"
-      filterPlaceHolder="Buscar servicio..."
-      [listStyle]="{ height: '300px' }"
-      [style]="{ width: '100%' }"
-      [listStyle]="{ width: '100%' }"
-      [filter]="true"
-      [multiple]="true"
-      optionLabel="name"
-      [options]="services()"
-      [(ngModel)]="selectedServices"
-    /> -->
+      selectedItemsLabel="{0} servicios seleccionados"
+      emptyFilterMessage="Sin resultados"
+      display="chip"
+    />
   </div>
 </div>
 <div class="p-dialog-footer">

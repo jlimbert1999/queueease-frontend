@@ -14,10 +14,13 @@ import { QueueManagementComponent } from './presentation/pages/queue-management/
 import { AnnouncementComponent } from './presentation/pages/announcement/announcement.component';
 import { branchConfigGuard } from './presentation/guards/branch-config.guard';
 import { HomeComponent } from './presentation/layouts/home/home.component';
+import { isNotAuthenticatedGuard } from './presentation/guards';
+import { UsersComponent } from './presentation/pages/administration/users/users.component';
 
 export const routes: Routes = [
   {
     path: 'login',
+    canActivate: [isNotAuthenticatedGuard],
     component: LoginComponent,
   },
   {
@@ -34,6 +37,7 @@ export const routes: Routes = [
       { path: 'services', component: ServicesComponent },
       { path: 'branches', component: BranchesComponent },
       { path: 'counters', component: CountersComponent },
+      { path: 'users', component: UsersComponent },
     ],
   },
 

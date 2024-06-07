@@ -13,14 +13,10 @@ import { MenuItem } from 'primeng/api';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent {
-   items: MenuItem[] = [
-    {
-      label: 'Administracion',
-      icon: 'pi pi-fw pi-box',
-    },
+  items: MenuItem[] = [
     {
       icon: 'pi pi-th-large',
-      label: 'Categoriass',
+      label: 'Categorias',
       routerLink: 'categories',
     },
     {
@@ -43,5 +39,5 @@ export class ToolbarComponent {
       label: 'Usuarios',
       routerLink: 'users',
     },
-  ]; 
+  ];
 }

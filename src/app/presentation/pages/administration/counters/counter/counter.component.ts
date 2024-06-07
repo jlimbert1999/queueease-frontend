@@ -16,12 +16,15 @@ import {
   Validators,
 } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, switchMap } from 'rxjs';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { BranchService, ServiceCounterService } from '../../../../services';
+import { BranchService, CounterService } from '../../../../services';
 import { ServiceDesk } from '../../../../../domain/models';
 import { PrimengModule } from '../../../../../primeng.module';
-import { brachResponse } from '../../../../../infrastructure/interfaces';
+import {
+  brachResponse,
+  serviceResponse,
+} from '../../../../../infrastructure/interfaces';
 
 @Component({
   selector: 'service-desk',
@@ -35,13 +38,17 @@ export class CounterComponent implements OnInit {
   private ref = inject(DynamicDialogRef);
   private destroyRef = inject(DestroyRef);
   private branchService = inject(BranchService);
-  private serviceDesk = inject(ServiceCounterService);
+  private serviceDesk = inject(CounterService);
   private branch: ServiceDesk | undefined = inject(DynamicDialogConfig).data;
 
   counter: ServiceDesk | undefined = inject(DynamicDialogConfig).data;
   searchSubject$ = new Subject<string>();
   branches = signal<brachResponse[]>([]);
+  services = signal<serviceResponse[]>([]);
+  selectedServices = signal<serviceResponse[]>([]);
+
   FormDesk: FormGroup = this.fb.nonNullable.group({
+    user: ['', Validators.required],
     name: ['', Validators.required],
     number: ['', Validators.required],
     branch: ['', Validators.required],
@@ -66,9 +73,10 @@ export class CounterComponent implements OnInit {
     this.searchSubject$.next(term);
   }
 
-  onSelect(id: number) {
-    // this.selectedServices.set([]);
-    // this._getServicesByBranch(id);
+  onSelect({ id, services }: brachResponse) {
+    this.FormDesk.get('branch')?.setValue(id);
+    this.selectedServices.set([]);
+    this.services.set(services);
   }
 
   save() {
@@ -83,20 +91,12 @@ export class CounterComponent implements OnInit {
 
   private _observeChangesDrowpdown() {
     this.searchSubject$
-      .pipe(takeUntilDestroyed(this.destroyRef), debounceTime(350))
-      .subscribe((text) => this._searchBranch(text));
-  }
-
-  private _searchBranch(term: string) {
-    this.branchService.searchAvaibles(term).subscribe((branches) => {
-      this.branches.set(branches);
-    });
-  }
-
-  private _getServicesByBranch(id: string) {
-    // this.branchService.getServicesByBranch(id).subscribe((resp) => {
-    //   this.services.set(resp);
-    // });
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        debounceTime(350),
+        switchMap((term) => this.branchService.searchAvaibles(term))
+      )
+      .subscribe((branches) => this.branches.set(branches));
   }
 
   get isFormValid() {

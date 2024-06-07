@@ -9,8 +9,8 @@ import { ServiceDesk } from '../../../domain/models';
 @Injectable({
   providedIn: 'root',
 })
-export class ServiceCounterService {
-  private readonly url = `${environment.base_url}/service-desks`;
+export class CounterService {
+  private readonly url = `${environment.base_url}/counter`;
   private http = inject(HttpClient);
 
   constructor() {}
@@ -25,6 +25,10 @@ export class ServiceCounterService {
           length: resp[1],
         }))
       );
+  }
+
+  searchUsersForAssignment(term: string) {
+    return this.http.get<any[]>(`${this.url}/assign/${term}`);
   }
 
   create(form: Object, services: string[]) {

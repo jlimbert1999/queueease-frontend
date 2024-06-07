@@ -10,7 +10,7 @@ import {
 import { filter } from 'rxjs';
 import { DialogService } from 'primeng/dynamicdialog';
 import { CounterComponent } from './counter/counter.component';
-import { ServiceCounterService } from '../../../services';
+import { CounterService } from '../../../services';
 import { PrimengModule } from '../../../../primeng.module';
 import { ServiceDesk } from '../../../../domain/models';
 
@@ -24,7 +24,7 @@ import { ServiceDesk } from '../../../../domain/models';
   providers: [DialogService],
 })
 export class CountersComponent implements OnInit {
-  private servideDeskService = inject(ServiceCounterService);
+  private servideDeskService = inject(CounterService);
   private dialogService = inject(DialogService);
 
   limit = signal(10);
