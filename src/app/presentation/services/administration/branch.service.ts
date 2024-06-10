@@ -52,6 +52,10 @@ export class BranchService {
     return this.http.get<brachResponse[]>(`${this.url}/availables/${term}`);
   }
 
+  getBranchServices(id: string) {
+    return this.http.get<serviceResponse[]>(`${this.url}/services/${id}`);
+  }
+
   getMenu(id: number) {
     return this.http
       .get<serviceResponse[]>(`${this.url}/menu/${id}`)

@@ -12,7 +12,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { CounterComponent } from './counter/counter.component';
 import { CounterService } from '../../../services';
 import { PrimengModule } from '../../../../primeng.module';
-import { ServiceDesk } from '../../../../domain/models';
+import { Counter } from '../../../../domain/models';
 
 @Component({
   selector: 'app-service-desks',
@@ -31,7 +31,7 @@ export class CountersComponent implements OnInit {
   index = signal(0);
   offset = computed(() => this.limit() * this.index());
   length = signal(0);
-  desks = signal<ServiceDesk[]>([]);
+  desks = signal<Counter[]>([]);
 
   ngOnInit(): void {
     this.getData();
@@ -41,6 +41,7 @@ export class CountersComponent implements OnInit {
     this.servideDeskService
       .findAll(this.limit(), this.offset())
       .subscribe(({ desks, length }) => {
+        console.log(desks);
         this.desks.set(desks);
         this.length.set(length);
       });
@@ -58,14 +59,14 @@ export class CountersComponent implements OnInit {
       });
   }
 
-  update(desk: ServiceDesk) {
+  update(desk: Counter) {
     const ref = this.dialogService.open(CounterComponent, {
       header: 'Edicion Ventanilla',
       width: '40rem',
       data: desk,
     });
     ref.onClose
-      .pipe(filter((result?: ServiceDesk) => !!result))
+      .pipe(filter((result?: Counter) => !!result))
       .subscribe((result) => {
         this.desks.update((values) => {
           const index = values.findIndex((el) => el.id === desk.id);

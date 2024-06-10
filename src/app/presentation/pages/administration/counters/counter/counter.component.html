@@ -29,20 +29,13 @@
       <div class="field col-12">
         <label for="branch">Sucursal</label>
         @if(!counter){
-        <p-dropdown
+        <dropdown
           id="branch"
-          appendTo="body"
-          optionLabel="name"
-          placeholder="Seleccione la sucursal"
-          filterPlaceholder="Nombre de la sucursal"
-          emptyFilterMessage="Sin resultados"
-          emptyMessage="Busqueda..."
-          [style]="{ width: '100%' }"
-          [filter]="true"
-          [autoOptionFocus]="false"
+          placeholder="Buscar sucursal"
           [options]="branches()"
-          (onFilter)="onFilter($event.filter)"
-          (onChange)="onSelect($event.value)"
+          [required]="true"
+          (onSearch)="searchBranch($event)"
+          (onSelect)="selectBranch($event)"
         />
         } @else {
         <input
@@ -72,19 +65,14 @@
         />
       </div>
       <div class="field col-12">
-        <label for="list-services">Servicios</label>
-        <p-multiSelect
-          appendTo="body"
-          [options]="services()"
-          optionValue="id"
-          formControlName="services"
-          [style]="{ width: '100%' }"
-          display="chip"
-          optionLabel="name"
-          placeholder="Servicios asignados"
-          selectedItemsLabel="{0} servicios seleccionados"
-          emptyFilterMessage="Sin resultados"
-          emptyMessage="Buscar servicios"
+        <label for="list-users">Usuarios</label>
+        <dropdown
+          id="list-users"
+          placeholder="Buscar sucursal"
+          [value]="FormDesk.get('user')?.value"
+          [options]="users()"
+          (onSearch)="searchUser($event)"
+          (onSelect)="selectUser($event)"
         />
       </div>
     </div>

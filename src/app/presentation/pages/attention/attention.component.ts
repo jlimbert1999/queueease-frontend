@@ -81,9 +81,9 @@ export class AttentionComponent implements OnInit {
 
   private _setupMenu() {
     const branch = this.configService.branch();
-    if (!branch) return;
-    this.customerService.getMenu(branch.id).subscribe((resp) => {
-      this.stackOptions.set([{ name: 'Inicio', services: resp }]);
-    });
+    // if (!branch) return;
+    // this.customerService.getMenu(branch.id).subscribe((resp) => {
+    //   this.stackOptions.set([{ name: 'Inicio', services: resp }]);
+    // });
   }
 }

@@ -1,40 +1,28 @@
-<div style="height: 100vh; display: flex; flex-direction: column">
-  <!-- Contenedor para la primera y segunda parte -->
-  <div style="display: flex; flex: 1">
-    <!-- Primera parte -->
-    <div
-      style="
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        background-color: lightblue;
-        padding: 10px;
-        overflow: auto;
-      "
-    >
+<div class="h-screen flex flex-column">
+  <div class="flex flex-1 flex-column-reverse sm:flex-row">
+    <div class="flex-1 flex flex-column p-4 overflow-auto">
       <div
-        *ngFor="let item of [1, 2, 3, 4, 5,  6, 7]"
+        *ngFor="let item of [1, 2, 3, 4, 5, 6, 7]"
+        class="border-1 flex"
         style="
           flex: none;
           display: flex;
           align-items: center;
           justify-content: center;
-          min-height: calc(100% / 7);
+          height: calc((100% - (7 * 15px)) / 7);
+          margin-bottom: 15px;
         "
       >
-        <!-- Contenido del elemento, por ejemplo: -->
         <p>Elemento {{ item }}</p>
       </div>
     </div>
-    <!-- Segunda parte -->
-    <div style="flex: 1; background-color: lightcoral">
-      <p>Segunda Parte</p>
+    <div style="flex: 1">
+      <div class="flex align-items-center h-full">
+        <video #videoPlayer class="w-full" (ended)="onVideoEnded()"></video>
+      </div>
     </div>
   </div>
-  <!-- Tercera parte (Footer) -->
   <div style="background-color: lightgreen">
-    <!-- <p>Tercera Parte (Footer)</p> -->
     <div class="marquee">
       <span class="text-lg md:text-4xl font-bold text-white"
         >This is a marquee text.

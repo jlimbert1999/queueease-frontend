@@ -18,6 +18,10 @@ export class CustomerService {
       .pipe();
   }
 
+  getAdvertisement(id_branch: string) {
+    return this.http.get(`${this.url}/advertisement/${id_branch}`);
+  }
+
   requestService(id_service: number, id_branch: number, priority: number) {
     return this.http.post(`${this.url}/request`, {
       id_service,

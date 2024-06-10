@@ -1,27 +1,30 @@
 interface serviveProps {
   name: string;
   number: number;
-  branch: number;
+  branch: string;
   services: string[];
+  user: string;
   login: string;
   password: string;
 }
 export class CreateServiceDeskDto {
   name: string;
   number: number;
-  branch: number;
+  branch: string;
+  user: string;
   services: string[];
   login: string;
   password: string;
 
-  static fromForm(form: any, services: string[]) {
+  static fromForm(form: any) {
     return new CreateServiceDeskDto({
       name: form['name'],
       number: parseInt(form['number']),
       branch: form['branch'],
-      services: services,
+      services: form['services'],
       login: form['login'],
       password: form['password'],
+      user: form['user'],
     });
   }
   constructor({
@@ -31,6 +34,7 @@ export class CreateServiceDeskDto {
     services,
     login,
     password,
+    user,
   }: serviveProps) {
     this.name = name;
     this.number = number;
@@ -38,5 +42,6 @@ export class CreateServiceDeskDto {
     this.services = services;
     this.login = login;
     this.password = password;
+    this.user = user;
   }
 }

@@ -1,0 +1,17 @@
+<p-dropdown
+  [ngModel]="value()"
+  [id]="id()"
+  appendTo="body"
+  optionLabel="label"
+  [placeholder]="placeholder()"
+  filterPlaceholder="Buscar elemento"
+  emptyFilterMessage="Sin resultados"
+  emptyMessage="Sin elementos"
+  styleClass="w-full"
+  optionValue="value"
+  [filter]="true"
+  [options]="options()"
+  (onFilter)="onFilter($event.filter)"
+  (onChange)="onChange($event.value)"
+  [showClear]="!required()"
+/>

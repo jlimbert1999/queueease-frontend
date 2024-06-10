@@ -17,27 +17,35 @@
         <th>Numero</th>
         <th>Sucursal</th>
         <th>Servicios</th>
-        <th></th>
+        <th>Usuario</th>
+        <th style="width: 55px;"></th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-desk>
+    <ng-template pTemplate="body" let-counter>
       <tr>
-        <td>{{ desk.name }}</td>
-        <td>Nro. {{ desk.number }}</td>
-        <td>{{ desk.branch.name }}</td>
+        <td>{{ counter.name }}</td>
+        <td>Nro. {{ counter.number }}</td>
+        <td>{{ counter.branch.name }}</td>
         <td>
           <ul>
-            @for (item of desk.services; track $index) {
+            @for (item of counter.services; track $index) {
             <li>{{ item.name }}</li>
             } @empty { -- SIN SERVICIOS -- }
           </ul>
+        </td>
+        <td>
+          @if(counter.user){
+          <span>{{ counter.user.fullname }}</span>
+          } @else {
+          <span class="text-red-500">SIN ASIGNAR</span>
+          }
         </td>
         <td>
           <p-button
             icon="pi pi-pencil"
             [rounded]="true"
             [text]="true"
-            (onClick)="update(desk)"
+            (onClick)="update(counter)"
           ></p-button>
         </td>
       </tr>
