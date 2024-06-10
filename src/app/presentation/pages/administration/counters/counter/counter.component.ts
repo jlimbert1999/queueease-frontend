@@ -25,6 +25,7 @@ import {
   brachResponse,
   serviceResponse,
 } from '../../../../../infrastructure/interfaces';
+import { minLengthArray } from '../../../../../helpers';
 
 @Component({
   selector: 'service-desk',
@@ -45,13 +46,13 @@ export class CounterComponent implements OnInit {
   searchSubject$ = new Subject<string>();
   branches = signal<brachResponse[]>([]);
   services = signal<serviceResponse[]>([]);
-  selectedServices = signal<serviceResponse[]>([]);
 
   FormDesk: FormGroup = this.fb.nonNullable.group({
     user: ['', Validators.required],
     name: ['', Validators.required],
     number: ['', Validators.required],
     branch: ['', Validators.required],
+    services: ['', [Validators.required, minLengthArray(1)]],
   });
 
   constructor() {}
@@ -74,8 +75,7 @@ export class CounterComponent implements OnInit {
   }
 
   onSelect({ id, services }: brachResponse) {
-    this.FormDesk.get('branch')?.setValue(id);
-    this.selectedServices.set([]);
+    this.FormDesk.get('brach')?.setValue(id);
     this.services.set(services);
   }
 
@@ -96,10 +96,10 @@ export class CounterComponent implements OnInit {
         debounceTime(350),
         switchMap((term) => this.branchService.searchAvaibles(term))
       )
-      .subscribe((branches) => this.branches.set(branches));
+      .subscribe((branches) => {
+        console.log(branches);
+        this.branches.set(branches);
+      });
   }
 
-  get isFormValid() {
-    return this.FormDesk.valid;
-  }
 }

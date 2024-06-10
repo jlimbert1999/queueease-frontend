@@ -12,6 +12,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { UserComponent } from './user/user.component';
 import { PrimengModule } from '../../../../primeng.module';
 import { UserService } from '../../../services';
+import { userResponse } from '../../../../infrastructure/interfaces';
 
 @Component({
   selector: 'app-users',
@@ -25,7 +26,7 @@ export class UsersComponent implements OnInit {
   private dialogService = inject(DialogService);
   private userService = inject(UserService);
 
-  datasource = signal<any[]>([]);
+  datasource = signal<userResponse[]>([]);
   datasize = signal(0);
 
   limit = signal(10);
@@ -39,31 +40,32 @@ export class UsersComponent implements OnInit {
 
   create() {
     const ref = this.dialogService.open(UserComponent, {
-      header: 'Crear Ventanilla',
+      header: 'Crear Usuario',
       width: '40rem',
     });
     ref.onClose
-      .pipe(filter((result?: any) => !!result))
-      .subscribe((category) => {
-        // this.desks.update((values) => [category!, ...values]);
+      .pipe(filter((result?: userResponse) => !!result))
+      .subscribe((user) => {
+        this.datasource.update((values) => [user!, ...values]);
+        this.datasize.update((value) => (value += 1));
       });
   }
 
   update(desk: any) {
     const ref = this.dialogService.open(UserComponent, {
-      header: 'Edicion Ventanilla',
+      header: 'Edicion Usuario',
       width: '40rem',
       data: desk,
     });
-    // ref.onClose
-    //   .pipe(filter((result?: ServiceDesk) => !!result))
-    //   .subscribe((result) => {
-    //     this.desks.update((values) => {
-    //       const index = values.findIndex((el) => el.id === desk.id);
-    //       values[index] = result!;
-    //       return [...values];
-    //     });
-    //   });
+    ref.onClose
+      .pipe(filter((result?: userResponse) => !!result))
+      .subscribe((user) => {
+        this.datasource.update((users) => {
+          const index = users.findIndex((el) => el.id === desk.id);
+          users[index] = user!;
+          return [...users];
+        });
+      });
   }
 
   getData() {

@@ -1,4 +1,5 @@
 <div class="p-dialog-content">
+  <pre>{{ FormDesk.value | json }}</pre>
   <form [formGroup]="FormDesk">
     <div class="formgrid grid">
       <div class="field col-12 md:col-9">
@@ -20,7 +21,7 @@
           [showButtons]="true"
           formControlName="number"
           [min]="1"
-          [max]="999"
+          [max]="99"
           [inputStyle]="{ width: '100%' }"
         />
       </div>
@@ -54,24 +55,41 @@
         />
         }
       </div>
+      <div class="field col-12">
+        <label for="list-services">Servicios</label>
+        <p-multiSelect
+          appendTo="body"
+          [options]="services()"
+          optionValue="id"
+          formControlName="services"
+          [style]="{ width: '100%' }"
+          display="chip"
+          optionLabel="name"
+          placeholder="Servicios asignados"
+          selectedItemsLabel="{0} servicios seleccionados"
+          emptyFilterMessage="Sin resultados"
+          emptyMessage="Buscar servicios"
+        />
+      </div>
+      <div class="field col-12">
+        <label for="list-services">Servicios</label>
+        <p-multiSelect
+          appendTo="body"
+          [options]="services()"
+          optionValue="id"
+          formControlName="services"
+          [style]="{ width: '100%' }"
+          display="chip"
+          optionLabel="name"
+          placeholder="Servicios asignados"
+          selectedItemsLabel="{0} servicios seleccionados"
+          emptyFilterMessage="Sin resultados"
+          emptyMessage="Buscar servicios"
+        />
+      </div>
     </div>
   </form>
-  <div class="field">
-    <label for="list-services">Servicios</label>
-    <p-multiSelect
-      appendTo="body"
-      [options]="services()"
-      [(ngModel)]="selectedServices"
-      [style]="{ width: '100%' }"
-      [disabled]="!FormDesk.get('branch')?.value"
-      optionLabel="name"
-      placeholder="Servicios asignados"
-      selectedItemsLabel="{0} servicios seleccionados"
-      emptyFilterMessage="Sin resultados"
-      display="chip"
-    />
-  </div>
 </div>
 <div class="p-dialog-footer">
-  <p-button label="Guardar" [disabled]="!isFormValid" (onClick)="save()" />
+  <p-button label="Guardar" [disabled]="FormDesk.invalid" (onClick)="save()" />
 </div>

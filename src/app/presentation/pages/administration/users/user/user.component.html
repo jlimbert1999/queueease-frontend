@@ -1,1 +1,74 @@
-<p>user works!</p>,
+<div class="p-dialog-content">
+  <form [formGroup]="FormUser">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="fullname">Nombre completo</label>
+        <input
+          id="fullname"
+          type="text"
+          class="w-full"
+          pInputText
+          formControlName="fullname"
+        />
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="login">Usuario</label>
+        <input
+          id="login"
+          type="text"
+          class="w-full"
+          pInputText
+          formControlName="login"
+        />
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="password">Contraseña</label>
+        @if(FormUser.get('password')){
+        <p-password
+          inputStyleClass="w-full"
+          inputId="password"
+          formControlName="password"
+          [feedback]="false"
+          [toggleMask]="true"
+          autocomplete="false"
+        />
+        } @else {
+        <input
+          styleClass="w-full"
+          class="w-full"
+          id="password"
+          type="text"
+          pInputText
+          [disabled]="true"
+        />
+        }
+      </div>
+      @if(user){
+      <div class="field col-12 mb-4">
+        <p-checkbox
+          label="Actualizar contraseña"
+          [binary]="true"
+          (onChange)="togglePassword()"
+        />
+      </div>
+      }
+
+      <div class="field col-12">
+        <label for="roles">Roles</label>
+        <p-multiSelect
+          id="roles"
+          filterPlaceHolder="Buscar rol..."
+          styleClass="w-full"
+          appendTo="body"
+          [options]="roles"
+          formControlName="roles"
+        />
+      </div>
+    </div>
+  </form>
+</div>
+<div class="p-dialog-footer">
+  <p-button label="Guardar" (onClick)="save()" />
+</div>
