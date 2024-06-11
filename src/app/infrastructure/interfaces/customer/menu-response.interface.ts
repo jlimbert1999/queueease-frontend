@@ -1,5 +1,5 @@
 export interface menuResponse {
-  value?: number;
+  value?: string;
   name: string;
   services: menuResponse[];
 }

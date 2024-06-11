@@ -23,7 +23,22 @@ export class CounterService {
       })
       .pipe(
         map(({ counters, length }) => ({
-          desks: counters.map((el) => Counter.fromResponse(el)),
+          counters: counters.map((el) => Counter.fromResponse(el)),
+          length: length,
+        }))
+      );
+  }
+
+  search(term: string, limit: number, offset: number) {
+    const params = new HttpParams({ fromObject: { limit, offset } });
+    return this.http
+      .get<{ counters: counterResponse[]; length: number }>(
+        `${this.url}/search/${term}`,
+        { params }
+      )
+      .pipe(
+        map(({ counters, length }) => ({
+          counters: counters.map((el) => Counter.fromResponse(el)),
           length: length,
         }))
       );

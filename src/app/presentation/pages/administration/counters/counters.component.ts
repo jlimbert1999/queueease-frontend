@@ -24,27 +24,18 @@ import { Counter } from '../../../../domain/models';
   providers: [DialogService],
 })
 export class CountersComponent implements OnInit {
-  private servideDeskService = inject(CounterService);
+  private counterService = inject(CounterService);
   private dialogService = inject(DialogService);
 
   limit = signal(10);
   index = signal(0);
   offset = computed(() => this.limit() * this.index());
-  length = signal(0);
-  desks = signal<Counter[]>([]);
+  datasource = signal<Counter[]>([]);
+  datasize = signal(0);
+  term: string = '';
 
   ngOnInit(): void {
     this.getData();
-  }
-
-  getData() {
-    this.servideDeskService
-      .findAll(this.limit(), this.offset())
-      .subscribe(({ desks, length }) => {
-        console.log(desks);
-        this.desks.set(desks);
-        this.length.set(length);
-      });
   }
 
   create() {
@@ -55,7 +46,8 @@ export class CountersComponent implements OnInit {
     ref.onClose
       .pipe(filter((result?: any) => !!result))
       .subscribe((category) => {
-        this.desks.update((values) => [category!, ...values]);
+        this.datasource.update((values) => [category!, ...values]);
+        this.datasize.update((value) => (value += 1));
       });
   }
 
@@ -68,11 +60,27 @@ export class CountersComponent implements OnInit {
     ref.onClose
       .pipe(filter((result?: Counter) => !!result))
       .subscribe((result) => {
-        this.desks.update((values) => {
+        this.datasource.update((values) => {
           const index = values.findIndex((el) => el.id === desk.id);
           values[index] = result!;
           return [...values];
         });
       });
+  }
+
+  getData() {
+    const supscription =
+      this.term !== ''
+        ? this.counterService.search(this.term, this.limit(), this.offset())
+        : this.counterService.findAll(this.limit(), this.offset());
+    supscription.subscribe(({ counters, length }) => {
+      this.datasource.set(counters);
+      this.datasize.set(length);
+    });
+  }
+
+  search() {
+    this.index.set(0);
+    this.getData();
   }
 }

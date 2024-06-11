@@ -40,12 +40,17 @@ export const routes: Routes = [
       { path: 'users', component: UsersComponent },
     ],
   },
-
   {
     path: 'attention',
     canActivate: [branchConfigGuard],
     component: AttentionComponent,
   },
+  {
+    path: 'advertisement',
+    canActivate: [branchConfigGuard],
+    component: AnnouncementComponent,
+  },
+
   {
     path: 'information',
     component: InformationComponent,
@@ -55,11 +60,7 @@ export const routes: Routes = [
     canActivate: [isAuthenticatedGuard],
     component: QueueManagementComponent,
   },
-  {
-    path: 'advertisement',
-    canActivate: [branchConfigGuard],
-    component: AnnouncementComponent,
-  },
+
   {
     path: 'main',
     component: MainComponent,

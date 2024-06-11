@@ -1,5 +1,4 @@
 <div class="p-dialog-content">
-  <pre>{{ FormDesk.value | json }}</pre>
   <form [formGroup]="FormDesk">
     <div class="formgrid grid">
       <div class="field col-12 md:col-9">
@@ -65,10 +64,10 @@
         />
       </div>
       <div class="field col-12">
-        <label for="list-users">Usuarios</label>
+        <label for="list-users">Usuario</label>
         <dropdown
           id="list-users"
-          placeholder="Buscar sucursal"
+          placeholder="Buscar usuario"
           [value]="FormDesk.get('user')?.value"
           [options]="users()"
           (onSearch)="searchUser($event)"

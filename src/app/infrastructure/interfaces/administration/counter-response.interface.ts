@@ -8,5 +8,5 @@ export interface counterResponse {
   number: number;
   branch: brachResponse;
   services: serviceResponse[];
-  user: userResponse;
+  user?: userResponse;
 }

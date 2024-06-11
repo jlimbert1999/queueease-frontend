@@ -13,9 +13,9 @@ export class AnnouncementsSocketService {
   private readonly url = `${environment.base_url}/branches`;
   private socket!: Socket;
   constructor() {
-    // this.socket = io(this.url, {
-    //   auth: { branch: JSON.parse(localStorage.getItem('branch') ?? '') },
-    // });
+    this.socket = io(this.url, {
+      auth: { branch: JSON.parse(localStorage.getItem('branch') ?? '') },
+    });
   }
 
   disconnect() {

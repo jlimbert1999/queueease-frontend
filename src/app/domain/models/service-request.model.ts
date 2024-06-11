@@ -4,7 +4,7 @@ import { RequestStatus } from '../enum/request-status.enum';
 interface serviceRequestProps {
   id: number;
   code: string;
-  date: Date;
+  createdAt: Date;
   priority: number;
   service: Service;
   status: RequestStatus;
@@ -17,7 +17,7 @@ interface Service {
 export class ServiceRequest {
   id: number;
   code: string;
-  date: Date;
+  createdAt: Date;
   priority: number;
   service: Service;
   status: RequestStatus;
@@ -27,7 +27,7 @@ export class ServiceRequest {
       id: response.id,
       priority: response.priority,
       code: response.code,
-      date: new Date(response.date),
+      createdAt: new Date(response.createdAt),
       status: response.status,
       service: response.service,
     });
@@ -37,14 +37,14 @@ export class ServiceRequest {
     id,
     priority,
     code,
-    date,
+    createdAt,
     status,
     service,
   }: serviceRequestProps) {
     this.id = id;
     this.priority = priority;
     this.code = code;
-    this.date = date;
+    this.createdAt = createdAt;
     this.status = status;
     this.service = service;
   }

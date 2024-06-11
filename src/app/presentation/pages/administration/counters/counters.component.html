@@ -6,11 +6,12 @@
     <div class="p-toolbar-group-center">
       <span class="p-input-icon-left">
         <i class="pi pi-search"></i>
-        <input pInputText placeholder="Search" />
+        <input type="text" [(ngModel)]="term" (keyup.enter)="search()" pInputText placeholder="Buscar ventanilla" />
+
       </span>
     </div>
   </p-toolbar>
-  <p-table [value]="desks()" [tableStyle]="{ 'min-width': '50rem' }">
+  <p-table [value]="datasource()" [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template pTemplate="header">
       <tr>
         <th>Nombre</th>
@@ -18,7 +19,7 @@
         <th>Sucursal</th>
         <th>Servicios</th>
         <th>Usuario</th>
-        <th style="width: 55px;"></th>
+        <th style="width: 55px"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-counter>

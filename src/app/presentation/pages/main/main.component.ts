@@ -2,39 +2,35 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
-  model,
   signal,
 } from '@angular/core';
-import { PrimengModule } from '../../../primeng.module';
 import { FormsModule } from '@angular/forms';
-import { MenuItem } from 'primeng/api';
 import { Router } from '@angular/router';
-import { BranchService, ConfigService } from '../../services';
-import { brachResponse } from '../../../infrastructure/interfaces';
+import { MenuItem } from 'primeng/api';
 
-interface branch {
-  id: number;
-  name: string;
-}
+import { brachResponse } from '../../../infrastructure/interfaces';
+import { DropdownComponent, SelectOption } from '../../components';
+import { ConfigService, CustomerService } from '../../services';
+import { PrimengModule } from '../../../primeng.module';
+
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [CommonModule, FormsModule, PrimengModule],
+  imports: [CommonModule, FormsModule, PrimengModule, DropdownComponent],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainComponent {
   private router = inject(Router);
-  private branchService = inject(BranchService);
   private configService = inject(ConfigService);
+  private customerService = inject(CustomerService);
 
-  branches = signal<brachResponse[]>([]);
-  selectedBranch = this.configService.branch();
+  branches = signal<SelectOption<brachResponse>[]>([]);
+  currentBranch = signal<brachResponse | null>(null);
   isConfigDialogVisible = signal<boolean>(false);
-  
+
   dockItems: MenuItem[] = [
     {
       label: 'Settings',
@@ -91,15 +87,21 @@ export class MainComponent {
   ];
 
   setupConfig() {
+    const branch = this.configService.branch();
+    if (branch) {
+      this.branches.set([{ value: branch, label: branch.name }]);
+      this.currentBranch.set(branch);
+    }
     this.isConfigDialogVisible.set(true);
-    this.branchService.findAll(20, 0).subscribe(({ branches }) => {
-      this.branches.set(branches);
+  }
+
+  searchBranches(value: string) {
+    this.customerService.searchBranches(value).subscribe((branches) => {
+      this.branches.set(branches.map((el) => ({ value: el, label: el.name })));
     });
   }
 
-  save() {
-    if (!this.selectedBranch) return;
-    this.configService.updateBranch(this.selectedBranch);
-    this.isConfigDialogVisible.set(false);
+  selectBranch(branch: brachResponse | null) {
+    this.configService.updateBranch(branch!);
   }
 }

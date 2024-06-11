@@ -1,8 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { menuResponse } from '../../../infrastructure/interfaces';
-import { map } from 'rxjs';
+import {
+  brachResponse,
+  menuResponse,
+} from '../../../infrastructure/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +14,15 @@ export class CustomerService {
   private http = inject(HttpClient);
   constructor() {}
 
-  getMenu(id_branch: number) {
+  getMenu(id_branch: string) {
     return this.http
       .get<menuResponse[]>(`${this.url}/menu/${id_branch}`)
+      .pipe();
+  }
+
+  searchBranches(term: string) {
+    return this.http
+      .get<brachResponse[]>(`${this.url}/branches/${term}`)
       .pipe();
   }
 
@@ -22,7 +30,7 @@ export class CustomerService {
     return this.http.get(`${this.url}/advertisement/${id_branch}`);
   }
 
-  requestService(id_service: number, id_branch: number, priority: number) {
+  requestService(id_service: string, id_branch: string, priority: number) {
     return this.http.post(`${this.url}/request`, {
       id_service,
       id_branch,

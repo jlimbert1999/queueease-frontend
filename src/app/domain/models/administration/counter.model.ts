@@ -6,7 +6,7 @@ interface counterProps {
   number: number;
   branch: branch;
   services: service[];
-  user: user;
+  user?: user;
 }
 
 interface service {
@@ -27,7 +27,7 @@ export class Counter {
   number: number;
   branch: branch;
   services: service[];
-  user: user;
+  user?: user;
 
   static fromResponse(response: counterResponse) {
     return new Counter({

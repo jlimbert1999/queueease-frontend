@@ -50,13 +50,13 @@ export class AnnouncementComponent implements OnInit {
 
   ngOnInit(): void {
     // this._listenQueueEvent();
-    if (!this.configService.branch()) return;
-    this.customerService
-      .getAdvertisement(this.configService.branch()!)
-      .subscribe((resp) => {
-        console.log(resp);
-      });
-      this.loadVideo()
+    // if (!this.configService.branch()) return;
+    // this.customerService
+    //   .getAdvertisement(this.configService.branch()!)
+    //   .subscribe((resp) => {
+    //     console.log(resp);
+    //   });
+    //   this.loadVideo()
   }
 
   private _listenQueueEvent(): void {

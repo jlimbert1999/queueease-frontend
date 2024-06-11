@@ -5,21 +5,28 @@ import { brachResponse } from '../../infrastructure/interfaces';
   providedIn: 'root',
 })
 export class ConfigService {
-  private _branch = signal<string | null>(null);
+  private _branch = signal<brachResponse | null>(null);
   branch = computed(() => this._branch());
 
   constructor() {
     this._setupBranch();
   }
 
-  updateBranch(id: string) {
-    localStorage.setItem('branch', id);
-    this._branch.set(id);
+  updateBranch(branch: brachResponse) {
+    localStorage.setItem('branch', JSON.stringify(branch));
+    this._branch.set(branch);
   }
 
   private _setupBranch() {
     const savedBranch = localStorage.getItem('branch');
     if (!savedBranch) return;
-    this._branch.set(savedBranch);
+    const branch = this._checkSavedBranch(JSON.parse(savedBranch));
+    this._branch.set(branch!);
+  }
+
+  private _checkSavedBranch(obj: any): brachResponse | null {
+    const { id, name } = obj;
+    if (!id || !name) return null;
+    return obj;
   }
 }

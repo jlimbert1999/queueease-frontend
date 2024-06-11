@@ -16,6 +16,7 @@ import { menuResponse } from '../../../infrastructure/interfaces';
 import { LoaderComponent } from '../../components';
 import { numerToWords } from '../../../helpers';
 import { TextToSpeekService } from '../../services/text-to-speek.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-attention',
@@ -24,6 +25,7 @@ import { TextToSpeekService } from '../../services/text-to-speek.service';
   templateUrl: './attention.component.html',
   styleUrl: './attention.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [MessageService],
 })
 export class AttentionComponent implements OnInit {
   private customerService = inject(CustomerService);
@@ -31,8 +33,9 @@ export class AttentionComponent implements OnInit {
   private pdfService = inject(PdfService);
   private destroyRef = inject(DestroyRef);
   private textToSpeekService = inject(TextToSpeekService);
+  private messageService = inject(MessageService);
 
-  selectedService = signal<number | null>(null);
+  selectedService = signal<string | null>(null);
   stackOptions = signal<menuResponse[]>([]);
   currentOption = computed(() => {
     const index = this.stackOptions().length;
@@ -57,7 +60,18 @@ export class AttentionComponent implements OnInit {
   }
 
   createRequest(priority: number) {
-    this.requestServiceSubscription$.next(priority);
+    this.customerService
+      .requestService(
+        this.selectedService()!,
+        this.configService.branch()?.id!,
+        priority
+      )
+      .subscribe((resp) => {
+        console.log(resp);
+        this.selectedService.set(null);
+        this.stackOptions.update((values) => [values[0]]);
+        this._showRequestDone();
+      });
   }
 
   selectOption(option: menuResponse) {
@@ -81,9 +95,21 @@ export class AttentionComponent implements OnInit {
 
   private _setupMenu() {
     const branch = this.configService.branch();
-    // if (!branch) return;
-    // this.customerService.getMenu(branch.id).subscribe((resp) => {
-    //   this.stackOptions.set([{ name: 'Inicio', services: resp }]);
-    // });
+    if (!branch) return;
+    this.customerService.getMenu(branch.id).subscribe((resp) => {
+      this.stackOptions.set([{ name: 'Inicio', services: resp }]);
+    });
+  }
+
+  private _showRequestDone() {
+    this.messageService.clear();
+    this.messageService.add({
+      key: 'request-done',
+      severity: 'success',
+      summary: 'Solicitud realizada',
+      detail: 'Imprimiendo Ticket',
+      life: 1000,
+      closable: false,
+    });
   }
 }

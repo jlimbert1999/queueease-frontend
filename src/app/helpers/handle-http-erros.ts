@@ -41,9 +41,9 @@ export function handleHttpErrorMessage({
 
     case 403:
       messageService.add({
-        severity: 'contrast',
+        severity: 'warn',
         summary: 'Acceso denegado',
-        detail: error.error['message'],
+        detail: 'No tiene los permisos necesarios',
         life: 3000,
       });
       break;

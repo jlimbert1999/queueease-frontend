@@ -22,20 +22,16 @@
       <div class="p-dialog-content">
         <div class="field">
           <label for="branch">Sucursal</label>
-          <p-dropdown
-            [(ngModel)]="selectedBranch"
+          <dropdown
             id="branch"
-            [style]="{ width: '100%' }"
+            placeholder="Buscar sucursal"
+            [required]="true"
+            [value]="currentBranch()"
             [options]="branches()"
-            optionLabel="name"
-            optionValue="id"
-            placeholder="Seleccione una sucursal"
-            appendTo="body"
-          />
+            (onSearch)="searchBranches($event)"
+            (onSelect)="selectBranch($event)"
+          ></dropdown>
         </div>
-      </div>
-      <div class="p-dialog-footer">
-        <p-button label="Aceptar" (onClick)="save()" />
       </div>
     </p-dialog>
   </div>

@@ -4,7 +4,7 @@ export interface serviceRequestResponse {
   id: number;
   priority: number;
   code: string;
-  date: string;
+  createdAt: string;
   status: RequestStatus;
   service: service;
 }

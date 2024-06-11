@@ -1,31 +1,29 @@
-<div class="h-screen flex flex-column">
+<div class="h-screen flex flex-column" style="background-color: #001233;">
   <div class="flex flex-1 flex-column-reverse sm:flex-row">
-    <div class="flex-1 flex flex-column p-4 overflow-auto">
-      <div
-        *ngFor="let item of [1, 2, 3, 4, 5, 6, 7]"
-        class="border-1 flex"
-        style="
-          flex: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: calc((100% - (7 * 15px)) / 7);
-          margin-bottom: 15px;
-        "
-      >
-        <p>Elemento {{ item }}</p>
+    <div class="flex flex-1 flex-column p-4 overflow-auto">
+      @for (item of [1,2,3,4,5,6,7]; track $index) {
+      <div class="border-1 flex-none border-round notification" style="background-color: #BDE0FE;">
+        <div class="border-round p-3 h-full w-full relative">
+          <div class="flex justify-content-end align-items-center h-full">
+            <span class="text-4xl font-bold text-indigo-600">C003</span>
+          </div>
+          <div class="absolute bottom-0 left-0 p-2" style="background-color: #4361EE;">
+            <span class="text-4xl font-medium text-white">RECEPCIÓN 1</span>
+          </div>
+        </div>
       </div>
+      }
     </div>
-    <div style="flex: 1">
+    <div class="flex-1">
       <div class="flex align-items-center h-full">
-        <video #videoPlayer class="w-full" (ended)="onVideoEnded()"></video>
+        <video #videoPlayer class="w-full"  [muted]="'muted'" (ended)="onVideoEnded()"></video>
       </div>
     </div>
   </div>
-  <div style="background-color: lightgreen">
+  <div style="background-color: #EF233C">
     <div class="marquee">
-      <span class="text-lg md:text-4xl font-bold text-white"
-        >This is a marquee text.
+      <span class="text-4xl md:text-5xl font-bold text-white">
+        This is a marquee text.
       </span>
     </div>
   </div>

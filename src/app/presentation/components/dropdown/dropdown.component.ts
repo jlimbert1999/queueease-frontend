@@ -4,10 +4,8 @@ import {
   Component,
   DestroyRef,
   OnInit,
-  computed,
   inject,
   input,
-  model,
   output,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -32,9 +30,10 @@ export class DropdownComponent<T> implements OnInit {
   private filterSubject = new Subject<string>();
 
   id = input.required<string>();
-  value = input<SelectOption<T>>();
-  options = input.required<SelectOption<T>[]>();
   placeholder = input.required<string>();
+
+  value = input<T>();
+  options = input.required<SelectOption<T>[]>();
   required = input<boolean>(false);
 
   onSearch = output<string>();

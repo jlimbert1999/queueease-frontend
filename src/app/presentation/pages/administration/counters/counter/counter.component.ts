@@ -60,7 +60,9 @@ export class CounterComponent implements OnInit {
     services: ['', [Validators.required, minLengthArray(1)]],
   });
 
-  constructor() {}
+  constructor() {
+    console.log(this.counter);
+  }
 
   ngOnInit(): void {
     this._loadFormData();
@@ -95,24 +97,22 @@ export class CounterComponent implements OnInit {
     });
   }
 
-  selectUser(id: string | null) {
+  selectUser(id: string ) {
     this.FormDesk.get('user')?.setValue(id);
   }
 
   private _loadFormData() {
     if (!this.counter) return;
     const { services, user, branch, ...props } = this.counter;
+    this._getBranchServices(branch.id);
     this.FormDesk.removeControl('branch');
     this.FormDesk.patchValue({
       ...props,
-      user: user.id,
+      user: user?.id,
       services: services.map(({ id }) => id),
     });
-    this.users.set([{ label: user.fullname, value: user.id }]);
-    this.searchBranch(branch.name);
-    this._getBranchServices(branch.id);
+    this.users.set([...(user ? [{ label: user.fullname, value: user.id }] : [])]);
   }
-  
 
   private _getBranchServices(id: string) {
     this.branchService
