@@ -2,34 +2,41 @@ import { serviceRequestResponse } from '../../infrastructure/interfaces';
 import { RequestStatus } from '../enum/request-status.enum';
 
 interface serviceRequestProps {
-  id: number;
+  id: string;
   code: string;
   createdAt: Date;
   priority: number;
-  service: Service;
   status: RequestStatus;
+  service: serviceProps;
 }
 
-interface Service {
+interface serviceProps {
   name: string;
 }
 
 export class ServiceRequest {
-  id: number;
+  id: string;
   code: string;
   createdAt: Date;
   priority: number;
-  service: Service;
+  service: serviceProps;
   status: RequestStatus;
 
-  static fromResponse(response: serviceRequestResponse) {
+  static fromResponse({
+    id,
+    priority,
+    code,
+    createdAt,
+    status,
+    service,
+  }: serviceRequestResponse) {
     return new ServiceRequest({
-      id: response.id,
-      priority: response.priority,
-      code: response.code,
-      createdAt: new Date(response.createdAt),
-      status: response.status,
-      service: response.service,
+      id: id,
+      priority: priority,
+      code: code,
+      createdAt: new Date(createdAt),
+      status: status,
+      service: service,
     });
   }
 

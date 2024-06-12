@@ -9,7 +9,7 @@ import { ServiceRequest } from '../../../domain/models';
 @Injectable({
   providedIn: 'root',
 })
-export class AnnouncementsSocketService {
+export class AnnouncementService {
   private readonly url = `${environment.base_url}/branches`;
   private socket!: Socket;
   constructor() {
@@ -31,9 +31,9 @@ export class AnnouncementsSocketService {
   //   });
   // }
 
-  onQueueEvent(): Observable<ServiceRequest> {
+  listenAnncounce(): Observable<ServiceRequest> {
     return new Observable((observable) => {
-      this.socket?.on('attention', (data: serviceRequestResponse) => {
+      this.socket?.on('announce', (data: serviceRequestResponse) => {
         observable.next(ServiceRequest.fromResponse(data));
       });
     });

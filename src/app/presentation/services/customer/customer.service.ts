@@ -27,7 +27,9 @@ export class CustomerService {
   }
 
   getAdvertisement(id_branch: string) {
-    return this.http.get(`${this.url}/advertisement/${id_branch}`);
+    return this.http.get<{ message: string; videos: string[] }>(
+      `${this.url}/advertisement/${id_branch}`
+    );
   }
 
   requestService(id_service: string, id_branch: string, priority: number) {

@@ -9,12 +9,9 @@ import {
 import { MenuItem } from 'primeng/api';
 import { PrimengModule } from '../../../primeng.module';
 import { ProfileComponent } from '../../components';
-import {
-  AttentionSocketService,
-  AuthService,
-  ServiceDeskService,
-} from '../../services';
+import { GroupwareService, ServiceDeskService } from '../../services';
 import { ServiceRequest } from '../../../domain/models';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-queue-management',
@@ -25,31 +22,51 @@ import { ServiceRequest } from '../../../domain/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QueueManagementComponent implements OnInit {
-  private authService = inject(AuthService);
+  private groupwareService = inject(GroupwareService);
   private serviceDeksService = inject(ServiceDeskService);
-  private attentionSocketService = inject(AttentionSocketService);
-  items: MenuItem[] = [];
 
   requests = signal<ServiceRequest[]>([]);
+  currentRequest = signal<ServiceRequest | null>(null);
 
-  constructor() {}
+  constructor() {
+    this._listenRequest();
+  }
 
   ngOnInit(): void {
-    // this.socketSrevice.listenServiceRequests().subscribe((resp) => {
-    //   this.requests.update((val) => [resp, ...val]);
-    // });
+    this.getCurrentRequest();
     this.getRequests();
   }
 
   getRequests() {
-    this.serviceDeksService.getServiceRequests().subscribe((data) => {
-      this.requests.set(data);
-    });
+    this.serviceDeksService.getServiceRequests().subscribe(this.requests.set);
+  }
+
+  getCurrentRequest() {
+    this.serviceDeksService
+      .getCurrentRequest()
+      .subscribe(this.currentRequest.set);
   }
 
   next() {
-    this.serviceDeksService.nextRequest().subscribe((data) => {
-      console.log(data);
+    this.serviceDeksService.nextRequest().subscribe((request) => {
+      console.log(request);
+      this.currentRequest.set(request);
+      this._removeRequest(request.id);
     });
+  }
+
+  private _listenRequest() {
+    this.groupwareService.listenRequest().subscribe((request) => {
+      this.requests.update((values) => {
+        values.unshift(request);
+        return [...values];
+      });
+    });
+  }
+
+  private _removeRequest(id: string) {
+    this.requests.update((values) =>
+      values.filter((request) => request.id !== id)
+    );
   }
 }

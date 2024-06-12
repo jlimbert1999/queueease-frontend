@@ -9,5 +9,5 @@ export * from './pdf.service';
 export * from './service_desk.service';
 export * from './customer/customer.service';
 export * from './text-to-speek.service';
-export * from './sockets/attention-announcements-socket.service';
-export * from './sockets/announcements-socket.service';
+export * from './sockets/groupware.service';
+export * from './sockets/announcement.service';

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { serviceRequestResponse } from '../../infrastructure/interfaces';
 import { ServiceRequest } from '../../domain/models';
@@ -19,7 +19,15 @@ export class ServiceDeskService {
       .pipe(map((resp) => resp.map((el) => ServiceRequest.fromResponse(el))));
   }
 
+  getCurrentRequest() {
+    return this.http
+      .get<serviceRequestResponse | null>(`${this.url}/current`)
+      .pipe(map((resp) => (resp ? ServiceRequest.fromResponse(resp) : null)));
+  }
+
   nextRequest() {
-    return this.http.get(`${this.url}/next`);
+    return this.http
+      .get<serviceRequestResponse>(`${this.url}/next`)
+      .pipe(map((resp) => ServiceRequest.fromResponse(resp)));
   }
 }

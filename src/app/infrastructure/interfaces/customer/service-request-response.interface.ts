@@ -1,13 +1,11 @@
 import { RequestStatus } from '../../../domain/enum/request-status.enum';
+import { serviceResponse } from '../administration/service-response.interface';
 
 export interface serviceRequestResponse {
-  id: number;
+  id: string;
   priority: number;
   code: string;
-  createdAt: string;
+  createdAt: Date;
   status: RequestStatus;
-  service: service;
-}
-interface service {
-  name: string;
+  service: serviceResponse;
 }

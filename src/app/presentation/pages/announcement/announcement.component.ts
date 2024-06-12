@@ -12,7 +12,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { concatMap, filter, finalize, tap } from 'rxjs';
 import {
-  AnnouncementsSocketService,
+  AnnouncementService,
   ConfigService,
   CustomerService,
   TextToSpeekService,
@@ -28,27 +28,27 @@ import { ServiceRequest } from '../../../domain/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnnouncementComponent implements OnInit {
-  private announcementssocketService = inject(AnnouncementsSocketService);
+  private announcementssocketService = inject(AnnouncementService);
   private textToSpeekService = inject(TextToSpeekService);
   private configService = inject(ConfigService);
   private destroyRef = inject(DestroyRef);
   private customerService = inject(CustomerService);
 
-  private soundList: Record<number, string> = {};
+  private soundList: Record<string, string> = {};
   requests = signal<ServiceRequest[]>([]);
   currentVideoIndex: number = 0;
 
-  videoUrls: string[] = [
-    'http://localhost:3000/files/branch/403664d9-5ad9-4aee-ad56-cfec8a4cd7f5.mp4',
-    'http://localhost:3000/files/branch/305a4677-f59f-4eec-9ef0-215d3384ee7a.mp4',
-    'http://localhost:3000/files/branch/82f8ae1b-8b72-485e-9bb3-687416bc986c.mp4',
-    'http://localhost:3000/files/branch/d84a2222-02b6-49ef-be57-c10b1b1c88b5.mp4',
-  ];
+  videoUrls = signal<string[]>([]);
+  message = signal<string>('');
+
   @ViewChild('videoPlayer', { static: true }) videoPlayer!: ElementRef;
 
-  constructor() {}
+  constructor() {
+    this._listenAnnoucement();
+  }
 
   ngOnInit(): void {
+    this._getAdvertisement();
     // this._listenQueueEvent();
     // if (!this.configService.branch()) return;
     // this.customerService
@@ -56,38 +56,52 @@ export class AnnouncementComponent implements OnInit {
     //   .subscribe((resp) => {
     //     console.log(resp);
     //   });
-    //   this.loadVideo()
   }
 
-  private _listenQueueEvent(): void {
+  private _listenAnnoucement(): void {
     this.announcementssocketService
-      .onQueueEvent()
+      .listenAnncounce()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((request) => {
-          console.log(request);
+          this.videoPlayer.nativeElement.volume = 0.2;
           this.requests.update((values) => [request, ...values]);
         }),
         filter((request) => !this.soundList[request.id]),
         tap((request) => (this.soundList[request.id] = request.code)),
         concatMap((request) =>
-          this.textToSpeekService
-            .speek(request)
-            .pipe(finalize(() => delete this.soundList[request.id]))
+          this.textToSpeekService.speek(request).pipe(
+            finalize(() => {
+              this.videoPlayer.nativeElement.volume = 0.5;
+              delete this.soundList[request.id];
+            })
+          )
         )
       )
       .subscribe();
   }
 
   loadVideo() {
-    this.videoPlayer.nativeElement.src = this.videoUrls[this.currentVideoIndex];
+    this.videoPlayer.nativeElement.src =
+      this.videoUrls()[this.currentVideoIndex];
+      this.videoPlayer.nativeElement.volume = 0.5;
     this.videoPlayer.nativeElement.load();
     this.videoPlayer.nativeElement.play();
   }
 
   onVideoEnded() {
     this.currentVideoIndex =
-      (this.currentVideoIndex + 1) % this.videoUrls.length;
+      (this.currentVideoIndex + 1) % this.videoUrls().length;
     this.loadVideo();
+  }
+
+  private _getAdvertisement() {
+    this.customerService
+      .getAdvertisement(this.configService.branch()!.id)
+      .subscribe(({ videos, message }) => {
+        this.videoUrls.set(videos);
+        this.message.set(message);
+        this.loadVideo();
+      });
   }
 }
