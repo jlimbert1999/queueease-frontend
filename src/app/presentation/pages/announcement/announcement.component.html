@@ -1,23 +1,23 @@
 <div class="h-screen flex flex-column" style="background-color: #001233">
   <div class="flex flex-1 flex-column-reverse sm:flex-row">
     <div class="flex flex-1 flex-column p-4 overflow-auto">
-      @for (item of requests(); track $index) {
+      @for (item of advertisements(); track $index) {
       <div
         class="border-1 flex-none border-round notification"
         style="background-color: #bde0fe"
       >
         <div class="border-round p-3 h-full w-full relative">
           <div class="flex justify-content-end align-items-center h-full">
-            <span class="text-4xl font-bold text-indigo-600">{{
-              item.code
-            }}</span>
+            <span class="text-4xl font-bold text-indigo-600">
+              FICHA: {{ item.code }}
+            </span>
           </div>
           <div
             class="absolute bottom-0 left-0 p-2"
             style="background-color: #4361ee"
           >
             <span class="text-4xl font-medium text-white"
-              >VENTANILLA {{ item }}</span
+              >VENTANILLA: {{ item.counterNumber }}</span
             >
           </div>
         </div>
@@ -26,7 +26,9 @@
     </div>
     <div class="flex-1">
       <div class="flex align-items-center h-full">
-        <video #videoPlayer class="w-full" (ended)="onVideoEnded()"></video>
+        @if(!isLoaging()){
+        <video-player [urls]="videoUrls()" />
+        }
       </div>
     </div>
   </div>

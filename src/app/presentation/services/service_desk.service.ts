@@ -26,8 +26,9 @@ export class ServiceDeskService {
   }
 
   nextRequest() {
-    return this.http
-      .get<serviceRequestResponse>(`${this.url}/next`)
-      .pipe(map((resp) => ServiceRequest.fromResponse(resp)));
+    return this.http.get<serviceRequestResponse>(`${this.url}/next`).pipe(
+      tap((resp) => console.log(resp)),
+      map((resp) => ServiceRequest.fromResponse(resp))
+    );
   }
 }

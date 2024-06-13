@@ -7,11 +7,7 @@ interface serviceRequestProps {
   createdAt: Date;
   priority: number;
   status: RequestStatus;
-  service: serviceProps;
-}
-
-interface serviceProps {
-  name: string;
+  branchId: string;
 }
 
 export class ServiceRequest {
@@ -19,8 +15,8 @@ export class ServiceRequest {
   code: string;
   createdAt: Date;
   priority: number;
-  service: serviceProps;
   status: RequestStatus;
+  branchId: string;
 
   static fromResponse({
     id,
@@ -28,7 +24,7 @@ export class ServiceRequest {
     code,
     createdAt,
     status,
-    service,
+    branchId,
   }: serviceRequestResponse) {
     return new ServiceRequest({
       id: id,
@@ -36,7 +32,7 @@ export class ServiceRequest {
       code: code,
       createdAt: new Date(createdAt),
       status: status,
-      service: service,
+      branchId: branchId,
     });
   }
 
@@ -46,14 +42,14 @@ export class ServiceRequest {
     code,
     createdAt,
     status,
-    service,
+    branchId,
   }: serviceRequestProps) {
     this.id = id;
     this.priority = priority;
     this.code = code;
     this.createdAt = createdAt;
     this.status = status;
-    this.service = service;
+    this.branchId = branchId;
   }
 
   get statusLabel(): string {

@@ -32,7 +32,6 @@ export class AttentionComponent implements OnInit {
   private configService = inject(ConfigService);
   private pdfService = inject(PdfService);
   private destroyRef = inject(DestroyRef);
-  private textToSpeekService = inject(TextToSpeekService);
   private messageService = inject(MessageService);
 
   selectedService = signal<string | null>(null);
@@ -61,7 +60,7 @@ export class AttentionComponent implements OnInit {
 
   createRequest(priority: number) {
     this.customerService
-      .requestService(
+      .createRequest(
         this.selectedService()!,
         this.configService.branch()?.id!,
         priority

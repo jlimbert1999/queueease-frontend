@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { Observable } from 'rxjs';
 
-import { serviceRequestResponse } from '../../../infrastructure/interfaces';
+import {
+  advertisementResponse,
+  serviceRequestResponse,
+} from '../../../infrastructure/interfaces';
 import { environment } from '../../../../environments/environment';
 import { ServiceRequest } from '../../../domain/models';
 
@@ -21,9 +24,13 @@ export class GroupwareService {
 
   listenRequest() {
     return new Observable<ServiceRequest>((observable) => {
-      this.socket?.on('new-request', (data: serviceRequestResponse) => {
+      this.socket.on('new-request', (data: serviceRequestResponse) => {
         observable.next(ServiceRequest.fromResponse(data));
       });
     });
+  }
+
+  notifyRequest(advertisement: ServiceRequest) {
+    this.socket.emit('test', advertisement);
   }
 }

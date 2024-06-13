@@ -49,7 +49,6 @@
                   <th>Nro.</th>
                   <th>Codigo</th>
                   <th>Prioridad</th>
-                  <th>Servicio</th>
                   <th>Estado</th>
                   <th>Fecha</th>
                 </tr>
@@ -59,7 +58,6 @@
                   <td>{{ rowIndex + 1 }}</td>
                   <td>{{ request.code }}</td>
                   <td>{{ request.priority }}</td>
-                  <td>{{ request.service.name }}</td>
                   <td>
                     <p-tag severity="warning" [value]="request.statusLabel" />
                   </td>
@@ -68,7 +66,7 @@
               </ng-template>
               <ng-template pTemplate="emptymessage">
                 <tr>
-                  <td colspan="5">SIN SOLI</td>
+                  <td colspan="4">SIN SOLI</td>
                 </tr>
               </ng-template>
               <ng-template pTemplate="summary">
@@ -96,6 +94,7 @@
           size="large"
           styleClass="w-full mb-3"
           [rounded]="true"
+          (onClick)="notify()"
         />
       </div>
 

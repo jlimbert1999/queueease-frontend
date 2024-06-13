@@ -32,8 +32,8 @@ export class CustomerService {
     );
   }
 
-  requestService(id_service: string, id_branch: string, priority: number) {
-    return this.http.post(`${this.url}/request`, {
+  createRequest(id_service: string, id_branch: string, priority: number) {
+    return this.http.post<{ code: string }>(`${this.url}/request`, {
       id_service,
       id_branch,
       priority,

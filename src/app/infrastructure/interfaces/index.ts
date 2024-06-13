@@ -8,3 +8,4 @@ export * from './customer/menu-response.interface';
 
 export * from './auth/jwt-payload.interface';
 export * from './customer/service-request-response.interface';
+export * from './ticketing/advertisement.interface';

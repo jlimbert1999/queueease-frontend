@@ -17,12 +17,13 @@ import {
   CustomerService,
   TextToSpeekService,
 } from '../../services';
-import { ServiceRequest } from '../../../domain/models';
+import { advertisementResponse } from '../../../infrastructure/interfaces';
+import { VideoPlayerComponent } from '../../components/video-player/video-player.component';
 
 @Component({
   selector: 'app-announcement',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, VideoPlayerComponent],
   templateUrl: './announcement.component.html',
   styleUrl: './announcement.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,13 +36,12 @@ export class AnnouncementComponent implements OnInit {
   private customerService = inject(CustomerService);
 
   private soundList: Record<string, string> = {};
-  requests = signal<ServiceRequest[]>([]);
-  currentVideoIndex: number = 0;
+  advertisements = signal<advertisementResponse[]>([]);
+
 
   videoUrls = signal<string[]>([]);
   message = signal<string>('');
-
-  @ViewChild('videoPlayer', { static: true }) videoPlayer!: ElementRef;
+  isLoaging = signal<boolean>(true);
 
   constructor() {
     this._listenAnnoucement();
@@ -64,15 +64,13 @@ export class AnnouncementComponent implements OnInit {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((request) => {
-          this.videoPlayer.nativeElement.volume = 0.2;
-          this.requests.update((values) => [request, ...values]);
+          this.advertisements.update((values) => [request, ...values]);
         }),
         filter((request) => !this.soundList[request.id]),
         tap((request) => (this.soundList[request.id] = request.code)),
         concatMap((request) =>
           this.textToSpeekService.speek(request).pipe(
             finalize(() => {
-              this.videoPlayer.nativeElement.volume = 0.5;
               delete this.soundList[request.id];
             })
           )
@@ -81,27 +79,13 @@ export class AnnouncementComponent implements OnInit {
       .subscribe();
   }
 
-  loadVideo() {
-    this.videoPlayer.nativeElement.src =
-      this.videoUrls()[this.currentVideoIndex];
-      this.videoPlayer.nativeElement.volume = 0.5;
-    this.videoPlayer.nativeElement.load();
-    this.videoPlayer.nativeElement.play();
-  }
-
-  onVideoEnded() {
-    this.currentVideoIndex =
-      (this.currentVideoIndex + 1) % this.videoUrls().length;
-    this.loadVideo();
-  }
-
   private _getAdvertisement() {
     this.customerService
       .getAdvertisement(this.configService.branch()!.id)
       .subscribe(({ videos, message }) => {
         this.videoUrls.set(videos);
         this.message.set(message);
-        this.loadVideo();
+        this.isLoaging.set(false);
       });
   }
 }

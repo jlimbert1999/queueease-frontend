@@ -1,5 +1,4 @@
 import { RequestStatus } from '../../../domain/enum/request-status.enum';
-import { serviceResponse } from '../administration/service-response.interface';
 
 export interface serviceRequestResponse {
   id: string;
@@ -7,5 +6,5 @@ export interface serviceRequestResponse {
   code: string;
   createdAt: Date;
   status: RequestStatus;
-  service: serviceResponse;
+  branchId: string;
 }

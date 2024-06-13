@@ -55,12 +55,15 @@ export class QueueManagementComponent implements OnInit {
     });
   }
 
+  notify() {
+    // if (!this.currentRequest()) return;
+    // const { code, id } = this.currentRequest()!;
+    this.groupwareService.notifyRequest(this.currentRequest()!);
+  }
+
   private _listenRequest() {
     this.groupwareService.listenRequest().subscribe((request) => {
-      this.requests.update((values) => {
-        values.unshift(request);
-        return [...values];
-      });
+      this._insertRequest(request);
     });
   }
 
@@ -68,5 +71,28 @@ export class QueueManagementComponent implements OnInit {
     this.requests.update((values) =>
       values.filter((request) => request.id !== id)
     );
+  }
+
+  private _insertRequest(request: ServiceRequest) {
+    const index = this.requests().findIndex(
+      (item) => this._compareRequests(request, item) < 0
+    );
+    if (index === -1) {
+      return this.requests.update((values) => [...values, request]);
+    }
+    this.requests.update((values) => {
+      values.splice(index, 0, request);
+      return [...values];
+    });
+  }
+
+  private _compareRequests(
+    newRequest: ServiceRequest,
+    currentRequest: ServiceRequest
+  ): number {
+    if (newRequest.priority !== currentRequest.priority) {
+      return currentRequest.priority - newRequest.priority;
+    }
+    return newRequest.createdAt.getTime() - currentRequest.createdAt.getTime();
   }
 }

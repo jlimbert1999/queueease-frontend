@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { concatMap, delay, from, of, tap } from 'rxjs';
 import { ServiceRequest } from '../../domain/models';
 import { numerToWords } from '../../helpers';
+import { advertisementResponse } from '../../infrastructure/interfaces';
 
 interface playlist {
   path: string;
@@ -13,8 +14,8 @@ interface playlist {
 export class TextToSpeekService {
   constructor() {}
 
-  speek({ code }: ServiceRequest) {
-    return this._codeToSpeek(code, 2);
+  speek({ code, counterNumber }: advertisementResponse) {
+    return this._codeToSpeek(code, counterNumber);
   }
 
   private _codeToSpeek(text: string, counterNumber: number) {
