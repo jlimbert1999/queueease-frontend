@@ -15,7 +15,6 @@
     <ng-template pTemplate="header">
       <tr>
         <th>Nombre</th>
-        <th>Numero</th>
         <th>Sucursal</th>
         <th>Servicios</th>
         <th>Usuario</th>
@@ -24,8 +23,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-counter>
       <tr>
-        <td>{{ counter.name }}</td>
-        <td>Nro. {{ counter.number }}</td>
+        <td>VENTANILLA: {{ counter.number }}</td>
         <td>{{ counter.branch.name }}</td>
         <td>
           <ul>

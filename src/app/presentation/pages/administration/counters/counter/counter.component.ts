@@ -54,7 +54,6 @@ export class CounterComponent implements OnInit {
 
   FormDesk: FormGroup = this.fb.nonNullable.group({
     user: [null],
-    name: ['', Validators.required],
     number: ['', Validators.required],
     branch: ['', Validators.required],
     services: ['', [Validators.required, minLengthArray(1)]],

@@ -3,15 +3,19 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  computed,
   inject,
   signal,
 } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import {
+  AuthService,
+  GroupwareService,
+  ServiceDeskService,
+} from '../../services';
 import { PrimengModule } from '../../../primeng.module';
-import { ProfileComponent } from '../../components';
-import { GroupwareService, ServiceDeskService } from '../../services';
 import { ServiceRequest } from '../../../domain/models';
-import { forkJoin } from 'rxjs';
+import { ProfileComponent } from '../../components';
+import { RequestStatus } from '../../../domain/enum/request-status.enum';
 
 @Component({
   selector: 'app-queue-management',
@@ -24,12 +28,18 @@ import { forkJoin } from 'rxjs';
 export class QueueManagementComponent implements OnInit {
   private groupwareService = inject(GroupwareService);
   private serviceDeksService = inject(ServiceDeskService);
+  private authService = inject(AuthService);
 
   requests = signal<ServiceRequest[]>([]);
   currentRequest = signal<ServiceRequest | null>(null);
 
+  enableNextButton = computed(
+    () => this.requests().length > 0 && this.currentRequest() === null
+  );
+
   constructor() {
-    this._listenRequest();
+    this._listenNewRequest();
+    this._listenHandleRequest();
   }
 
   ngOnInit(): void {
@@ -37,33 +47,46 @@ export class QueueManagementComponent implements OnInit {
     this.getRequests();
   }
 
-  getRequests() {
+  getRequests(): void {
     this.serviceDeksService.getServiceRequests().subscribe(this.requests.set);
   }
 
-  getCurrentRequest() {
+  getCurrentRequest(): void {
     this.serviceDeksService
       .getCurrentRequest()
       .subscribe(this.currentRequest.set);
   }
 
-  next() {
+  getNextRequest(): void {
     this.serviceDeksService.nextRequest().subscribe((request) => {
-      console.log(request);
       this.currentRequest.set(request);
       this._removeRequest(request.id);
     });
   }
 
+  updateRequest(status: RequestStatus) {
+    if (!this.currentRequest()) return;
+    this.serviceDeksService
+      .updateRequest(this.currentRequest()?.id!, status)
+      .subscribe(() => {
+        this.currentRequest.set(null);
+      });
+  }
+
   notify() {
-    // if (!this.currentRequest()) return;
-    // const { code, id } = this.currentRequest()!;
+    if (!this.currentRequest()) return;
     this.groupwareService.notifyRequest(this.currentRequest()!);
   }
 
-  private _listenRequest() {
+  private _listenNewRequest() {
     this.groupwareService.listenRequest().subscribe((request) => {
       this._insertRequest(request);
+    });
+  }
+
+  private _listenHandleRequest() {
+    this.groupwareService.onRequestHandled().subscribe((id) => {
+      this._removeRequest(id);
     });
   }
 
@@ -94,5 +117,13 @@ export class QueueManagementComponent implements OnInit {
       return currentRequest.priority - newRequest.priority;
     }
     return newRequest.createdAt.getTime() - currentRequest.createdAt.getTime();
+  }
+
+  get status() {
+    return RequestStatus;
+  }
+
+  get counterNumber() {
+    return this.authService.counterNumber();
   }
 }

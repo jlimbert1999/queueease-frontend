@@ -4,6 +4,7 @@ import { map, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { serviceRequestResponse } from '../../infrastructure/interfaces';
 import { ServiceRequest } from '../../domain/models';
+import { RequestStatus } from '../../domain/enum/request-status.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -30,5 +31,11 @@ export class ServiceDeskService {
       tap((resp) => console.log(resp)),
       map((resp) => ServiceRequest.fromResponse(resp))
     );
+  }
+
+  updateRequest(id: string, status: RequestStatus) {
+    return this.http.patch<{ message: string }>(`${this.url}/${id}`, {
+      status,
+    });
   }
 }

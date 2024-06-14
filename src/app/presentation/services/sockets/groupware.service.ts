@@ -30,6 +30,14 @@ export class GroupwareService {
     });
   }
 
+  onRequestHandled() {
+    return new Observable<string>((observable) => {
+      this.socket.on('handle-request', (id: string) => {
+        observable.next(id);
+      });
+    });
+  }
+
   notifyRequest(advertisement: ServiceRequest) {
     this.socket.emit('test', advertisement);
   }

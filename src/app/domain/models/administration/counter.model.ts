@@ -2,7 +2,6 @@ import { counterResponse } from '../../../infrastructure/interfaces';
 
 interface counterProps {
   id: number;
-  name: string;
   number: number;
   branch: branch;
   services: service[];
@@ -23,7 +22,6 @@ interface user {
 }
 export class Counter {
   id: number;
-  name: string;
   number: number;
   branch: branch;
   services: service[];
@@ -32,7 +30,6 @@ export class Counter {
   static fromResponse(response: counterResponse) {
     return new Counter({
       id: response.id,
-      name: response.name,
       number: response.number,
       branch: response.branch,
       user: response.user,
@@ -40,9 +37,8 @@ export class Counter {
     });
   }
 
-  constructor({ id, name, number, branch, services, user }: counterProps) {
+  constructor({ id, number, branch, services, user }: counterProps) {
     this.id = id;
-    this.name = name;
     this.number = number;
     this.branch = branch;
     this.services = services;

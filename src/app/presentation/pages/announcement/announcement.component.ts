@@ -36,9 +36,8 @@ export class AnnouncementComponent implements OnInit {
   private customerService = inject(CustomerService);
 
   private soundList: Record<string, string> = {};
+
   advertisements = signal<advertisementResponse[]>([]);
-
-
   videoUrls = signal<string[]>([]);
   message = signal<string>('');
   isLoaging = signal<boolean>(true);
@@ -63,10 +62,10 @@ export class AnnouncementComponent implements OnInit {
       .listenAnncounce()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
+        filter((request) => !this.soundList[request.id]),
         tap((request) => {
           this.advertisements.update((values) => [request, ...values]);
         }),
-        filter((request) => !this.soundList[request.id]),
         tap((request) => (this.soundList[request.id] = request.code)),
         concatMap((request) =>
           this.textToSpeekService.speek(request).pipe(
@@ -87,5 +86,9 @@ export class AnnouncementComponent implements OnInit {
         this.message.set(message);
         this.isLoaging.set(false);
       });
+  }
+
+  private new(advertisement: advertisementResponse) {
+    
   }
 }

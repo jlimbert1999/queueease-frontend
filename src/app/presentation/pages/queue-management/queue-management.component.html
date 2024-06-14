@@ -10,130 +10,111 @@
     <profile />
   </ng-template>
 </p-menubar>
+<p>Ventanilla {{ counterNumber }}</p>
 
-<div>
-  <div class="grid grid-nogutter nested-grid">
-    <div class="col-12 md:col-9 p-3">
-      <div class="grid grid-nogutter">
-        <div class="col-12">
-          <div class="flex px-2">
-            <div class="flex flex-auto align-items-center">FICHA:</div>
-            <div class="flex px-5 py-3">
-              <span class="font-bold text-primary">0h /7m 1s</span>
-            </div>
+<div class="grid grid-nogutter nested-grid">
+  <div class="col-12 md:col-9 p-3">
+    <div class="grid grid-nogutter">
+      <div class="col-12">
+        <div class="flex px-2">
+          <div class="flex flex-auto align-items-center">FICHA:</div>
+          <div class="flex px-5 py-3">
+            <span class="font-bold text-primary">0h /7m 1s</span>
           </div>
         </div>
-        <div class="col-12">
-          <div
-            class="flex align-items-center justify-content-center h-6rem surface-200 border-round-xl"
+      </div>
+      <div class="col-12">
+        <div
+          class="flex align-items-center justify-content-center h-6rem surface-200 border-round-xl"
+        >
+          @if(currentRequest()){
+          <span class="font-bold text-md md:text-6xl">{{
+            currentRequest()?.code
+          }}</span>
+          }
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="border-round">
+          <p-table
+            [value]="requests()"
+            [scrollable]="true"
+            scrollHeight="600px"
           >
-            @if(currentRequest()){
-            <span class="font-bold text-md md:text-6xl">{{
-              currentRequest()?.code
-            }}</span>
-            }
-          </div>
-        </div>
-        <div class="col-12">
-          <div class="border-round">
-            <p-table
-              [value]="requests()"
-              [scrollable]="true"
-              scrollHeight="600px"
-            >
-              <ng-template pTemplate="caption">
-                <span>LISTADO DE SOLICITUDES</span>
-              </ng-template>
-              <ng-template pTemplate="header">
-                <tr>
-                  <th>Nro.</th>
-                  <th>Codigo</th>
-                  <th>Prioridad</th>
-                  <th>Estado</th>
-                  <th>Fecha</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-request let-rowIndex="rowIndex">
-                <tr>
-                  <td>{{ rowIndex + 1 }}</td>
-                  <td>{{ request.code }}</td>
-                  <td>{{ request.priority }}</td>
-                  <td>
-                    <p-tag severity="warning" [value]="request.statusLabel" />
-                  </td>
-                  <td>{{ request.createdAt | date : "short" }}</td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="emptymessage">
-                <tr>
-                  <td colspan="4">SIN SOLI</td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="summary">
-                <span> EN COLA: {{ requests().length }}</span>
-              </ng-template>
-            </p-table>
-          </div>
+            <ng-template pTemplate="caption">
+              <span>LISTADO DE SOLICITUDES</span>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Nro.</th>
+                <th>Codigo</th>
+                <th>Prioridad</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-request let-rowIndex="rowIndex">
+              <tr>
+                <td>{{ rowIndex + 1 }}</td>
+                <td>{{ request.code }}</td>
+                <td>{{ request.priority }}</td>
+                <td>
+                  <p-tag severity="warning" [value]="request.statusLabel" />
+                </td>
+                <td>{{ request.createdAt | date : "short" }}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4">SIN SOLI</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+              <span> EN COLA: {{ requests().length }}</span>
+            </ng-template>
+          </p-table>
         </div>
       </div>
     </div>
-    <div class="col-12 md:col-3">
-      <div class="p-3">
-        <p-button
-          label="Siguiente ficha"
-          icon="pi pi-angle-double-right"
-          size="large"
-          styleClass="w-full mb-3"
-          [rounded]="true"
-          (onClick)="next()"
-          [disabled]="currentRequest() !== null"
-        />
-        <p-button
-          label="Llamar"
-          icon="pi pi-volume-up"
-          size="large"
-          styleClass="w-full mb-3"
-          [rounded]="true"
-          (onClick)="notify()"
-        />
-      </div>
-
-      <!-- <div class="h-full p-3 border-1">
-        <div
-          class="flex flex-column justify-content-center flex-wrap row-gap-2"
-        >
-          <div
-            class="flex align-items-center justify-content-center h-4rem m-2"
-          >
-            <p-button
-              label="Siguiente ficha"
-              icon="pi pi-angle-double-right"
-              size="large"
-              styleClass="w-full"
-              class="w-full"
-              [rounded]="true"
-              (onClick)="next()"
-            />
-          </div>
-          <div
-            class="flex align-items-center justify-content-center h-4rem m-2"
-          >
-            <p-button
-              label="Llamar"
-              icon="pi pi-volume-up"
-              size="large"
-              styleClass="w-full"
-              class="w-full"
-              [rounded]="true"
-            />
-          </div>
-          <div
-            class="flex align-items-center justify-content-center h-4rem m-2"
-          >
-            3
-          </div>
-        </div>
-      </div> -->
+  </div>
+  <div class="col-12 md:col-3">
+    <div class="p-3">
+      <p-button
+        label="Siguiente ficha"
+        icon="pi pi-angle-double-right"
+        size="large"
+        styleClass="w-full mb-3"
+        [rounded]="true"
+        [disabled]="!enableNextButton()"
+        (onClick)="getNextRequest()"
+      />
+      <p-button
+        label="Volver a Llamar"
+        icon="pi pi-volume-up"
+        size="large"
+        styleClass="w-full mb-3"
+        [rounded]="true"
+        [disabled]="!currentRequest()"
+        (onClick)="notify()"
+      />
+      <p-button
+        label="Atendido"
+        icon="pi pi-check"
+        size="large"
+        styleClass="w-full mb-3"
+        [rounded]="true"
+        [disabled]="!currentRequest()"
+        (onClick)="updateRequest(status.ATTENDED)"
+      />
+      <p-button
+        label="Ausente"
+        icon="pi pi-times"
+        size="large"
+        styleClass="w-full mb-3"
+        [rounded]="true"
+        [disabled]="!currentRequest()"
+        (onClick)="updateRequest(status.ABSENT)"
+      />
     </div>
   </div>
 </div>

@@ -65,6 +65,7 @@ export class AttentionComponent implements OnInit {
         this.configService.branch()?.id!,
         priority
       )
+      .pipe(debounceTime(4000))
       .subscribe((resp) => {
         console.log(resp);
         this.selectedService.set(null);

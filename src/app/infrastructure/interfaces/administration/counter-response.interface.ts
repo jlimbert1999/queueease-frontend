@@ -4,7 +4,6 @@ import { userResponse } from './user-response.interface';
 
 export interface counterResponse {
   id: number;
-  name: string;
   number: number;
   branch: brachResponse;
   services: serviceResponse[];

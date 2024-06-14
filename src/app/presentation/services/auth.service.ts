@@ -15,6 +15,7 @@ export class AuthService {
   private _user = signal<JwtPayload | null>(null);
 
   user = computed(() => this._user());
+  counterNumber = signal<number | null>(null);
 
   constructor() {}
 
@@ -46,18 +47,21 @@ export class AuthService {
     return this.http
       .get<{
         token: string;
+        counterNumber?: number;
       }>(this.url)
       .pipe(
-        map(({ token }) => this._setAuthentication(token)),
+        map(({ token, counterNumber }) =>
+          this._setAuthentication(token, counterNumber)
+        ),
         catchError(() => {
           return of(false);
         })
       );
   }
 
-  private _setAuthentication(token: string): boolean {
+  private _setAuthentication(token: string, counterNumber?: number): boolean {
     this._user.set(jwtDecode(token));
-    console.log(this.user());
+    this.counterNumber.set(counterNumber ?? null);
     localStorage.setItem('token', token);
     return true;
   }
