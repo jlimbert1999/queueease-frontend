@@ -15,7 +15,7 @@ import {
   AnnouncementService,
   ConfigService,
   CustomerService,
-  TextToSpeekService,
+  SoundService,
 } from '../../services';
 import { advertisementResponse } from '../../../infrastructure/interfaces';
 import { VideoPlayerComponent } from '../../components/video-player/video-player.component';
@@ -30,7 +30,7 @@ import { VideoPlayerComponent } from '../../components/video-player/video-player
 })
 export class AnnouncementComponent implements OnInit {
   private announcementssocketService = inject(AnnouncementService);
-  private textToSpeekService = inject(TextToSpeekService);
+  private textToSpeekService = inject(SoundService);
   private configService = inject(ConfigService);
   private destroyRef = inject(DestroyRef);
   private customerService = inject(CustomerService);
@@ -48,13 +48,6 @@ export class AnnouncementComponent implements OnInit {
 
   ngOnInit(): void {
     this._getAdvertisement();
-    // this._listenQueueEvent();
-    // if (!this.configService.branch()) return;
-    // this.customerService
-    //   .getAdvertisement(this.configService.branch()!)
-    //   .subscribe((resp) => {
-    //     console.log(resp);
-    //   });
   }
 
   private _listenAnnoucement(): void {

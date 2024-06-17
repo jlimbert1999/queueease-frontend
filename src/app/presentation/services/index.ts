@@ -8,6 +8,6 @@ export * from './auth.service';
 export * from './pdf.service';
 export * from './service_desk.service';
 export * from './customer/customer.service';
-export * from './text-to-speek.service';
+export * from './sound.service';
 export * from './sockets/groupware.service';
 export * from './sockets/announcement.service';

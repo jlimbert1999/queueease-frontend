@@ -15,7 +15,7 @@ import { ConfigService, PdfService, CustomerService } from '../../services';
 import { menuResponse } from '../../../infrastructure/interfaces';
 import { LoaderComponent } from '../../components';
 import { numerToWords } from '../../../helpers';
-import { TextToSpeekService } from '../../services/text-to-speek.service';
+import { SoundService } from '../../services/sound.service';
 import { MessageService } from 'primeng/api';
 
 @Component({

@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { MainComponent } from './presentation/pages';
-import { AppComponent } from './app.component';
 import { CountersComponent } from './presentation/pages/administration/counters/counters.component';
 import { CategoriesComponent } from './presentation/pages/administration/categories/categories.component';
 import { ServicesComponent } from './presentation/pages/administration/services/services.component';
@@ -19,18 +18,23 @@ import { counterGuard } from './presentation/guards/counter.guard';
 
 export const routes: Routes = [
   {
+    path: 'dashboard',
+    component: DashboardComponent,
+  },
+  {
     path: 'login',
     canActivate: [isNotAuthenticatedGuard],
     component: LoginComponent,
   },
   {
-    path: '',
+    path: 'main',
     canActivate: [isAuthenticatedGuard],
     component: MainComponent,
     children: [
       {
         path: 'administration',
         children: [
+          { path: '', redirectTo: 'users', pathMatch: 'full' },
           { path: 'categories', component: CategoriesComponent },
           { path: 'services', component: ServicesComponent },
           { path: 'branches', component: BranchesComponent },
@@ -60,10 +64,5 @@ export const routes: Routes = [
     path: 'information',
     component: InformationComponent,
   },
-
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-  },
-  // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 ];

@@ -7,29 +7,42 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import {
-  AuthService,
-  GroupwareService,
-  ServiceDeskService,
-} from '../../services';
-import { PrimengModule } from '../../../primeng.module';
-import { ServiceRequest } from '../../../domain/models';
+import { Subject } from 'rxjs';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+
+import { GroupwareService, ServiceDeskService } from '../../services';
 import { ProfileComponent, StopwatchComponent } from '../../components';
 import { RequestStatus } from '../../../domain/enum/request-status.enum';
-import { Subject } from 'rxjs';
+import { PrimengModule } from '../../../primeng.module';
+import { ServiceRequest } from '../../../domain/models';
+
+const actions = {
+  [RequestStatus.ABSENT]: 'AUSENTE',
+  [RequestStatus.ATTENDED]: 'ATENDIDA',
+  [RequestStatus.PENDING]: 'PENDIENTE',
+  [RequestStatus.SERVICING]: 'EN SERVICIO',
+};
 
 @Component({
   selector: 'app-queue-management',
   standalone: true,
-  imports: [CommonModule, PrimengModule, ProfileComponent, StopwatchComponent],
+  imports: [
+    CommonModule,
+    PrimengModule,
+    ConfirmDialogModule,
+    ProfileComponent,
+    StopwatchComponent,
+  ],
   templateUrl: './queue-management.component.html',
   styleUrl: './queue-management.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [ConfirmationService],
 })
 export class QueueManagementComponent implements OnInit {
   private groupwareService = inject(GroupwareService);
   private serviceDeksService = inject(ServiceDeskService);
-  private authService = inject(AuthService);
+  private confirmationService = inject(ConfirmationService);
 
   requests = signal<ServiceRequest[]>([]);
   currentRequest = signal<ServiceRequest | null>(null);
@@ -39,7 +52,6 @@ export class QueueManagementComponent implements OnInit {
   enableNextButton = computed(
     () => this.requests().length > 0 && this.currentRequest() === null
   );
-
   timer = new Subject<string>();
 
   constructor() {
@@ -64,24 +76,36 @@ export class QueueManagementComponent implements OnInit {
   }
 
   getNextRequest(): void {
-    // this.serviceDeksService.nextRequest().subscribe((request) => {
-    //   this.currentRequest.set(request);
-    //   if (request) this._removeRequest(request.id);
-    // });
+    this.serviceDeksService.nextRequest().subscribe((request) => {
+      this.currentRequest.set(request);
+      if (request) this._removeRequest(request.id);
+    });
   }
 
-  updateRequest(status: RequestStatus) {
+  handleRequest(status: RequestStatus) {
     if (!this.currentRequest()) return;
-    this.serviceDeksService
-      .updateRequest(this.currentRequest()?.id!, status)
-      .subscribe(() => {
-        this.currentRequest.set(null);
-      });
+    this.confirmationService.confirm({
+      header: 'Confirmar Accion',
+      message: `¿Marcar la solicitud como: ${actions[status]}?`,
+      accept: () => {
+        this.serviceDeksService
+          .handleRequest(this.currentRequest()?.id!, status)
+          .subscribe(() => {
+            this.currentRequest.set(null);
+          });
+      },
+    });
   }
 
   notify() {
-    if (!this.currentRequest()) return;
-    this.groupwareService.notifyRequest(this.currentRequest()!);
+    if (!this.currentRequest() || !this.counter) return;
+    const { code, id } = this.currentRequest()!;
+    const { number, branch } = this.counter!;
+    this.groupwareService.notifyRequest(branch.id, {
+      id,
+      code,
+      counterNumber: number,
+    });
   }
 
   showDialog() {
@@ -135,7 +159,7 @@ export class QueueManagementComponent implements OnInit {
     return newRequest.createdAt.getTime() - currentRequest.createdAt.getTime();
   }
 
-  get status() {
+  get requestStatus() {
     return RequestStatus;
   }
 }

@@ -3,27 +3,11 @@
   overflow: hidden;
 }
 
-.button-container {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: space-between;
-  padding: 1rem;
-}
-
-.right-button {
-  background-color: #444;
-  color: white;
-  border: none;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  cursor: pointer;
-}
-
 @media (max-width: 600px) {
   .right-button {
     padding: 0.5rem;
   }
+
   .p-button-label {
     display: none;
   }
@@ -37,6 +21,7 @@
   }
 
   .right-panel {
-    width: 100px; /* Adjust the width as needed */
+    width: 100px;
+    /* Adjust the width as needed */
   }
 }

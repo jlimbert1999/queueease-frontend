@@ -3,6 +3,7 @@ import { Socket, io } from 'socket.io-client';
 import { Observable } from 'rxjs';
 
 import {
+  advertisementResponse,
   counterResponse,
   serviceRequestResponse,
 } from '../../../infrastructure/interfaces';
@@ -47,7 +48,7 @@ export class GroupwareService {
     });
   }
 
-  notifyRequest(advertisement: ServiceRequest) {
-    this.socket?.emit('test', advertisement);
+  notifyRequest(branchId: string, advertisement: advertisementResponse) {
+    this.socket?.emit('notify', { branchId, advertisement });
   }
 }

@@ -36,7 +36,7 @@ export class ServiceDeskService {
       .pipe(map((resp) => (resp ? ServiceRequest.fromResponse(resp) : null)));
   }
 
-  updateRequest(id: string, status: RequestStatus) {
+  handleRequest(id: string, status: RequestStatus) {
     return this.http.patch<{ message: string }>(`${this.url}/${id}`, {
       status,
     });

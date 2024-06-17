@@ -1,115 +1,8 @@
-<!-- 
-<div class="grid grid-nogutter nested-grid">
-  <div class="col-12 md:col-9 p-3">
-    <div class="grid grid-nogutter">
-      <div class="col-12">
-        <div class="flex px-2">
-          <div class="flex flex-auto align-items-center">FICHA:</div>
-          <div class="flex px-5 py-3">
-            <span class="font-bold text-primary">0h /7m 1s</span>
-          </div>
-        </div>
-      </div>
-      <div class="col-12">
-        <div
-          class="flex align-items-center justify-content-center h-6rem surface-200 border-round-xl"
-        >
-          @if(currentRequest()){
-          <span class="font-bold text-md md:text-6xl">{{
-            currentRequest()?.code
-          }}</span>
-          }
-        </div>
-      </div>
-      <div class="col-12">
-        <div class="border-round">
-          <p-table
-            [value]="requests()"
-            [scrollable]="true"
-            scrollHeight="600px"
-          >
-            <ng-template pTemplate="caption">
-              <span>LISTADO DE SOLICITUDES</span>
-            </ng-template>
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Nro.</th>
-                <th>Codigo</th>
-                <th>Prioridad</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-request let-rowIndex="rowIndex">
-              <tr>
-                <td>{{ rowIndex + 1 }}</td>
-                <td>{{ request.code }}</td>
-                <td>{{ request.priority }}</td>
-                <td>
-                  <p-tag severity="warning" [value]="request.statusLabel" />
-                </td>
-                <td>{{ request.createdAt | date : "short" }}</td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-              <tr>
-                <td colspan="4">SIN SOLI</td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="summary">
-              <span> EN COLA: {{ requests().length }}</span>
-            </ng-template>
-          </p-table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-12 md:col-3">
-    <div class="p-3">
-      <p-button
-        label="Siguiente ficha"
-        icon="pi pi-angle-double-right"
-        size="large"
-        styleClass="w-full mb-3"
-        [rounded]="true"
-        [disabled]="!enableNextButton()"
-        (onClick)="getNextRequest()"
-      />
-      <p-button
-        label="Volver a Llamar"
-        icon="pi pi-volume-up"
-        size="large"
-        styleClass="w-full mb-3"
-        [rounded]="true"
-        [disabled]="!currentRequest()"
-        (onClick)="notify()"
-      />
-      <p-button
-        label="Atendido"
-        icon="pi pi-check"
-        size="large"
-        styleClass="w-full mb-3"
-        [rounded]="true"
-        [disabled]="!currentRequest()"
-        (onClick)="updateRequest(status.ATTENDED)"
-      />
-      <p-button
-        label="Ausente"
-        icon="pi pi-times"
-        size="large"
-        styleClass="w-full mb-3"
-        [rounded]="true"
-        [disabled]="!currentRequest()"
-        (onClick)="updateRequest(status.ABSENT)"
-      />
-    </div>
-  </div>
-</div> -->
-
 <div class="main-container flex flex-column sm:flex-row">
-  <div class="flex-1 p-3 border-1">
+  <div class="flex-1 p-3 border-1 border-round-xl">
     <div class="flex align-items-center justify-content-between">
-      <stopwatch [eventTimer]="timer"></stopwatch>
+      <!-- <stopwatch [eventTimer]="timer"></stopwatch> -->
+      <span class="text-3xl">FICHA:</span>
       <div
         class="flex align-items-center justify-content-center h-4rem border-1 w-4"
       >
@@ -163,46 +56,54 @@
         label="Siguiente ficha"
         icon="pi pi-angle-double-right"
         size="large"
+        [disabled]="!enableNextButton()"
         (onClick)="getNextRequest()"
       />
       <p-button
         styleClass="w-full"
-        label="Large"
+        label="Volver a Llamar"
+        icon="pi pi-volume-up"
+        size="large"
+        [disabled]="!currentRequest()"
+        (onClick)="notify()"
+      />
+      <p-button
+        styleClass="w-full"
+        label="Atendido"
         icon="pi pi-check"
+        size="large"
+        [disabled]="!currentRequest()"
+        (onClick)="handleRequest(requestStatus.ATTENDED)"
+      />
+      <p-button
+        styleClass="w-full"
+        label="Ausente"
+        icon="pi pi-times"
+        size="large"
+        [disabled]="!currentRequest()"
+        (onClick)="handleRequest(requestStatus.ABSENT)"
+      />
+      <p-button
+        styleClass="w-full"
+        label="Transferir"
+        [disabled]="!currentRequest()"
+        icon="pi pi-arrow-right-arrow-left"
         size="large"
       />
       <p-button
         styleClass="w-full"
-        label="Large"
-        icon="pi pi-check"
-        size="large"
-      />
-      <p-button
-        styleClass="w-full"
-        label="Large"
-        icon="pi pi-check"
-        size="large"
-      />
-      <p-button
-        styleClass="w-full"
-        label="Large"
-        icon="pi pi-check"
-        size="large"
-      />
-      <p-button
-        styleClass="w-full"
-        label="Large"
-        icon="pi pi-check"
+        label="Llamada especial"
+        icon="pi pi-phone"
         size="large"
       />
       <div
         class="flex flex-wrap align-items-center justify-content-between border-top-1"
       >
-        <span class="p-text-secondary">
+        <span class="font-medium text-xl">
           VENTANILLA: {{ counter?.number }}
         </span>
         <p-button
-          icon="pi pi-bookmark"
+          icon="pi pi-question-circle"
           severity="secondary"
           rounded="true"
           text="true"
@@ -212,7 +113,30 @@
     </div>
   </div>
 </div>
-
+<p-confirmDialog #cd>
+  <ng-template pTemplate="headless" let-message>
+    <div class="flex flex-column align-items-center p-4 surface-overlay">
+      <span class="font-bold text-2xl block mb-2 mt-4">
+        {{ message.header }}
+      </span>
+      <p class="mb-0">{{ message.message }}</p>
+      <div class="flex align-items-center gap-2 mt-4">
+        <button
+          pButton
+          label="Aceptar"
+          (click)="cd.accept()"
+          class="w-8rem"
+        ></button>
+        <button
+          pButton
+          label="Cancelar"
+          (click)="cd.reject()"
+          class="p-button-outlined w-8rem"
+        ></button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>
 <p-dialog
   header="Informacion Ventanilla"
   [(visible)]="isDialogOpen"
@@ -226,7 +150,9 @@
     <div class="font-medium text-3xl text-900 mb-3">
       VENTANILLA Nro. {{ counter?.number }}
     </div>
-    <div class="text-500 mb-5">VENTANILLA NRO. {{ counter?.number }}</div>
+    <div class="text-500 mb-5">
+      REGISTROS Y NOTIFICACIONES SE MOSTRARAN CON EL NUMERO DE LA VENTANILLA
+    </div>
     <ul class="list-none p-0 m-0">
       <li
         class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
@@ -241,7 +167,7 @@
       >
         <div class="text-500 w-6 md:w-2 font-medium">Sucursal</div>
         <div class="text-900 w-full md:w-10">
-          {{ counter?.branch?.id }}
+          {{ counter?.branch?.name }}
         </div>
       </li>
       <li
@@ -251,7 +177,7 @@
         <div class="text-800 w-full md:w-10">
           <ul class="list-disc">
             @for (item of counter?.services; track $index) {
-            <li class="text-xs">{{ item.name }}</li>
+            <li class="text-md">{{ item.name }}</li>
             }
           </ul>
         </div>
