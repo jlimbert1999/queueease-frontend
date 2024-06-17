@@ -15,14 +15,14 @@ import { ConfigService, CustomerService } from '../../services';
 import { PrimengModule } from '../../../primeng.module';
 
 @Component({
-  selector: 'app-main',
+  selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, FormsModule, PrimengModule, DropdownComponent],
-  templateUrl: './main.component.html',
-  styleUrl: './main.component.scss',
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainComponent {
+export class DashboardComponent {
   private router = inject(Router);
   private configService = inject(ConfigService);
   private customerService = inject(CustomerService);

@@ -6,24 +6,30 @@
     <div class="p-toolbar-group-center">
       <span class="p-input-icon-left">
         <i class="pi pi-search"></i>
-        <input type="text" [(ngModel)]="term" (keyup.enter)="search()" pInputText placeholder="Buscar ventanilla" />
-
+        <input
+          type="text"
+          [(ngModel)]="term"
+          (keyup.enter)="search()"
+          pInputText
+          placeholder="Buscar ventanilla"
+        />
       </span>
     </div>
   </p-toolbar>
   <p-table [value]="datasource()" [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template pTemplate="header">
       <tr>
-        <th>Nombre</th>
+        <th>Numero</th>
+        <th>Direccion IP</th>
         <th>Sucursal</th>
         <th>Servicios</th>
-        <th>Usuario</th>
         <th style="width: 55px"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-counter>
       <tr>
         <td>VENTANILLA: {{ counter.number }}</td>
+        <td>{{ counter.ip }}</td>
         <td>{{ counter.branch.name }}</td>
         <td>
           <ul>
@@ -31,13 +37,6 @@
             <li>{{ item.name }}</li>
             } @empty { -- SIN SERVICIOS -- }
           </ul>
-        </td>
-        <td>
-          @if(counter.user){
-          <span>{{ counter.user.fullname }}</span>
-          } @else {
-          <span class="text-red-500">SIN ASIGNAR</span>
-          }
         </td>
         <td>
           <p-button

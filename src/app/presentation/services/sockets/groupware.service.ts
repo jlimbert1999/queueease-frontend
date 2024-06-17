@@ -3,28 +3,37 @@ import { Socket, io } from 'socket.io-client';
 import { Observable } from 'rxjs';
 
 import {
-  advertisementResponse,
+  counterResponse,
   serviceRequestResponse,
 } from '../../../infrastructure/interfaces';
-import { environment } from '../../../../environments/environment';
 import { ServiceRequest } from '../../../domain/models';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GroupwareService {
   private readonly url = `${environment.base_url}/users`;
-  private readonly socket: Socket;
+  private socket: Socket | null = null;
 
-  constructor() {
+  constructor() {}
+
+  connect({ services, branch, ...props }: counterResponse): void {
     this.socket = io(this.url, {
-      auth: { token: localStorage.getItem('token') },
+      auth: {
+        token: localStorage.getItem('token'),
+        counter: {
+          id: props.id,
+          services: services.map(({ id }) => id),
+          branchId: branch.id,
+        },
+      },
     });
   }
 
   listenRequest() {
     return new Observable<ServiceRequest>((observable) => {
-      this.socket.on('new-request', (data: serviceRequestResponse) => {
+      this.socket?.on('new-request', (data: serviceRequestResponse) => {
         observable.next(ServiceRequest.fromResponse(data));
       });
     });
@@ -32,13 +41,13 @@ export class GroupwareService {
 
   onRequestHandled() {
     return new Observable<string>((observable) => {
-      this.socket.on('handle-request', (id: string) => {
+      this.socket?.on('handle-request', (id: string) => {
         observable.next(id);
       });
     });
   }
 
   notifyRequest(advertisement: ServiceRequest) {
-    this.socket.emit('test', advertisement);
+    this.socket?.emit('test', advertisement);
   }
 }

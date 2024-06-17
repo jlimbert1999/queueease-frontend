@@ -24,7 +24,7 @@ import {
 import { serviceResponse } from '../../../../../infrastructure/interfaces';
 import { DropdownComponent, SelectOption } from '../../../../components';
 import { PrimengModule } from '../../../../../primeng.module';
-import { minLengthArray } from '../../../../../helpers';
+import { CustomFormValidators } from '../../../../../helpers';
 import { Counter } from '../../../../../domain/models';
 
 @Component({
@@ -44,24 +44,21 @@ export class CounterComponent implements OnInit {
   private fb = inject(FormBuilder);
   private ref = inject(DynamicDialogRef);
   private branchService = inject(BranchService);
-  private userService = inject(UserService);
   private counterService = inject(CounterService);
   counter: Counter | undefined = inject(DynamicDialogConfig).data;
 
   branches = signal<SelectOption<string>[]>([]);
-  users = signal<SelectOption<string>[]>([]);
   services = signal<serviceResponse[]>([]);
 
   FormDesk: FormGroup = this.fb.nonNullable.group({
-    user: [null],
+    ip: ['', Validators.required],
     number: ['', Validators.required],
     branch: ['', Validators.required],
-    services: ['', [Validators.required, minLengthArray(1)]],
+    services: [
+      '',
+      [Validators.required, CustomFormValidators.minLengthArray(1)],
+    ],
   });
-
-  constructor() {
-    console.log(this.counter);
-  }
 
   ngOnInit(): void {
     this._loadFormData();
@@ -88,29 +85,19 @@ export class CounterComponent implements OnInit {
     this._getBranchServices(id);
   }
 
-  searchUser(value: string) {
-    this.userService.searchForAssign(value).subscribe((users) => {
-      this.users.set(
-        users.map(({ id, fullname }) => ({ label: fullname, value: id }))
-      );
-    });
-  }
-
-  selectUser(id: string ) {
+  selectUser(id: string) {
     this.FormDesk.get('user')?.setValue(id);
   }
 
   private _loadFormData() {
     if (!this.counter) return;
-    const { services, user, branch, ...props } = this.counter;
+    const { services, branch, ...props } = this.counter;
     this._getBranchServices(branch.id);
     this.FormDesk.removeControl('branch');
     this.FormDesk.patchValue({
       ...props,
-      user: user?.id,
       services: services.map(({ id }) => id),
     });
-    this.users.set([...(user ? [{ label: user.fullname, value: user.id }] : [])]);
   }
 
   private _getBranchServices(id: string) {

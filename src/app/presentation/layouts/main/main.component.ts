@@ -9,9 +9,10 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map, shareReplay, tap } from 'rxjs';
 import { ToolbarComponent } from '../../components';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+import { AuthService } from '../../services';
 
 @Component({
-  selector: 'app-administration',
+  selector: 'app-main',
   standalone: true,
   imports: [
     CommonModule,
@@ -20,13 +21,13 @@ import { SidebarComponent } from '../../components/sidebar/sidebar.component';
     PrimengModule,
     SidebarModule,
     ToolbarComponent,
-    SidebarComponent
+    SidebarComponent,
   ],
-  templateUrl: './administration.component.html',
-  styleUrl: './administration.component.scss',
+  templateUrl: './main.component.html',
+  styleUrl: './main.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdministrationComponent {
+export class MainComponent {
   private breakpointObserver = inject(BreakpointObserver);
 
   private layoutService = inject(LayoutService);
@@ -36,39 +37,6 @@ export class AdministrationComponent {
     map((result) => result.matches),
     shareReplay()
   );
-
-  items: MenuItem[] = [
-    {
-      label: 'Administracion',
-      icon: 'pi pi-fw pi-box',
-      items: [],
-    },
-    {
-      icon: 'pi pi-th-large',
-      label: 'Categorisssas',
-      routerLink: 'categories',
-    },
-    {
-      icon: 'pi pi-list-check',
-      label: 'Servicios',
-      routerLink: 'services',
-    },
-    {
-      icon: 'pi pi-warehouse',
-      label: 'Sucursales',
-      routerLink: 'branches',
-    },
-    {
-      icon: 'pi pi-shop',
-      label: 'Ventanillas',
-      routerLink: 'counters',
-    },
-    {
-      icon: 'pi pi-users',
-      label: 'Usuarios',
-      routerLink: 'users',
-    },
-  ];
 
   get containerClass() {
     return {

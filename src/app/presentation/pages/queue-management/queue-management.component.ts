@@ -14,13 +14,14 @@ import {
 } from '../../services';
 import { PrimengModule } from '../../../primeng.module';
 import { ServiceRequest } from '../../../domain/models';
-import { ProfileComponent } from '../../components';
+import { ProfileComponent, StopwatchComponent } from '../../components';
 import { RequestStatus } from '../../../domain/enum/request-status.enum';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-queue-management',
   standalone: true,
-  imports: [CommonModule, PrimengModule, ProfileComponent],
+  imports: [CommonModule, PrimengModule, ProfileComponent, StopwatchComponent],
   templateUrl: './queue-management.component.html',
   styleUrl: './queue-management.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,12 +33,17 @@ export class QueueManagementComponent implements OnInit {
 
   requests = signal<ServiceRequest[]>([]);
   currentRequest = signal<ServiceRequest | null>(null);
+  counter = this.serviceDeksService.counter();
+  isDialogOpen: boolean = false;
 
   enableNextButton = computed(
     () => this.requests().length > 0 && this.currentRequest() === null
   );
 
+  timer = new Subject<string>();
+
   constructor() {
+    this._connect();
     this._listenNewRequest();
     this._listenHandleRequest();
   }
@@ -58,10 +64,10 @@ export class QueueManagementComponent implements OnInit {
   }
 
   getNextRequest(): void {
-    this.serviceDeksService.nextRequest().subscribe((request) => {
-      this.currentRequest.set(request);
-      this._removeRequest(request.id);
-    });
+    // this.serviceDeksService.nextRequest().subscribe((request) => {
+    //   this.currentRequest.set(request);
+    //   if (request) this._removeRequest(request.id);
+    // });
   }
 
   updateRequest(status: RequestStatus) {
@@ -76,6 +82,16 @@ export class QueueManagementComponent implements OnInit {
   notify() {
     if (!this.currentRequest()) return;
     this.groupwareService.notifyRequest(this.currentRequest()!);
+  }
+
+  showDialog() {
+    this.isDialogOpen = true;
+  }
+
+  private _connect() {
+    if (!this.counter) return;
+
+    this.groupwareService.connect(this.counter);
   }
 
   private _listenNewRequest() {
@@ -121,9 +137,5 @@ export class QueueManagementComponent implements OnInit {
 
   get status() {
     return RequestStatus;
-  }
-
-  get counterNumber() {
-    return this.authService.counterNumber();
   }
 }

@@ -4,6 +4,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { ProfileComponent } from '../profile/profile.component';
 import { LayoutService } from '../../services/app.layout.service';
 import { MenuItem } from 'primeng/api';
+import { AuthService } from '../../services';
 
 @Component({
   selector: 'app-toolbar',
@@ -13,31 +14,6 @@ import { MenuItem } from 'primeng/api';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent {
-  items: MenuItem[] = [
-    {
-      icon: 'pi pi-th-large',
-      label: 'Categorias',
-      routerLink: 'categories',
-    },
-    {
-      icon: 'pi pi-list-check',
-      label: 'Servicios',
-      routerLink: 'services',
-    },
-    {
-      icon: 'pi pi-warehouse',
-      label: 'Sucursales',
-      routerLink: 'branches',
-    },
-    {
-      icon: 'pi pi-shop',
-      label: 'Ventanillas',
-      routerLink: 'counters',
-    },
-    {
-      icon: 'pi pi-users',
-      label: 'Usuarios',
-      routerLink: 'users',
-    },
-  ];
+  private authService = inject(AuthService);
+  items = this.authService.menu();
 }

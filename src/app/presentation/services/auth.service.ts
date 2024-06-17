@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { environment } from '../../../environments/environment';
-import { JwtPayload } from '../../infrastructure/interfaces';
+import { JwtPayload, menuFrontend } from '../../infrastructure/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -13,9 +13,10 @@ export class AuthService {
   private http = inject(HttpClient);
 
   private _user = signal<JwtPayload | null>(null);
+  private _menu = signal<menuFrontend[]>([]);
 
   user = computed(() => this._user());
-  counterNumber = signal<number | null>(null);
+  menu = computed(() => this._menu());
 
   constructor() {}
 
@@ -47,21 +48,19 @@ export class AuthService {
     return this.http
       .get<{
         token: string;
-        counterNumber?: number;
+        menu: menuFrontend[];
       }>(this.url)
       .pipe(
-        map(({ token, counterNumber }) =>
-          this._setAuthentication(token, counterNumber)
-        ),
+        tap(({ menu }) => this._menu.set(menu)),
+        map(({ token }) => this._setAuthentication(token)),
         catchError(() => {
           return of(false);
         })
       );
   }
 
-  private _setAuthentication(token: string, counterNumber?: number): boolean {
+  private _setAuthentication(token: string): boolean {
     this._user.set(jwtDecode(token));
-    this.counterNumber.set(counterNumber ?? null);
     localStorage.setItem('token', token);
     return true;
   }

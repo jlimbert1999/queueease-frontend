@@ -7,5 +7,7 @@ export * from './administration/user-response.interface';
 export * from './customer/menu-response.interface';
 
 export * from './auth/jwt-payload.interface';
+export * from './auth/menu-frontend.interface';
 export * from './customer/service-request-response.interface';
 export * from './ticketing/advertisement.interface';
+export * from './ticketing/counter-detail.interface';

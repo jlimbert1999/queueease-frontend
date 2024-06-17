@@ -1,1 +1,1 @@
-export * from '../layouts/administration/administration.component'
+export * from '../layouts/main/main.component'

@@ -1,7 +1,11 @@
 <div class="p-dialog-content">
   <form [formGroup]="FormDesk">
     <div class="formgrid grid">
-      <div class="field col-12 md:col-3">
+      <div class="field col-12 md:col-8">
+        <label for="ip">Dirreccion IP</label>
+        <input type="text" class="w-full" pInputText formControlName="ip" />
+      </div>
+      <div class="field col-12 md:col-4">
         <label for="number-desk">Numero</label>
         <p-inputNumber
           styleClass="w-full"
@@ -50,17 +54,6 @@
           selectedItemsLabel="{0} servicios seleccionados"
           emptyFilterMessage="Sin resultados"
           emptyMessage="Buscar servicios"
-        />
-      </div>
-      <div class="field col-12">
-        <label for="list-users">Usuario</label>
-        <dropdown
-          id="list-users"
-          placeholder="Buscar usuario"
-          [value]="FormDesk.get('user')?.value"
-          [options]="users()"
-          (onSearch)="searchUser($event)"
-          (onSelect)="selectUser($event)"
         />
       </div>
     </div>

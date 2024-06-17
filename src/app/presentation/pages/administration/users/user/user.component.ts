@@ -19,7 +19,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { PrimengModule } from '../../../../../primeng.module';
 import { userResponse } from '../../../../../infrastructure/interfaces';
 import { UserService } from '../../../../services';
-import { minLengthArray } from '../../../../../helpers';
+import { CustomFormValidators } from '../../../../../helpers';
 @Component({
   selector: 'app-user',
   standalone: true,
@@ -44,7 +44,10 @@ export class UserComponent implements OnInit {
     fullname: ['', Validators.required],
     login: ['', Validators.required],
     password: ['', Validators.required],
-    roles: [['officer'], [Validators.required, minLengthArray(1)]],
+    roles: [
+      ['officer'],
+      [Validators.required, CustomFormValidators.minLengthArray(1)],
+    ],
   });
 
   constructor() {
