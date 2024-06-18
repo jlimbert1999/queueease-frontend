@@ -14,7 +14,7 @@ import { ServiceRequest } from '../../../domain/models';
 })
 export class AnnouncementService {
   private readonly url = `${environment.base_url}/branches`;
-  private socket!: Socket;
+  private socket: Socket;
   constructor() {
     this.socket = io(this.url, {
       auth: { branch: JSON.parse(localStorage.getItem('branch') ?? '') },
@@ -36,7 +36,7 @@ export class AnnouncementService {
 
   listenAnncounce(): Observable<advertisementResponse> {
     return new Observable((observable) => {
-      this.socket?.on('announce', (data: advertisementResponse) => {
+      this.socket.on('announce', (data: advertisementResponse) => {
         observable.next(data);
       });
     });

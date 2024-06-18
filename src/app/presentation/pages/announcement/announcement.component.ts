@@ -3,9 +3,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  ElementRef,
   OnInit,
-  ViewChild,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -29,11 +28,11 @@ import { VideoPlayerComponent } from '../../components/video-player/video-player
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnnouncementComponent implements OnInit {
-  private announcementssocketService = inject(AnnouncementService);
-  private textToSpeekService = inject(SoundService);
+  private announcementService = inject(AnnouncementService);
+  private soundService = inject(SoundService);
   private configService = inject(ConfigService);
-  private destroyRef = inject(DestroyRef);
   private customerService = inject(CustomerService);
+  private destroyRef = inject(DestroyRef);
 
   private soundList: Record<string, string> = {};
 
@@ -51,24 +50,31 @@ export class AnnouncementComponent implements OnInit {
   }
 
   private _listenAnnoucement(): void {
-    this.announcementssocketService
+    this.announcementService
       .listenAnncounce()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         filter((request) => !this.soundList[request.id]),
         tap((request) => {
-          this.advertisements.update((values) => [request, ...values]);
+          this.soundList[request.id] = request.code;
+          this.addAdvertisement(request);
         }),
-        tap((request) => (this.soundList[request.id] = request.code)),
         concatMap((request) =>
-          this.textToSpeekService.speek(request).pipe(
-            finalize(() => {
-              delete this.soundList[request.id];
-            })
-          )
+          this.soundService
+            .speek(request)
+            .pipe(finalize(() => delete this.soundList[request.id]))
         )
       )
       .subscribe();
+  }
+
+  private addAdvertisement(advertisement: advertisementResponse) {
+    this.advertisements.update((values) => {
+      const updated = values.filter(({ id }) => id !== advertisement.id);
+      updated.unshift(advertisement);
+      if (values.length > 7) values.pop();
+      return updated;
+    });
   }
 
   private _getAdvertisement() {
@@ -79,9 +85,5 @@ export class AnnouncementComponent implements OnInit {
         this.message.set(message);
         this.isLoaging.set(false);
       });
-  }
-
-  private new(advertisement: advertisementResponse) {
-    
   }
 }

@@ -112,4 +112,8 @@ export class AttentionComponent implements OnInit {
       closable: false,
     });
   }
+  print() {
+    // this.pdfService.generateTicket({ name: '', code: '', date: '' });
+   
+  }
 }

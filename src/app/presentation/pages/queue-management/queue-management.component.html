@@ -56,7 +56,7 @@
         label="Siguiente ficha"
         icon="pi pi-angle-double-right"
         size="large"
-        [disabled]="!enableNextButton()"
+        [disabled]="!isEnabledNextButton()"
         (onClick)="getNextRequest()"
       />
       <p-button
@@ -64,6 +64,7 @@
         label="Volver a Llamar"
         icon="pi pi-volume-up"
         size="large"
+        [loading]="isNotifying()"
         [disabled]="!currentRequest()"
         (onClick)="notify()"
       />

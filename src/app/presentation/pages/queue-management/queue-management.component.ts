@@ -7,7 +7,6 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Subject } from 'rxjs';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 
@@ -46,13 +45,13 @@ export class QueueManagementComponent implements OnInit {
 
   requests = signal<ServiceRequest[]>([]);
   currentRequest = signal<ServiceRequest | null>(null);
-  counter = this.serviceDeksService.counter();
+  readonly counter = this.serviceDeksService.counter();
   isDialogOpen: boolean = false;
 
-  enableNextButton = computed(
+  isNotifying = signal<boolean>(false);
+  isEnabledNextButton = computed(
     () => this.requests().length > 0 && this.currentRequest() === null
   );
-  timer = new Subject<string>();
 
   constructor() {
     this._connect();
@@ -99,6 +98,7 @@ export class QueueManagementComponent implements OnInit {
 
   notify() {
     if (!this.currentRequest() || !this.counter) return;
+    this.isNotifying.set(true);
     const { code, id } = this.currentRequest()!;
     const { number, branch } = this.counter!;
     this.groupwareService.notifyRequest(branch.id, {
@@ -106,6 +106,7 @@ export class QueueManagementComponent implements OnInit {
       code,
       counterNumber: number,
     });
+    setTimeout(() => this.isNotifying.set(false), 5000);
   }
 
   showDialog() {

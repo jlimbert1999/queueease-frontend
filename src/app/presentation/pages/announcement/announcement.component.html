@@ -1,10 +1,11 @@
 <div class="h-screen flex flex-column" style="background-color: #001233">
   <div class="flex flex-1 flex-column-reverse sm:flex-row">
     <div class="flex flex-1 flex-column p-4 overflow-auto">
-      @for (item of advertisements(); track $index) {
+      @for (item of advertisements(); track item; let index = $index) {
       <div
-        class="border-1 flex-none border-round notification"
+        class="border-1 flex-none border-round notification fadeinleft animation-duration-500"
         style="background-color: #bde0fe"
+        [ngClass]="{ 'animate-blink': index === 0 }"
       >
         <div class="border-round p-3 h-full w-full relative">
           <div class="flex justify-content-end align-items-center h-full">
@@ -17,7 +18,7 @@
             style="background-color: #4361ee"
           >
             <span class="text-4xl font-medium text-white">
-              FICHA {{ item.code }}
+              FICHA: {{ item.code }}
             </span>
           </div>
         </div>

@@ -34,6 +34,6 @@ export class PdfService {
       ],
     };
 
-    pdfMake.createPdf(docDefinition).print();
+    pdfMake.createPdf(docDefinition).print({ autoPrint: true });
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { concatMap, delay, from, of, tap } from 'rxjs';
+
 import { numerToWords } from '../../helpers';
 import { advertisementResponse } from '../../infrastructure/interfaces';
 
@@ -7,6 +8,7 @@ interface playlist {
   path: string;
   duration: number;
 }
+
 @Injectable({
   providedIn: 'root',
 })
