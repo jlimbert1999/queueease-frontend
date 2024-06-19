@@ -11,3 +11,4 @@ export * from './customer/customer.service';
 export * from './sound.service';
 export * from './sockets/groupware.service';
 export * from './sockets/announcement.service';
+export * from './print.service';

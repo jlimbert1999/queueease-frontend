@@ -8,6 +8,7 @@
   class="flex justify-content-center align-content-center flex-wrap gap-2 sm:gap-6"
   style="height: 85vh"
 >
+<button (click)="print()">Imprimit</button>
   @if(!selectedService()){ @for (item of currentOption(); track $index) {
   <div class="w-30rem h-6rem mx-4 sm:mx-0">
     <p-button

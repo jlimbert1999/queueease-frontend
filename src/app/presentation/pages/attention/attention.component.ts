@@ -11,7 +11,12 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, Subscription, debounceTime, finalize, switchMap } from 'rxjs';
 import { PrimengModule } from '../../../primeng.module';
-import { ConfigService, PdfService, CustomerService } from '../../services';
+import {
+  ConfigService,
+  PdfService,
+  CustomerService,
+  PrintService,
+} from '../../services';
 import { menuResponse } from '../../../infrastructure/interfaces';
 import { LoaderComponent } from '../../components';
 import { numerToWords } from '../../../helpers';
@@ -33,6 +38,7 @@ export class AttentionComponent implements OnInit {
   private pdfService = inject(PdfService);
   private destroyRef = inject(DestroyRef);
   private messageService = inject(MessageService);
+  private printService = inject(PrintService);
 
   selectedService = signal<string | null>(null);
   stackOptions = signal<menuResponse[]>([]);
@@ -112,8 +118,9 @@ export class AttentionComponent implements OnInit {
       closable: false,
     });
   }
-  print() {
-    // this.pdfService.generateTicket({ name: '', code: '', date: '' });
-   
+  async print() {
+    await this.printService.print();
   }
+
+ 
 }

@@ -11,7 +11,7 @@ import { MenuItem } from 'primeng/api';
 
 import { brachResponse } from '../../../infrastructure/interfaces';
 import { DropdownComponent, SelectOption } from '../../components';
-import { ConfigService, CustomerService } from '../../services';
+import { ConfigService, CustomerService, PrintService } from '../../services';
 import { PrimengModule } from '../../../primeng.module';
 
 @Component({
@@ -26,6 +26,7 @@ export class DashboardComponent {
   private router = inject(Router);
   private configService = inject(ConfigService);
   private customerService = inject(CustomerService);
+  private printService = inject(PrintService);
 
   branches = signal<SelectOption<brachResponse>[]>([]);
   currentBranch = signal<brachResponse | null>(null);
@@ -103,5 +104,9 @@ export class DashboardComponent {
 
   selectBranch(branch: brachResponse | null) {
     this.configService.updateBranch(branch!);
+  }
+
+  print() {
+    this.printService.print();
   }
 }
