@@ -22,7 +22,6 @@ import { ServiceService } from '../../../services';
   templateUrl: './services.component.html',
   styleUrl: './services.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class ServicesComponent implements OnInit {
   private dialogService = inject(DialogService);

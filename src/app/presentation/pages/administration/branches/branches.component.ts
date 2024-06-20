@@ -21,7 +21,6 @@ import { SecureUrlPipe } from '../../../pipes/secure-url.pipe';
   templateUrl: './branches.component.html',
   styleUrl: './branches.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class BranchesComponent {
   private branchService = inject(BranchService);

@@ -20,7 +20,6 @@ import { userResponse } from '../../../../infrastructure/interfaces';
   imports: [CommonModule, PrimengModule],
   templateUrl: './users.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class UsersComponent implements OnInit {
   private dialogService = inject(DialogService);

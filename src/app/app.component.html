@@ -1,4 +1,8 @@
-<div class="h-screen">
-    <router-outlet /> 
-    <p-toast />
+<!-- @if(alertService.isLoading()|async){
+<p-progressBar mode="indeterminate" [style]="{ height: '6px' }" />
+} -->
+<div>
+  <router-outlet />
 </div>
+
+<p-toast />

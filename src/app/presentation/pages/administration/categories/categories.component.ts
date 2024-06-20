@@ -20,7 +20,6 @@ import { categoryResponse } from '../../../../infrastructure/interfaces';
   imports: [CommonModule, PrimengModule, CategoryComponent],
   templateUrl: './categories.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class CategoriesComponent implements OnInit {
   private categoryService = inject(CategoryService);

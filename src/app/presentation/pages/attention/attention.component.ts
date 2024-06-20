@@ -11,12 +11,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, Subscription, debounceTime, finalize, switchMap } from 'rxjs';
 import { PrimengModule } from '../../../primeng.module';
-import {
-  ConfigService,
-  PdfService,
-  CustomerService,
-  PrintService,
-} from '../../services';
+import { ConfigService, CustomerService, PrintService } from '../../services';
 import { menuResponse } from '../../../infrastructure/interfaces';
 import { LoaderComponent } from '../../components';
 import { numerToWords } from '../../../helpers';
@@ -35,7 +30,6 @@ import { MessageService } from 'primeng/api';
 export class AttentionComponent implements OnInit {
   private customerService = inject(CustomerService);
   private configService = inject(ConfigService);
-  private pdfService = inject(PdfService);
   private destroyRef = inject(DestroyRef);
   private messageService = inject(MessageService);
   private printService = inject(PrintService);
@@ -77,6 +71,7 @@ export class AttentionComponent implements OnInit {
         this.selectedService.set(null);
         this.stackOptions.update((values) => [values[0]]);
         this._showRequestDone();
+        this.print();
       });
   }
 
@@ -119,8 +114,8 @@ export class AttentionComponent implements OnInit {
     });
   }
   async print() {
-    await this.printService.print();
+    this.printService.print().subscribe((resp) => {
+      console.log(resp);
+    });
   }
-
- 
 }

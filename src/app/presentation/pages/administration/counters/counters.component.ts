@@ -21,7 +21,6 @@ import { Counter } from '../../../../domain/models';
   templateUrl: './counters.component.html',
   styleUrl: './counters.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class CountersComponent implements OnInit {
   private counterService = inject(CounterService);

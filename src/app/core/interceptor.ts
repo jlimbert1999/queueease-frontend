@@ -6,8 +6,8 @@ import {
 } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { Observable, catchError, throwError } from 'rxjs';
-import { AuthService } from '../presentation/services';
+import { Observable, catchError, finalize, throwError } from 'rxjs';
+import { AlertService, AuthService } from '../presentation/services';
 import { MessageService } from 'primeng/api';
 import { handleHttpErrorMessage } from '../helpers';
 
@@ -18,6 +18,7 @@ export function loggingInterceptor(
   const router = inject(Router);
   const authService = inject(AuthService);
   const messageService = inject(MessageService);
+  const alertService = inject(AlertService);
 
   const reqWithHeader = req.clone({
     headers: req.headers.append(
@@ -25,6 +26,8 @@ export function loggingInterceptor(
       `Bearer ${localStorage.getItem('token') || ''}`
     ),
   });
+
+  alertService.showLoading();
   return next(reqWithHeader).pipe(
     catchError((error) => {
       if (error instanceof HttpErrorResponse) {
@@ -36,6 +39,10 @@ export function loggingInterceptor(
         });
       }
       return throwError(() => Error);
+    }),
+    finalize(() => {
+      console.log('end');
+      alertService.closeLoading();
     })
   );
 }
