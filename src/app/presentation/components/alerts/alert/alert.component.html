@@ -3,7 +3,14 @@
   <div
     class="w-full sm:w-4rem flex align-items-center justify-content-center py-3"
   >
+    @switch (config.icon) { @case ('error') {
+    <i class="pi pi-exclamation-triangle text-2xl text-red-600"></i>
+    } @case ('warning') {
     <i class="pi pi-lock text-2xl"></i>
+    } @default {
+    <i class="pi pi-info text-2xl"></i>
+
+    } }
   </div>
   }
 

@@ -1,14 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PrintService {
-  private readonly url = 'http://localhost:8000';
+  private readonly url = environment.printer_url;
   private readonly http = inject(HttpClient);
 
-  print() {
-    return this.http.post(`${this.url}/api/printer`, {});
+  print(code: string, description: string, date: string) {
+    return this.http.post<{ message: string }>(this.url, {
+      code,
+      description,
+      date,
+    });
+  }
+
+  check() {
+    return this.http.get<{ message: string }>(`${this.url}/check`);
   }
 }

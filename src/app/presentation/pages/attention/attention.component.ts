@@ -8,15 +8,25 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, Subscription, debounceTime, finalize, switchMap } from 'rxjs';
-import { PrimengModule } from '../../../primeng.module';
-import { ConfigService, CustomerService, PrintService } from '../../services';
-import { menuResponse } from '../../../infrastructure/interfaces';
-import { LoaderComponent } from '../../components';
-import { numerToWords } from '../../../helpers';
-import { SoundService } from '../../services/sound.service';
+import {
+  Subject,
+  catchError,
+  debounceTime,
+  finalize,
+  pipe,
+  throwError,
+} from 'rxjs';
 import { MessageService } from 'primeng/api';
+
+import {
+  AlertService,
+  ConfigService,
+  CustomerService,
+  PrintService,
+} from '../../services';
+import { menuResponse } from '../../../infrastructure/interfaces';
+import { PrimengModule } from '../../../primeng.module';
+import { LoaderComponent } from '../../components';
 
 @Component({
   selector: 'app-attention',
@@ -33,6 +43,7 @@ export class AttentionComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private messageService = inject(MessageService);
   private printService = inject(PrintService);
+  private alertService = inject(AlertService);
 
   selectedService = signal<string | null>(null);
   stackOptions = signal<menuResponse[]>([]);
@@ -48,14 +59,8 @@ export class AttentionComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    this._chechPrinter();
     this._setupMenu();
-  }
-
-  speak(text: string): void {
-    const synth = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'es-ES';
-    synth.speak(utterance);
   }
 
   createRequest(priority: number) {
@@ -102,6 +107,18 @@ export class AttentionComponent implements OnInit {
     });
   }
 
+  private _chechPrinter() {
+    this.printService.check().subscribe({
+      error: () => {
+        this.alertService.show({
+          header: 'Error Impresora',
+          description: 'No se ha detectado ninguna impresora',
+          icon: 'error',
+        });
+      },
+    });
+  }
+
   private _showRequestDone() {
     this.messageService.clear();
     this.messageService.add({
@@ -113,9 +130,10 @@ export class AttentionComponent implements OnInit {
       closable: false,
     });
   }
+  
   async print() {
-    this.printService.print().subscribe((resp) => {
-      console.log(resp);
-    });
+    // this.printService.print().subscribe((resp) => {
+    //   console.log(resp);
+    // });
   }
 }

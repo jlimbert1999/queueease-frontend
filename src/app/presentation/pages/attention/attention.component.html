@@ -8,7 +8,6 @@
   class="flex justify-content-center align-content-center flex-wrap gap-2 sm:gap-6"
   style="height: 85vh"
 >
-<button (click)="print()">Imprimit</button>
   @if(!selectedService()){ @for (item of currentOption(); track $index) {
   <div class="w-30rem h-6rem mx-4 sm:mx-0">
     <p-button
@@ -49,4 +48,31 @@
   }
 </div>
 
-<p-toast key="request-done"  position="bottom-center"  />
+<!-- <p-toast key="request-done" position="bottom-center" />-->
+<!-- 
+<div class="flex flex-column h-screen">
+  <div class="flex justify-content-between h-4rem m-2 border-1">
+    <p-button (onClick)="goBack()" [disabled]="isBackDisabled" [text]="true">
+      <i class="pi pi-arrow-left text-white text-bold text-5xl"></i>
+    </p-button>
+    <div class="flex align-items-center font-bold text-white text-2xl">
+      SELECCIONE UN SERVICIO
+    </div>
+  </div>
+  <div class="flex-1 align-content-center">
+    <div class="flex justify-content-center flex-wrap column-gap-6 row-gap-2">
+      @for (item of currentOption(); track $index) {
+      <p-button
+        class="w-30rem h-6rem"
+        styleClass="w-full h-full text-4xl"
+        [label]="item.name"
+        [text]="true"
+        [raised]="true"
+        (onClick)="selectOption(item)"
+      />
+     
+
+      }
+    </div>
+  </div>
+</div> -->

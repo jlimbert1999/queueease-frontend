@@ -7,8 +7,10 @@ interface alertConfig {
   header: string;
   description: string;
   width?: number;
-  icon?: string;
+  icon?: icons;
 }
+
+type icons = 'error' | 'warning' | 'success';
 
 @Injectable({
   providedIn: 'root',
