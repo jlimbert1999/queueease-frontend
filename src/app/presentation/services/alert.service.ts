@@ -7,6 +7,7 @@ interface alertConfig {
   header: string;
   description: string;
   width?: number;
+  icon?: string;
 }
 
 @Injectable({
@@ -18,10 +19,10 @@ export class AlertService {
   isLoading = signal(new BehaviorSubject<boolean>(false));
   constructor() {}
 
-  show({ header, description, width = 30 }: alertConfig) {
+  show({ header, width = 30, ...props }: alertConfig) {
     this.dialogService.open(AlertComponent, {
       header: header,
-      data: description,
+      data: props,
       width: `${width}vw`,
       breakpoints: {
         '960px': '90vw',

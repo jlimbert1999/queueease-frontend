@@ -2,6 +2,10 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 
+interface config {
+  description: string;
+  icon?: string;
+}
 @Component({
   selector: 'alert',
   standalone: true,
@@ -10,5 +14,5 @@ import { DynamicDialogConfig } from 'primeng/dynamicdialog';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertComponent {
-  description = inject(DynamicDialogConfig).data;
+  config: config = inject(DynamicDialogConfig).data;
 }

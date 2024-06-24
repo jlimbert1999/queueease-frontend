@@ -2,6 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
+
 import { environment } from '../../../environments/environment';
 import { JwtPayload, menuFrontend } from '../../infrastructure/interfaces';
 
@@ -14,9 +15,11 @@ export class AuthService {
 
   private _user = signal<JwtPayload | null>(null);
   private _menu = signal<menuFrontend[]>([]);
+  private _roles = signal<string[]>([]);
 
   user = computed(() => this._user());
   menu = computed(() => this._menu());
+  roles = computed(() => this._roles());
 
   constructor() {}
 
@@ -27,10 +30,8 @@ export class AuthService {
         password,
       })
       .pipe(
-        map(({ token, redirectTo }) => {
-          this._setAuthentication(token);
-          return redirectTo;
-        })
+        tap(({ token }) => this._setAuthentication(token)),
+        map(({ redirectTo }) => redirectTo)
       );
   }
 
@@ -49,13 +50,16 @@ export class AuthService {
       .get<{
         token: string;
         menu: menuFrontend[];
+        roles: string[];
       }>(this.url)
       .pipe(
-        tap(({ menu }) => this._menu.set(menu)),
+        tap(({ menu, roles }) => {
+          this._menu.set(menu);
+          this._roles.set(roles);
+          console.log(roles);
+        }),
         map(({ token }) => this._setAuthentication(token)),
-        catchError(() => {
-          return of(false);
-        })
+        catchError(() => of(false))
       );
   }
 

@@ -1,3 +1,5 @@
 export * from './branch-config.guard'
-export * from './is-authenticated.guard'
-export * from './is-not-authenticated.guard'
+export * from './auth/is-authenticated.guard'
+export * from './auth/is-not-authenticated.guard'
+export * from './auth/role.guard'
+export * from './counter.guard'

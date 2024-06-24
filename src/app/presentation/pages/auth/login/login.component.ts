@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+
 import { PrimengModule } from '../../../../primeng.module';
 import { AuthService } from '../../../services';
 
@@ -25,7 +26,7 @@ export class LoginComponent {
   login() {
     const { login, password } = this.LoginForm.value;
     this.authService.login(login!, password!).subscribe((url) => {
-      this.router.navigate([url]);
+      this.router.navigateByUrl(url);
     });
   }
 }

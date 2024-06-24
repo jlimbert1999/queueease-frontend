@@ -8,13 +8,18 @@ import { AttentionComponent } from './presentation/pages/attention/attention.com
 import { InformationComponent } from './presentation/layouts/information/information.component';
 import { DashboardComponent } from './presentation/pages/dashboard/dashboard.component';
 import { LoginComponent } from './presentation/pages/auth/login/login.component';
-import { isAuthenticatedGuard } from './presentation/guards/is-authenticated.guard';
+import { isAuthenticatedGuard } from './presentation/guards/auth/is-authenticated.guard';
 import { QueueManagementComponent } from './presentation/pages/queue-management/queue-management.component';
 import { AnnouncementComponent } from './presentation/pages/announcement/announcement.component';
-import { branchConfigGuard } from './presentation/guards/branch-config.guard';
-import { isNotAuthenticatedGuard } from './presentation/guards';
 import { UsersComponent } from './presentation/pages/administration/users/users.component';
-import { counterGuard } from './presentation/guards/counter.guard';
+import { UnauthorizedComponent } from './presentation/pages/errors/unauthorized/unauthorized.component';
+
+import {
+  isNotAuthenticatedGuard,
+  roleGuard,
+  counterGuard,
+  branchConfigGuard,
+} from './presentation/guards';
 
 export const routes: Routes = [
   {
@@ -33,6 +38,8 @@ export const routes: Routes = [
     children: [
       {
         path: 'administration',
+        data: { role: 'admin' },
+        canActivate: [roleGuard],
         children: [
           { path: '', redirectTo: 'users', pathMatch: 'full' },
           { path: 'categories', component: CategoriesComponent },
@@ -64,5 +71,7 @@ export const routes: Routes = [
     path: 'information',
     component: InformationComponent,
   },
+  { path: 'unauthorized', component: UnauthorizedComponent },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '**', redirectTo: 'dashboard' },
 ];
