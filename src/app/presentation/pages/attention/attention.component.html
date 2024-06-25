@@ -1,4 +1,4 @@
-<div class="card flex justify-content-between flex-wrap" style="height: 6rem">
+<!-- <div class="card flex justify-content-between flex-wrap" style="height: 6rem">
   <p-button class="flex p-3" (onClick)="goBack()" [disabled]="isBackDisabled">
     <i class="pi pi-arrow-left" style="font-size: 1.5rem"></i>
   </p-button>
@@ -48,31 +48,19 @@
   }
 </div>
 
-<!-- <p-toast key="request-done" position="bottom-center" />-->
-<!-- 
+ -->
 <div class="flex flex-column h-screen">
-  <div class="flex justify-content-between h-4rem m-2 border-1">
-    <p-button (onClick)="goBack()" [disabled]="isBackDisabled" [text]="true">
-      <i class="pi pi-arrow-left text-white text-bold text-5xl"></i>
-    </p-button>
-    <div class="flex align-items-center font-bold text-white text-2xl">
-      SELECCIONE UN SERVICIO
-    </div>
-  </div>
-  <div class="flex-1 align-content-center">
-    <div class="flex justify-content-center flex-wrap column-gap-6 row-gap-2">
-      @for (item of currentOption(); track $index) {
-      <p-button
-        class="w-30rem h-6rem"
-        styleClass="w-full h-full text-4xl"
-        [label]="item.name"
-        [text]="true"
-        [raised]="true"
-        (onClick)="selectOption(item)"
-      />
-     
+  <div class="w-full surface-400 fixed" style="height: 40px">HOla</div>
+  <div class="flex-1 p-3" style="margin-top: 40px">
+    <div class="flex flex-wrap justify-content-center gap-3 sm:gap-6">
+      @for (item of services; track $index) {
+      <div
+        class="flex align-items-center justify-content-center option bg-primary  hover:shadow-8"
+      >
+        {{ item.name }} Ullamco elit ipsum deserunt aute.
+      </div>
 
       }
     </div>
   </div>
-</div> -->
+</div>

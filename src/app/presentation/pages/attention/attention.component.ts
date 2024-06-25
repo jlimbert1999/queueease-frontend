@@ -55,11 +55,31 @@ export class AttentionComponent implements OnInit {
 
   requestServiceSubscription$ = new Subject<number>();
   isLoading = signal(false);
+  
+  services = [
+    { name: 'Servicio 1', icon: 'path/to/icon1.png' },
+    { name: 'Servicio 2', icon: 'path/to/icon2.png' },
+    { name: 'Servicio 3', icon: 'path/to/icon3.png' },
+    { name: 'Servicio 4', icon: 'path/to/icon3.png' },
+    { name: 'Servicio 6', icon: 'path/to/icon3.png' },
+    { name: 'Servicio 6', icon: 'path/to/icon3.png' },
+    { name: 'Servicio 7', icon: 'path/to/icon3.png' },
+    { name: 'Servicio 8', icon: 'path/to/icon3.png' },
+    { name: 'Ventanilla Servicio 9', icon: 'path/to/icon3.png' },
+    { name: 'Inscripcion catastral', icon: 'path/to/icon3.png' },
+    { name: 'Servicio 11', icon: 'path/to/icon3.png' },
+    { name: 'Mollit minim pariatur ea magna magna. dsds', icon: 'path/to/icon3.png' },
+    { name: 'Servicio 13', icon: 'path/to/icon3.png' },
+    { name: 'Servicio 13', icon: 'path/to/icon3.png' },
+    { name: 'Servicio 13', icon: 'path/to/icon3.png' },
+    { name: 'Servicio 13', icon: 'path/to/icon3.png' },
+    // Agrega más servicios aquí
+  ];
 
   constructor() {}
 
   ngOnInit() {
-    this._chechPrinter();
+    // this._chechPrinter();
     this._setupMenu();
   }
 
