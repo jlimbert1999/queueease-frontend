@@ -56,7 +56,6 @@ export class AuthService {
         tap(({ menu, roles }) => {
           this._menu.set(menu);
           this._roles.set(roles);
-          console.log(roles);
         }),
         map(({ token }) => this._setAuthentication(token)),
         catchError(() => of(false))

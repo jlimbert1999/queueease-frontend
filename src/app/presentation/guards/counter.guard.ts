@@ -13,6 +13,7 @@ export const counterGuard: CanActivateFn = () => {
         alertService.show({
           header: 'Acceso Denegado',
           description:'Solo se puede acceder utilizando un dispositivo previamente autorizado.',
+          icon:'security'
         });
         localStorage.removeItem('token');
         router.navigateByUrl('login');

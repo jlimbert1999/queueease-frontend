@@ -1,65 +1,40 @@
-<!-- <div class="card flex justify-content-between flex-wrap" style="height: 6rem">
-  <p-button class="flex p-3" (onClick)="goBack()" [disabled]="isBackDisabled">
-    <i class="pi pi-arrow-left" style="font-size: 1.5rem"></i>
-  </p-button>
-</div>
-
-<div
-  class="flex justify-content-center align-content-center flex-wrap gap-2 sm:gap-6"
-  style="height: 85vh"
->
-  @if(!selectedService()){ @for (item of currentOption(); track $index) {
-  <div class="w-30rem h-6rem mx-4 sm:mx-0">
-    <p-button
-      class="w-full h-full"
-      styleClass="text-lg md:text-4xl w-full h-full shadow-2 hover:shadow-8"
-      [label]="item.name"
-      [raised]="true"
-      (onClick)="selectOption(item)"
-    ></p-button>
-  </div>
-  } @empty {
-  <p class="t-4xl">SIN OPCIONES</p>
-  } } @else {
-  <div class="flex flex-column row-gap-6">
-    <button
-      class="font-bold option-button"
-      pButton
-      size="large"
-      [text]="true"
-      [raised]="true"
-      [rounded]="true"
-      (click)="createRequest(0)"
-    >
-      ATENCION GENERAL
-    </button>
-    <button
-      class="font-bold option-button"
-      pButton
-      size="large"
-      [text]="true"
-      [raised]="true"
-      [rounded]="true"
-      (click)="createRequest(1)"
-    >
-      3RA. EDAD / DISCAPACIDAD / EMBARAZADAS
-    </button>
-  </div>
-  }
-</div>
-
- -->
 <div class="flex flex-column h-screen">
-  <div class="w-full surface-400 fixed" style="height: 40px">HOla</div>
-  <div class="flex-1 p-3" style="margin-top: 40px">
-    <div class="flex flex-wrap justify-content-center gap-3 sm:gap-6">
-      @for (item of services; track $index) {
-      <div
-        class="flex align-items-center justify-content-center option bg-primary  hover:shadow-8"
-      >
-        {{ item.name }} Ullamco elit ipsum deserunt aute.
-      </div>
+  <div class="w-full fixed border-1 p-2">
+    <div class="flex align-items-center justify-content-between">
+      <p-button [disabled]="isBackDisabled" [text]="true" (onClick)="goBack()">
+        <i class="pi pi-arrow-left sm:text-4xl"></i>
+      </p-button>
+      <div class="font-bold sm:text-4xl">Seleccione una opcion</div>
+      <p-button [disabled]="isBackDisabled" [text]="true" (onClick)="goHome()">
+        <i class="pi pi-home sm:text-4xl"></i>
+      </p-button>
+    </div>
+  </div>
 
+  <div class="flex-1 p-3">
+    <div
+      class="flex flex-wrap justify-content-center align-content-center gap-3 sm:gap-6 h-full"
+    >
+      @if(!selectedService()){ @for (item of currentOption(); track $index) {
+      <div
+        class="option bg-primary hover:shadow-8"
+        (click)="selectOption(item)"
+      >
+        <p class="text-2xl">{{ item.name }}</p>
+      </div>
+      } } @else {
+      <div class="flex flex-column w-full sm:w-6 row-gap-4">
+        @for (item of prioritys; track $index) {
+        <div
+          class="flex align-items-center justify-content-center h-6rem shadow-2 border-round-3xl hover:shadow-8"
+          (click)="createRequest(item.value)"
+        >
+          <span class="font-bold text-primary sm:text-4xl">
+            {{ item.label }}
+          </span>
+        </div>
+        }
+      </div>
       }
     </div>
   </div>

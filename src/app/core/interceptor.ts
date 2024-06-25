@@ -18,7 +18,6 @@ export function loggingInterceptor(
   const router = inject(Router);
   const authService = inject(AuthService);
   const messageService = inject(MessageService);
-  const alertService = inject(AlertService);
 
   const reqWithHeader = req.clone({
     headers: req.headers.append(
@@ -27,7 +26,6 @@ export function loggingInterceptor(
     ),
   });
 
-  alertService.showLoading();
   return next(reqWithHeader).pipe(
     catchError((error) => {
       if (error instanceof HttpErrorResponse) {
@@ -40,9 +38,6 @@ export function loggingInterceptor(
       }
       return throwError(() => Error);
     }),
-    finalize(() => {
-      console.log('end');
-      alertService.closeLoading();
-    })
+    finalize(() => {})
   );
 }

@@ -2,21 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   OnInit,
   computed,
   inject,
   signal,
 } from '@angular/core';
-import {
-  Subject,
-  catchError,
-  debounceTime,
-  finalize,
-  pipe,
-  throwError,
-} from 'rxjs';
-import { MessageService } from 'primeng/api';
+import { delay } from 'rxjs';
 
 import {
   AlertService,
@@ -35,68 +26,49 @@ import { LoaderComponent } from '../../components';
   templateUrl: './attention.component.html',
   styleUrl: './attention.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [MessageService],
 })
 export class AttentionComponent implements OnInit {
   private customerService = inject(CustomerService);
   private configService = inject(ConfigService);
-  private destroyRef = inject(DestroyRef);
-  private messageService = inject(MessageService);
   private printService = inject(PrintService);
   private alertService = inject(AlertService);
 
+  private stackOptions = signal<menuResponse[]>([]);
   selectedService = signal<string | null>(null);
-  stackOptions = signal<menuResponse[]>([]);
   currentOption = computed(() => {
     const index = this.stackOptions().length;
     if (index === 0) return [];
     return this.stackOptions()[index - 1].services;
   });
 
-  requestServiceSubscription$ = new Subject<number>();
-  isLoading = signal(false);
-  
-  services = [
-    { name: 'Servicio 1', icon: 'path/to/icon1.png' },
-    { name: 'Servicio 2', icon: 'path/to/icon2.png' },
-    { name: 'Servicio 3', icon: 'path/to/icon3.png' },
-    { name: 'Servicio 4', icon: 'path/to/icon3.png' },
-    { name: 'Servicio 6', icon: 'path/to/icon3.png' },
-    { name: 'Servicio 6', icon: 'path/to/icon3.png' },
-    { name: 'Servicio 7', icon: 'path/to/icon3.png' },
-    { name: 'Servicio 8', icon: 'path/to/icon3.png' },
-    { name: 'Ventanilla Servicio 9', icon: 'path/to/icon3.png' },
-    { name: 'Inscripcion catastral', icon: 'path/to/icon3.png' },
-    { name: 'Servicio 11', icon: 'path/to/icon3.png' },
-    { name: 'Mollit minim pariatur ea magna magna. dsds', icon: 'path/to/icon3.png' },
-    { name: 'Servicio 13', icon: 'path/to/icon3.png' },
-    { name: 'Servicio 13', icon: 'path/to/icon3.png' },
-    { name: 'Servicio 13', icon: 'path/to/icon3.png' },
-    { name: 'Servicio 13', icon: 'path/to/icon3.png' },
-    // Agrega más servicios aquí
-  ];
-
-  constructor() {}
+  prioritys = [
+    { label: 'Atencion General', value: 0 },
+    { label: '3ra. Edad / Discapacidad / Embarazadas', value: 1 },
+  ] as const;
 
   ngOnInit() {
-    // this._chechPrinter();
     this._setupMenu();
+    this._chechPrinter();
   }
 
   createRequest(priority: number) {
+    const dialogRef = this.alertService.show({
+      header: 'Generando ticket',
+      description: 'Porfavor espere...',
+      icon: 'loading',
+      closable: false,
+    });
     this.customerService
       .createRequest(
         this.selectedService()!,
         this.configService.branch()?.id!,
         priority
       )
-      .pipe(debounceTime(4000))
-      .subscribe((resp) => {
-        console.log(resp);
-        this.selectedService.set(null);
-        this.stackOptions.update((values) => [values[0]]);
-        this._showRequestDone();
-        this.print();
+      .pipe(delay(800))
+      .subscribe((data) => {
+        this._printTicket(data.code, data.description, data.date);
+        this.goHome();
+        dialogRef.close();
       });
   }
 
@@ -115,15 +87,16 @@ export class AttentionComponent implements OnInit {
     });
   }
 
-  get isBackDisabled() {
-    return this.stackOptions().length === 1 && !this.selectedService();
+  goHome() {
+    this.selectedService.set(null);
+    this.stackOptions.update((values) => [values[0]]);
   }
 
   private _setupMenu() {
     const branch = this.configService.branch();
     if (!branch) return;
-    this.customerService.getMenu(branch.id).subscribe((resp) => {
-      this.stackOptions.set([{ name: 'Inicio', services: resp }]);
+    this.customerService.getMenu(branch.id).subscribe((menu) => {
+      this.stackOptions.set([{ name: 'Inicio', services: menu }]);
     });
   }
 
@@ -139,21 +112,11 @@ export class AttentionComponent implements OnInit {
     });
   }
 
-  private _showRequestDone() {
-    this.messageService.clear();
-    this.messageService.add({
-      key: 'request-done',
-      severity: 'success',
-      summary: 'Solicitud realizada',
-      detail: 'Imprimiendo Ticket',
-      life: 1000,
-      closable: false,
-    });
+  private _printTicket(code: string, description: string, date: string) {
+    this.printService.print(code, description, date).subscribe();
   }
-  
-  async print() {
-    // this.printService.print().subscribe((resp) => {
-    //   console.log(resp);
-    // });
+
+  get isBackDisabled() {
+    return this.stackOptions().length === 1 && !this.selectedService();
   }
 }

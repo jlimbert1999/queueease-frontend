@@ -7,9 +7,12 @@
     <i class="pi pi-exclamation-triangle text-2xl text-red-600"></i>
     } @case ('warning') {
     <i class="pi pi-lock text-2xl"></i>
-    } @default {
+    }@case ('loading') {
+    <i class="pi pi-spin pi-spinner text-4xl"></i>
+    } @case ('security') {
+    <i class="pi pi-lock text-2xl"></i>
+    }@default {
     <i class="pi pi-info text-2xl"></i>
-
     } }
   </div>
   }

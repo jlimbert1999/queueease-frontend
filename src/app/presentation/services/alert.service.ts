@@ -8,9 +8,10 @@ interface alertConfig {
   description: string;
   width?: number;
   icon?: icons;
+  closable?: boolean;
 }
 
-type icons = 'error' | 'warning' | 'success';
+type icons = 'error' | 'warning' | 'success' | 'loading' | 'security';
 
 @Injectable({
   providedIn: 'root',
@@ -21,24 +22,15 @@ export class AlertService {
   isLoading = signal(new BehaviorSubject<boolean>(false));
   constructor() {}
 
-  show({ header, width = 30, ...props }: alertConfig) {
-    this.dialogService.open(AlertComponent, {
+  show({ header, width = 30, closable = true, ...props }: alertConfig) {
+    return this.dialogService.open(AlertComponent, {
       header: header,
       data: props,
       width: `${width}vw`,
+      closable: closable,
       breakpoints: {
         '960px': '90vw',
       },
     });
-  }
-
-  showLoading(): void {
-    setTimeout(() => {
-      this.isLoading().next(true);
-    });
-  }
-
-  closeLoading(): void {
-    this.isLoading().next(false);
   }
 }

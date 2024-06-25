@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { formatDate } from '../../helpers';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class PrintService {
     return this.http.post<{ message: string }>(this.url, {
       code,
       description,
-      date,
+      date: formatDate(date),
     });
   }
 

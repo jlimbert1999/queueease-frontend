@@ -55,7 +55,6 @@ export class ServiceService {
 
   update(id: string, form: Object) {
     return this.http.patch<serviceResponse>(`${this.url}/${id}`, form).pipe(
-      tap((rep) => console.log(rep)),
       map((resp) => Service.fromResponse(resp))
     );
   }

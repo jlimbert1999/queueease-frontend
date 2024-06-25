@@ -33,10 +33,13 @@ export class CustomerService {
   }
 
   createRequest(id_service: string, id_branch: string, priority: number) {
-    return this.http.post<{ code: string }>(`${this.url}/request`, {
-      id_service,
-      id_branch,
-      priority,
-    });
+    return this.http.post<{ code: string; description: string; date: string }>(
+      `${this.url}/request`,
+      {
+        id_service,
+        id_branch,
+        priority,
+      }
+    );
   }
 }
