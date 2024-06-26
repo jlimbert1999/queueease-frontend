@@ -3,23 +3,24 @@
     <div class="flex flex-1 flex-column p-4 overflow-auto">
       @for (item of advertisements(); track item; let index = $index) {
       <div
-        class="border-1 flex-none border-round notification fadeinleft animation-duration-500"
+        class="border-2 flex-none border-round notification fadeinleft animation-duration-500"
         style="background-color: #bde0fe"
         [ngClass]="{ 'animate-blink': index === 0 }"
       >
         <div class="border-round p-3 h-full w-full relative">
           <div class="flex justify-content-end align-items-center h-full">
             <span class="text-4xl font-bold text-indigo-600">
-              VENTANILLA: {{ item.counterNumber }}
+              VENTANILLA: {{ item.counterNumber }} 
             </span>
           </div>
           <div
             class="absolute bottom-0 left-0 p-2"
-            style="background-color: #4361ee"
+           
           >
-            <span class="text-4xl font-medium text-white">
-              FICHA: {{ item.code }}
+            <span class="text-4xl font-medium font-bold text-indigo-600">
+              FICHA: {{ item.code }} 
             </span>
+            <span>--></span>
           </div>
         </div>
       </div>
