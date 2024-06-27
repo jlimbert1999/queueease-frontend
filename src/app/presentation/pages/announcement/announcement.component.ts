@@ -18,11 +18,12 @@ import {
 } from '../../services';
 import { advertisementResponse } from '../../../infrastructure/interfaces';
 import { VideoPlayerComponent } from '../../components/video-player/video-player.component';
+import { ClockComponent } from '../../components';
 
 @Component({
   selector: 'app-announcement',
   standalone: true,
-  imports: [CommonModule, VideoPlayerComponent],
+  imports: [CommonModule, VideoPlayerComponent, ClockComponent],
   templateUrl: './announcement.component.html',
   styleUrl: './announcement.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -84,6 +85,7 @@ export class AnnouncementComponent implements OnInit {
         this.videoUrls.set(videos);
         this.message.set(message);
         this.isLoaging.set(false);
+        console.log(videos);
       });
   }
 }

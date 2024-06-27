@@ -1,1 +1,8 @@
-<video #videoPlayer class="w-full" [volume]="0.05" (ended)="playNext()"></video>
+<div class="video-container">
+  <video
+    #videoPlayer
+    class="w-full video-element"
+    [volume]="0.05"
+    (ended)="playNext()"
+  ></video>
+</div>
