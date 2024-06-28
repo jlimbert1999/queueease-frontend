@@ -1,15 +1,5 @@
 <div class="main-container flex flex-column sm:flex-row">
-  <div class="flex-1 p-3 border-1 border-round-xl">
-    <div class="flex align-items-center justify-content-between">
-      <span class="text-3xl">FICHA:</span>
-      <div
-        class="flex align-items-center justify-content-center h-4rem border-1 w-4"
-      >
-        @if(currentRequest()){
-        <span class="text-6xl font-light">{{ currentRequest()?.code }}</span>
-        }
-      </div>
-    </div>
+  <div class="flex-grow-1 p-3 border-1 border-round-xl">
     <p-table
       [value]="requests()"
       [scrollable]="true"
@@ -48,8 +38,39 @@
       </ng-template>
     </p-table>
   </div>
-  <div class="flex w-full sm:w-3">
-    <div class="flex justify-content-between flex-column flex-1 p-3">
+  <div class="w-2">
+    <div class="flex flex-row sm:flex-column sm:flex-wrap h-full">
+      @for (item of [].constructor(6); track $index) {
+      <div class="flex-grow-1 m-2">
+        <p-button
+          styleClass="h-full"
+          label="Siguiente ficha"
+          [disabled]="!isEnabledNextButton()"
+          (onClick)="getNextRequest()"
+        />
+      </div>
+      }
+    </div>
+  </div>
+  <div class="w-4 p-3">
+    <div class="block text-center mb-2 text-orange-300 text-2xl font-semibold">
+      Servicio Actual
+    </div>
+    <div class="block text-center mb-3 font-bold text-blue-600 text-4xl mb-3">
+      Numero de Ticket
+    </div>
+    <div
+      class="flex align-items-center justify-content-center border-3 border-orange-200 border-round-xl h-8rem"
+    >
+      <span class="text-orange-300 text-8xl">VU22</span>
+    </div>
+    <!-- <div class="flex justify-content-between flex-column flex-1 p-3">
+      <p-button>
+        <div class="flex flex-column">
+          <i class="pi pi-user py-3" style="font-size: 3rem"></i>
+          <span class="text-xl">Texto boton</span>
+        </div>
+      </p-button>
       <p-button
         styleClass="w-full"
         label="Siguiente ficha"
@@ -110,7 +131,7 @@
           (onClick)="showDialog()"
         />
       </div>
-    </div>
+    </div> -->
   </div>
 </div>
 <p-confirmDialog #cd>

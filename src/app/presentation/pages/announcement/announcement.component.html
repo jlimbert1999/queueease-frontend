@@ -2,48 +2,60 @@
   <div class="flex-1 flex">
     <div class="col-9">
       <div class="flex flex-column">
-        <div class="flex justify-content-between h-8rem" style="background-color: black">
-          <img src="../../../../assets/img/texto-logo.png" class="h-8rem" alt="">
-          <img src="../../../../assets/img/sigamos-adelante.png" class="h-6rem" alt="">
+        <div
+          class="flex justify-content-center h-8rem"
+          style="background-color: black"
+        >
+          <img
+            src="../../../../assets/img/texto-logo.png"
+            class="h-8rem"
+            alt=""
+          />
         </div>
-        <div class="flex-grow-1 px-8" style="background-color: black;">
+        <div class="flex-grow-1 px-8" style="background-color: black">
           @if(!isLoaging()){
-            <video-player [urls]="videoUrls()" />
-            }
-        </div>
-      </div>
-     
-    </div>
-    <div class="col-3">
-      <div class="flex flex-column h-full">
-        <clock />
-        <div class="py-2">
-          <span class="px-3 block text text-2xl font-semibold">Ultimos Numeros Llamados</span>
-         
-         
-          <span class="px-3 block text font-semibold" style="color: #4059ad">Ultimos Numeros Llamados</span>
-        </div>
-       
-        <div class="flex-grow-1 overflow-auto">
-          @for (item of [].constructor(7); track $index) {
-          <div class="list-item flex border-bottom-3 surface-border">
-            <div
-              class="flex-grow-1 border-bluegray-200 flex align-items-center justify-content-center"
-            >
-              <span class="text-6xl font-bold" style="color: #4059ad">VSD</span>
-            </div>
-            <div
-              class="flex w-3 align-items-center justify-content-center surface-300"
-            >
-              <span class="text-6xl font-semibold">{{ $index }}</span>
-            </div>
-          </div>
+          <video-player [urls]="videoUrls()" />
           }
         </div>
       </div>
     </div>
+    <div class="col-3">
+      <div class="flex flex-column h-full">
+        <div class="theme-color py-2">
+          <clock />
+        </div>
+        <div class="px-2 flex align-items-center border-3 border-white h-4rem">
+         <span class="flex-1 theme-text text-4xl font-bold">
+          <p class="text-center">Ficha</p>
+         </span>
+          <span class="block w-5 text-4xl font-bold text-right theme-text">
+            <p class="text-center">Ventanilla</p>  
+          </span>
+        </div>
+        <div class="flex-grow-1 overflow-auto h-12rem">
+            @for (item of [].constructor(7); track $index) {
+            <div class="list-item flex-none  flex border-bottom-3 surface-border">
+              <div
+                class="flex-grow-1 flex align-items-center justify-content-center"
+              >
+                <span class="text-7xl font-bold theme-text">VSD</span>
+              </div>
+              <div
+                class="flex w-5 align-items-center justify-content-center surface-300"
+              >
+                <span class="text-7xl font-semibold">{{ $index }}</span>
+              </div>
+            </div>
+            }
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="align-content-center border-2 text-3xl h-12rem">
-   
+  <div class="p-2">
+    <div class="marquee">
+      <span class="text-2xl xl:text-7xl font-bold theme-text">
+        {{ message() }}
+      </span>
+    </div>
   </div>
 </div>

@@ -26,7 +26,7 @@ export class ClockComponent implements OnInit {
     timer(0, 1000).subscribe(() => {
       const date = new Date();
       this.label.set({
-        hour: formatDate(date.toISOString(), 'HH:ss'),
+        hour: formatDate(date.toISOString(), 'HH:mm'),
         date: formatDate(date.toISOString(), 'dddd, D [de] MMMM [de] YYYY'),
       });
     });

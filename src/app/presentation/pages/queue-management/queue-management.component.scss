@@ -1,27 +1,21 @@
 .main-container {
-  height: calc(100vh - 80px);
+  height: calc(100vh - 70px);
   overflow: hidden;
 }
 
-@media (max-width: 600px) {
-  .right-button {
-    padding: 0.5rem;
-  }
+// .button-column {
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-around;
+//   height: 80vh;
+//   /* 100% de la altura de la ventana */
+// }
 
-  .p-button-label {
-    display: none;
-  }
+button {
+  margin: 10px 0;
+  /* Espaciado entre los botones */
+}
 
-  .button-text {
-    display: none;
-  }
-
-  .right-button i {
-    font-size: 1.5rem;
-  }
-
-  .right-panel {
-    width: 100px;
-    /* Adjust the width as needed */
-  }
+.option-button {
+  height: calc(100% / 6);
 }
