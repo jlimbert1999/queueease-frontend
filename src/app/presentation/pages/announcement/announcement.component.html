@@ -30,20 +30,20 @@
           </div>
         </div>
         <div class="elements">
-          @for (item of [].constructor(5); track $index) {
+          @for (item of advertisements(); track $index) {
           <div class="flex" [ngClass]="{ 'animate-blink': $index === 0 }">
             <div
               class="flex-grow-1 flex align-items-center justify-content-center"
             >
               <span class="text-xl lg:text-6xl font-bold theme-text">
-                VSD
+                {{item.code}}
               </span>
             </div>
             <div
               class="flex w-4 align-items-center justify-content-center surface-300"
             >
               <span class="text-xl lg:text-6xl font-semibold">
-                {{ $index }}
+                {{ item.counterNumber }}
               </span>
             </div>
           </div>

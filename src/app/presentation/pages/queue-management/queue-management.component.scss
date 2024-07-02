@@ -3,5 +3,35 @@
   display: grid;
   grid-template-rows: repeat(2, 1fr);
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
+  grid-gap: 15px;
+}
+
+
+.list {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  overflow-y: scroll;
+}
+
+
+
+.chatbox {
+  flex: 1;
+  border: 2px solid yellow;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.list {
+  flex: 1 1 0;
+  // border: 2px solid grey;
+  // display: flex;
+  // flex-direction: column;
+  // align-items: flex-start;
+  // gap: 0.5rem;
+  // overflow-y: scroll;
 }

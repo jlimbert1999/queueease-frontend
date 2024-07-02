@@ -1,12 +1,12 @@
 import { serviceRequestResponse } from '../../infrastructure/interfaces';
-import { RequestStatus } from '../enum/request-status.enum';
+import { ServiceStatus } from '../enums/service-status.enum';
 
 interface serviceRequestProps {
   id: string;
   code: string;
   createdAt: Date;
   priority: number;
-  status: RequestStatus;
+  status: ServiceStatus;
   branchId: string;
 }
 
@@ -15,7 +15,7 @@ export class ServiceRequest {
   code: string;
   createdAt: Date;
   priority: number;
-  status: RequestStatus;
+  status: ServiceStatus;
   branchId: string;
 
   static fromResponse({
@@ -54,14 +54,16 @@ export class ServiceRequest {
 
   get statusLabel(): string {
     switch (this.status) {
-      case RequestStatus.ABSENT:
+      case ServiceStatus.ABSENT:
         return 'AUSENTE';
-      case RequestStatus.ATTENDED:
+      case ServiceStatus.ATTENDED:
         return 'ATENDIDO';
-      case RequestStatus.PENDING:
+      case ServiceStatus.PENDING:
+        return 'PENDIENTE';
+      case ServiceStatus.SERVICING:
         return 'PENDIENTE';
       default:
-        return 'EN ANTECION';
+        return 'DESCONOCIDO';
     }
   }
 }

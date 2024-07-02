@@ -33,4 +33,20 @@ export class AlertService {
       },
     });
   }
+
+  question(header: string, description: string, width: number = 30) {
+    const ref = this.dialogService.open(AlertComponent, {
+      header: header,
+      data: {
+        description,
+        confirmation: true,
+      },
+      width: `${width}vw`,
+      closable: false,
+      breakpoints: {
+        '960px': '90vw',
+      },
+    });
+    return ref.onClose;
+  }
 }

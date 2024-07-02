@@ -1,7 +1,7 @@
 import { DestroyRef, Injectable, effect, inject, signal } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
+
 import { FormatDate } from '../../helpers';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -9,27 +9,24 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class TimerService {
   private value = signal<number>(0);
   private subscription: Subscription | null = null;
-  private destroyRef = inject(DestroyRef);
   private isStarted = false;
 
   timer = signal<string>('00:00:00');
 
   constructor() {
+    this._loadValue();
     effect(() => {
       localStorage.setItem('timer-attention', this.value().toString());
     });
-    this._loadValue();
   }
 
   start() {
     if (this.isStarted) return;
     this.isStarted = true;
-    this.subscription = interval(1000)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.value.update((value) => (value += 1));
-        this.timer.set(FormatDate.timeToHours(this.value()));
-      });
+    this.subscription = interval(1000).subscribe(() => {
+      this.value.update((value) => (value += 1));
+      this.timer.set(FormatDate.timeToHours(this.value()));
+    });
   }
 
   stop() {

@@ -1,97 +1,132 @@
-<div class="flex flex-column-reverse sm:flex-row h-full">
-  <div class="flex-1 p-3 border-1 border-round-xl">
-    <!-- <p-table [value]="requests()" [scrollable]="true" scrollHeight="flex">
-      <ng-template pTemplate="caption">
-        <span>LISTADO DE SOLICITUDES</span>
-      </ng-template>
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Nro.</th>
-          <th>Codigo</th>
-          <th>Prioridad</th>
-          <th>Estado</th>
-          <th>Fecha</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-request let-rowIndex="rowIndex">
-        <tr>
-          <td>{{ rowIndex + 1 }}</td>
-          <td>{{ request.code }}</td>
-          <td>{{ request.priority }}</td>
-          <td>
-            <p-tag severity="warning" [value]="request.statusLabel" />
-          </td>
-          <td>{{ request.createdAt | date : "short" }}</td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="5">SIN SOLICITUDES</td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="summary">
-        <span> EN COLA: {{ requests().length }}</span>
-      </ng-template>
-    </p-table> -->
-  </div>
-  <div class="flex-1 flex flex-column p-3">
-    <div class="block text-center mb-2 text-orange-300 text-2xl font-semibold">
-      Servicio Actual
+<div class="flex h-full flex-column sm:flex-row">
+  <!-- LIST PENDING REQUEST -->
+  <div class="flex-1 flex flex-column">
+    <div
+      class="h-4rem flex align-items-center justify-content-between bg-green-200 px-3"
+    >
+      <span class="text-xl"> SOLICITUDES PENDIENTES</span>
+      <span class="text-4xl">
+        {{ requests().length }}
+      </span>
     </div>
-    <div class="block text-center mb-3 font-bold text-blue-600 text-4xl mb-3">
-     <stopwatch></stopwatch>
+    <div class="list p-3">
+      @for (request of requests(); track request.id) {
+      <div class="surface-card shadow-2 p-3 border-round w-full">
+        <div class="flex justify-content-between mb-3">
+          <div class="text-2xl font-bold">
+            {{ request.code }}
+          </div>
+          <div
+            class="flex align-items-center justify-content-center bg-green-100 border-round px-3"
+          >
+            {{ request.createdAt | date : "h:mm a" }}
+          </div>
+        </div>
+        <span class="text-green-500 font-medium">Status: </span>
+        <span class="text-500">{{ request.statusLabel }}</span>
+      </div>
+      } @empty {
+      <p class="text-600 w-full text-2xl text-center">SIN SOLICITUDES</p>
+      }
+    </div>
+  </div>
+
+  <!-- CURRENT TICKET SECTION -->
+  <div class="flex-1 flex flex-column p-3">
+    <div class="block text-center text-green-500 text-4xl font-semibold">
+      SERVICIO ACTUAL
     </div>
     <div
-      class="block text-center text-8xl border-3 border-orange-200 border-round-xl"
+      class="block text-center font-bold font-italic text-green-800 text-4xl py-3"
     >
-      Codifgo
+      <i class="pi pi-clock mr-3" style="font-size: 2rem"></i>
+      <span>{{ timer() }}</span>
+    </div>
+    <div
+      class="block text-center text-8xl border-3 border-green-500 border-round-xl h-8rem"
+    >
+      @if (currentRequest()) {
+      {{ currentRequest()?.code }}
+      }
     </div>
     <div class="flex-grow-1">
       <div class="options py-3">
-        <p-button severity="success" styleClass="flex justify-content-center w-full h-full" (onClick)="stop()">
+        <p-button
+          severity="success"
+          styleClass="flex justify-content-center w-full h-full"
+          [disabled]="!isEnabledNextButton()"
+          (onClick)="getNextRequest()"
+        >
           <div>
-            <i class="pi pi-angle-double-right py-2" style="font-size: 4rem"></i>
+            <i
+              class="pi pi-angle-double-right py-2"
+              style="font-size: 4rem"
+            ></i>
             <span class="text-xl hidden md:block">Siguiente ficha</span>
           </div>
         </p-button>
-        <p-button severity="success" styleClass="flex justify-content-center w-full h-full">
+        <p-button
+          severity="success"
+          styleClass="flex justify-content-center w-full h-full"
+          [disabled]="isNotifying() || currentRequest() === null"
+          (onClick)="notify()"
+        >
           <div>
-            <i class="pi  pi-volume-up py-2" style="font-size: 4rem"></i>
+            <i class="pi pi-volume-up py-2" style="font-size: 4rem"></i>
             <span class="text-xl hidden md:block">Volver a llamar</span>
           </div>
         </p-button>
-        <p-button severity="success" styleClass="flex justify-content-center w-full h-full">
+        <p-button
+          severity="success"
+          styleClass="flex justify-content-center w-full h-full"
+          [disabled]="!currentRequest()"
+          (onClick)="handleRequest(enum.ATTENDED)"
+        >
           <div>
             <i class="pi pi-check py-2" style="font-size: 4rem"></i>
             <span class="text-xl hidden md:block">Atendido</span>
           </div>
         </p-button>
-        <p-button severity="success" styleClass="flex justify-content-center w-full h-full">
+        <p-button
+          severity="success"
+          styleClass="flex justify-content-center w-full h-full"
+          [disabled]="!currentRequest()"
+          (onClick)="handleRequest(enum.ABSENT)"
+        >
           <div>
             <i class="pi pi-times py-2" style="font-size: 4rem"></i>
             <span class="text-xl hidden md:block">Ausente</span>
           </div>
         </p-button>
-        <p-button severity="success" styleClass="flex justify-content-center w-full h-full">
+        <p-button
+          [disabled]="true"
+          severity="success"
+          styleClass="flex justify-content-center w-full h-full"
+        >
           <div>
-            <i class="pi pi-arrow-right-arrow-left py-2" style="font-size: 4rem"></i>
+            <i
+              class="pi pi-arrow-right-arrow-left py-2"
+              style="font-size: 4rem"
+            ></i>
             <span class="text-xl hidden md:block">Transferir</span>
           </div>
         </p-button>
-        <p-button severity="success" styleClass="flex justify-content-center w-full h-full">
+        <p-button
+          [disabled]="true"
+          severity="success"
+          styleClass="flex justify-content-center w-full h-full"
+        >
           <div>
             <i class="pi pi-phone py-2" style="font-size: 4rem"></i>
             <span class="text-xl hidden md:block">LLamada especial</span>
           </div>
         </p-button>
-
-       
       </div>
     </div>
     <div
-      class="flex flex-wrap align-items-center justify-content-between border-top-1"
+      class="block flex flex-wrap align-items-center justify-content-between border-top-2"
     >
-      <span class="font-medium text-xl">
+      <span class="font-medium text-2xl">
         VENTANILLA: {{ counter?.number }}
       </span>
       <p-button
@@ -99,80 +134,13 @@
         severity="secondary"
         rounded="true"
         text="true"
-        (onClick)="showDialog()"
+        size="large"
+        (onClick)="info()"
       />
     </div>
-
-    <!-- <div class="flex justify-content-between flex-column flex-1 p-3">
-      <p-button>
-        <div class="flex flex-column">
-          <i class="pi pi-user py-3" style="font-size: 3rem"></i>
-          <span class="text-xl">Texto boton</span>
-        </div>
-      </p-button>
-      <p-button
-        styleClass="w-full"
-        label="Siguiente ficha"
-        icon="pi pi-angle-double-right"
-        size="large"
-        [disabled]="!isEnabledNextButton()"
-        (onClick)="getNextRequest()"
-      />
-      <p-button
-        styleClass="w-full"
-        label="Volver a Llamar"
-        icon="pi pi-volume-up"
-        size="large"
-        [loading]="isNotifying()"
-        [disabled]="!currentRequest()"
-        (onClick)="notify()"
-      />
-      <p-button
-        styleClass="w-full"
-        label="Atendido"
-        icon="pi pi-check"
-        size="large"
-        [disabled]="!currentRequest()"
-        (onClick)="handleRequest(requestStatus.ATTENDED)"
-      />
-      <p-button
-        styleClass="w-full"
-        label="Ausente"
-        icon="pi pi-times"
-        size="large"
-        [disabled]="!currentRequest()"
-        (onClick)="handleRequest(requestStatus.ABSENT)"
-      />
-      <p-button
-        styleClass="w-full"
-        label="Transferir"
-        [disabled]="!currentRequest()"
-        icon="pi pi-arrow-right-arrow-left"
-        size="large"
-      />
-      <p-button
-        styleClass="w-full"
-        label="Llamada especial"
-        icon="pi pi-phone"
-        size="large"
-      />
-      <div
-        class="flex flex-wrap align-items-center justify-content-between border-top-1"
-      >
-        <span class="font-medium text-xl">
-          VENTANILLA: {{ counter?.number }}
-        </span>
-        <p-button
-          icon="pi pi-question-circle"
-          severity="secondary"
-          rounded="true"
-          text="true"
-          (onClick)="showDialog()"
-        />
-      </div>
-    </div> -->
   </div>
 </div>
+
 <p-confirmDialog #cd>
   <ng-template pTemplate="headless" let-message>
     <div class="flex flex-column align-items-center p-4 surface-overlay">

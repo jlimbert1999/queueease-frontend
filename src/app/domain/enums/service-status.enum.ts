@@ -1,4 +1,4 @@
-export enum RequestStatus {
+export enum ServiceStatus {
   ATTENDED = 'attended',
   PENDING = 'pending',
   ABSENT = 'absent',

@@ -8,21 +8,20 @@ import {
   signal,
 } from '@angular/core';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DataViewModule } from 'primeng/dataview';
 import { ConfirmationService } from 'primeng/api';
 
-import { GroupwareService, ServiceDeskService } from '../../services';
-import { ProfileComponent, StopwatchComponent } from '../../components';
-import { RequestStatus } from '../../../domain/enum/request-status.enum';
 import { PrimengModule } from '../../../primeng.module';
+import {
+  GroupwareService,
+  AttentionService,
+  TimerService,
+  AlertService,
+} from '../../services';
+import { ProfileComponent } from '../../components';
 import { ServiceRequest } from '../../../domain/models';
-import { TimerService } from '../../services/timer.service';
+import { ServiceStatus } from '../../../domain/enums/service-status.enum';
 
-const actions = {
-  [RequestStatus.ABSENT]: 'AUSENTE',
-  [RequestStatus.ATTENDED]: 'ATENDIDA',
-  [RequestStatus.PENDING]: 'PENDIENTE',
-  [RequestStatus.SERVICING]: 'EN SERVICIO',
-};
 
 @Component({
   selector: 'app-queue-management',
@@ -32,7 +31,7 @@ const actions = {
     PrimengModule,
     ConfirmDialogModule,
     ProfileComponent,
-    StopwatchComponent,
+    DataViewModule,
   ],
   templateUrl: './queue-management.component.html',
   styleUrl: './queue-management.component.scss',
@@ -41,19 +40,22 @@ const actions = {
 })
 export class QueueManagementComponent implements OnInit {
   private groupwareService = inject(GroupwareService);
-  private serviceDeksService = inject(ServiceDeskService);
-  private confirmationService = inject(ConfirmationService);
+  private attentionService = inject(AttentionService);
   private timerService = inject(TimerService);
+  private alertService = inject(AlertService);
 
   requests = signal<ServiceRequest[]>([]);
   currentRequest = signal<ServiceRequest | null>(null);
-  readonly counter = this.serviceDeksService.counter();
-  isDialogOpen: boolean = false;
 
+  readonly counter = this.attentionService.counter();
+  isDialogOpen: boolean = false;
   isNotifying = signal<boolean>(false);
   isEnabledNextButton = computed(
     () => this.requests().length > 0 && this.currentRequest() === null
   );
+  timer = computed(() => this.timerService.timer());
+
+  enum: typeof ServiceStatus = ServiceStatus;
 
   constructor() {
     this._connect();
@@ -67,35 +69,40 @@ export class QueueManagementComponent implements OnInit {
   }
 
   getRequests(): void {
-    this.serviceDeksService.getServiceRequests().subscribe(this.requests.set);
+    this.attentionService.getServiceRequests().subscribe((data) => {
+      this.requests.set(data);
+    });
   }
 
   getCurrentRequest(): void {
-    this.serviceDeksService
-      .getCurrentRequest()
-      .subscribe(this.currentRequest.set);
+    this.attentionService.getCurrentRequest().subscribe((request) => {
+      this.currentRequest.set(request);
+    });
   }
 
   getNextRequest(): void {
-    this.serviceDeksService.nextRequest().subscribe((request) => {
+    this.attentionService.nextRequest().subscribe((request) => {
       this.currentRequest.set(request);
       if (request) this._removeRequest(request.id);
     });
   }
 
-  handleRequest(status: RequestStatus) {
-    if (!this.currentRequest()) return;
-    this.confirmationService.confirm({
-      header: 'Confirmar Accion',
-      message: `¿Marcar la solicitud como: ${actions[status]}?`,
-      accept: () => {
-        this.serviceDeksService
+  handleRequest(status: ServiceStatus.ATTENDED | ServiceStatus.ABSENT) {
+    this.alertService
+      .question(
+        'Confirmar accion',
+        `¿Marcar la solicitud como ${
+          status === ServiceStatus.ATTENDED ? 'ATENDIDO' : 'AUSENTE'
+        }?`
+      )
+      .subscribe((confirm) => {
+        if (!confirm) return;
+        this.attentionService
           .handleRequest(this.currentRequest()?.id!, status)
           .subscribe(() => {
             this.currentRequest.set(null);
           });
-      },
-    });
+      });
   }
 
   notify() {
@@ -111,13 +118,12 @@ export class QueueManagementComponent implements OnInit {
     setTimeout(() => this.isNotifying.set(false), 5000);
   }
 
-  showDialog() {
+  info() {
     this.isDialogOpen = true;
   }
 
   private _connect() {
     if (!this.counter) return;
-
     this.groupwareService.connect(this.counter);
   }
 
@@ -160,13 +166,5 @@ export class QueueManagementComponent implements OnInit {
       return currentRequest.priority - newRequest.priority;
     }
     return newRequest.createdAt.getTime() - currentRequest.createdAt.getTime();
-  }
-
-  get requestStatus() {
-    return RequestStatus;
-  }
-
-  stop() {
-    this.timerService.stop();
   }
 }

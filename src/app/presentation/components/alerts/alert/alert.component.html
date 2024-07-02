@@ -17,7 +17,14 @@
   </div>
   }
 
-  <div class="flex-1 flex align-items-center justify-content-cente sm:ml-2">
+  <div class="flex-1 flex align-items-center justify-content-cente text-lg">
     {{ config.description }}
   </div>
 </div>
+@if(config.confirmation){
+<div class="block flex justify-content-end align-items-center gap-2 mt-3">
+  <p-button label="Cancelar" severity="secondary" (onClick)="cancel()" />
+  <p-button label="Aceptar" (onClick)="confirm()" />
+</div>
+
+}

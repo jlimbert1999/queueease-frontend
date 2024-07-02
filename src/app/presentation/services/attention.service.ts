@@ -1,21 +1,22 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, of, tap } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
+
 import { environment } from '../../../environments/environment';
+import { ServiceRequest } from '../../domain/models';
+import { ServiceStatus } from '../../domain/enums/service-status.enum';
 import {
-  counterDetail,
   counterResponse,
   serviceRequestResponse,
 } from '../../infrastructure/interfaces';
-import { ServiceRequest } from '../../domain/models';
-import { RequestStatus } from '../../domain/enum/request-status.enum';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ServiceDeskService {
-  private readonly url = `${environment.base_url}/service-desk`;
+export class AttentionService {
+  private readonly url = `${environment.base_url}/attention`;
   private http = inject(HttpClient);
+
   counter = signal<counterResponse | null>(null);
 
   getServiceRequests() {
@@ -36,14 +37,14 @@ export class ServiceDeskService {
       .pipe(map((resp) => (resp ? ServiceRequest.fromResponse(resp) : null)));
   }
 
-  handleRequest(id: string, status: RequestStatus) {
+  handleRequest(id: string, status: ServiceStatus) {
     return this.http.patch<{ message: string }>(`${this.url}/${id}`, {
       status,
     });
   }
 
-  getCounterDetails() {
-    return this.http.get<counterResponse>(`${this.url}/detail`).pipe(
+  checkCounter(): Observable<boolean> {
+    return this.http.get<counterResponse>(`${this.url}/check`).pipe(
       map((resp) => {
         this.counter.set(resp);
         return true;

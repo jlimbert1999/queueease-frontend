@@ -73,7 +73,7 @@ export class AnnouncementComponent implements OnInit {
     this.advertisements.update((values) => {
       const updated = values.filter(({ id }) => id !== advertisement.id);
       updated.unshift(advertisement);
-      if (values.length > 7) values.pop();
+      if (values.length > 5) values.pop();
       return updated;
     });
   }
@@ -85,7 +85,6 @@ export class AnnouncementComponent implements OnInit {
         this.videoUrls.set(videos);
         this.message.set(message);
         this.isLoaging.set(false);
-        console.log(videos);
       });
   }
 }
