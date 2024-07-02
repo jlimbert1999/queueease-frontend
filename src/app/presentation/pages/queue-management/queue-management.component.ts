@@ -15,6 +15,7 @@ import { ProfileComponent, StopwatchComponent } from '../../components';
 import { RequestStatus } from '../../../domain/enum/request-status.enum';
 import { PrimengModule } from '../../../primeng.module';
 import { ServiceRequest } from '../../../domain/models';
+import { TimerService } from '../../services/timer.service';
 
 const actions = {
   [RequestStatus.ABSENT]: 'AUSENTE',
@@ -42,6 +43,7 @@ export class QueueManagementComponent implements OnInit {
   private groupwareService = inject(GroupwareService);
   private serviceDeksService = inject(ServiceDeskService);
   private confirmationService = inject(ConfirmationService);
+  private timerService = inject(TimerService);
 
   requests = signal<ServiceRequest[]>([]);
   currentRequest = signal<ServiceRequest | null>(null);
@@ -162,5 +164,9 @@ export class QueueManagementComponent implements OnInit {
 
   get requestStatus() {
     return RequestStatus;
+  }
+
+  stop() {
+    this.timerService.stop();
   }
 }

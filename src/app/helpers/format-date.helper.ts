@@ -1,6 +1,6 @@
 import moment from 'moment-timezone';
 import 'moment/locale/es';
-moment.locale("es");
+moment.locale('es');
 
 export const formatDate = (
   date: string,
@@ -8,3 +8,10 @@ export const formatDate = (
 ) => {
   return moment.tz(date, 'America/La_Paz').format(format);
 };
+
+export class FormatDate {
+  static timeToHours(time: number) {
+    const duration = moment.duration(time, 'seconds');
+    return moment.utc(duration.as('milliseconds')).format('HH:mm:ss');
+  }
+}

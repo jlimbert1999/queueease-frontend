@@ -1,61 +1,61 @@
-<div class="flex flex-column h-screen bg-primary-100">
-  <div class="flex-1 flex">
-    <div class="col-9">
-      <div class="flex flex-column">
-        <div
-          class="flex justify-content-center h-8rem"
-          style="background-color: black"
-        >
-          <img
-            src="../../../../assets/img/texto-logo.png"
-            class="h-8rem"
-            alt=""
-          />
+<div class="flex flex-column h-screen bg-primary-100 overflow-auto">
+  <div class="flex-grow-1 flex flex-column sm:flex-row">
+    <div class="w-12 sm:w-8" style="background-color: black">
+      <div class="block flex justify-content-center h-6rem">
+        <img class="h-6rem banner-logo" alt="Banner logo" />
+      </div>
+      <div class="block video-container">
+        @if(!isLoaging()){
+        <video-player [urls]="videoUrls()" />
+        }
+      </div>
+    </div>
+    <div class="w-12 sm:w-4 h-full">
+      <div class="container">
+        <div class="clock theme-color py-2">
+          <clock />
         </div>
-        <div class="flex-grow-1 px-8" style="background-color: black">
-          @if(!isLoaging()){
-          <video-player [urls]="videoUrls()" />
+        <div class="caption border-gray-300 border-bottom-3">
+          <div class="flex">
+            <div class="w-8 theme-text font-bold">
+              <p class="text-center m-0 font-italic text-sm lg:text-2xl">
+                Ficha
+              </p>
+            </div>
+            <div class="w-4 theme-text font-bold text-overflow-clip">
+              <p class="text-center m-0 font-italic text-sm lg:text-2xl">
+                Ventanilla
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="elements">
+          @for (item of [].constructor(5); track $index) {
+          <div class="flex" [ngClass]="{ 'animate-blink': $index === 0 }">
+            <div
+              class="flex-grow-1 flex align-items-center justify-content-center"
+            >
+              <span class="text-xl lg:text-6xl font-bold theme-text">
+                VSD
+              </span>
+            </div>
+            <div
+              class="flex w-4 align-items-center justify-content-center surface-300"
+            >
+              <span class="text-xl lg:text-6xl font-semibold">
+                {{ $index }}
+              </span>
+            </div>
+          </div>
           }
         </div>
       </div>
     </div>
-    <div class="col-3">
-      <div class="flex flex-column h-full">
-        <div class="theme-color py-2">
-          <clock />
-        </div>
-        <div class="px-2 flex align-items-center border-3 border-white h-4rem">
-         <span class="flex-1 theme-text text-4xl font-bold">
-          <p class="text-center">Ficha</p>
-         </span>
-          <span class="block w-5 text-4xl font-bold text-right theme-text">
-            <p class="text-center">Ventanilla</p>  
-          </span>
-        </div>
-        <div class="flex-grow-1 overflow-auto h-12rem">
-            @for (item of [].constructor(7); track $index) {
-            <div class="list-item flex-none  flex border-bottom-3 surface-border">
-              <div
-                class="flex-grow-1 flex align-items-center justify-content-center"
-              >
-                <span class="text-7xl font-bold theme-text">VSD</span>
-              </div>
-              <div
-                class="flex w-5 align-items-center justify-content-center surface-300"
-              >
-                <span class="text-7xl font-semibold">{{ $index }}</span>
-              </div>
-            </div>
-            }
-        </div>
-      </div>
-    </div>
   </div>
-  <div class="p-2">
-    <div class="marquee">
-      <span class="text-2xl xl:text-7xl font-bold theme-text">
-        {{ message() }}
-      </span>
-    </div>
+
+  <div class="marquee flex-shrink-0">
+    <p class="text-xl xl:text-6xl m-0 font-bold theme-text">
+      {{ message() }}
+    </p>
   </div>
 </div>

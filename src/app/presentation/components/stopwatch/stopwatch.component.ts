@@ -13,6 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, Subscription, timer } from 'rxjs';
 
 import { ChipModule } from 'primeng/chip';
+import { TimerService } from '../../services/timer.service';
 interface time {
   hours: number;
   minutes: number;
@@ -26,11 +27,13 @@ interface time {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StopwatchComponent implements OnInit {
-  eventTimer = input.required<Subject<string>>();
+  // eventTimer = input.required<Subject<string>>();
 
   private running: boolean = false;
   private timerSubscription: Subscription = new Subscription();
   private destroyRef = inject(DestroyRef);
+
+  private timerService = inject(TimerService);
 
   counterValue = signal<number>(0);
   timer = computed<string>(() => {
@@ -41,12 +44,14 @@ export class StopwatchComponent implements OnInit {
       seconds
     )}`;
   });
+  text = computed(() => this.timerService.timer());
 
   constructor() {}
 
   ngOnInit(): void {
     this._setupTimer();
     this._listenEventTimer();
+    this.timerService.start();
   }
 
   start() {
@@ -72,19 +77,18 @@ export class StopwatchComponent implements OnInit {
   }
 
   private _listenEventTimer() {
-    this.eventTimer().subscribe((value) => {
-      switch (value) {
-        case 'start':
-          this.start();
-          break;
-        case 'stop':
-          this.stop();
-          break;
-
-        default:
-          break;
-      }
-    });
+    // this.eventTimer().subscribe((value) => {
+    //   switch (value) {
+    //     case 'start':
+    //       this.start();
+    //       break;
+    //     case 'stop':
+    //       this.stop();
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // });
   }
 
   private _setupTimer() {
@@ -97,4 +101,5 @@ export class StopwatchComponent implements OnInit {
   _pad(num: number) {
     return num.toString().padStart(2, '0');
   }
+
 }

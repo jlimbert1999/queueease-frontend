@@ -1,21 +1,7 @@
-.main-container {
-  height: calc(100vh - 70px);
-  overflow: hidden;
-}
-
-// .button-column {
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: space-around;
-//   height: 80vh;
-//   /* 100% de la altura de la ventana */
-// }
-
-button {
-  margin: 10px 0;
-  /* Espaciado entre los botones */
-}
-
-.option-button {
-  height: calc(100% / 6);
+.options {
+  height: 100%;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
 }

@@ -1,9 +1,19 @@
 .animate-blink {
-  animation: blink 1s step-end infinite;
+  animation: blink 0.8s step-end infinite;
 }
 
-.list-item {
-  height: calc((100% - (7 * 2px)) / 7);
+@keyframes blink {
+  0%,
+  49.9% {
+    background-color: #d9ed92;
+    color: red;
+  }
+
+  50%,
+  100% {
+    background-color: #bde0fe;
+    color: black;
+  }
 }
 
 .theme-text {
@@ -21,7 +31,7 @@
   position: relative;
 }
 
-.marquee span {
+.marquee p {
   display: inline-block;
   animation: marquee 10s linear infinite;
 }
@@ -36,14 +46,43 @@
   }
 }
 
-
-.list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+.banner-logo {
+  content: url("../../../../assets/img/texto-logo.png");
 }
 
-.list li {
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
+.container {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  height: 100%;
+}
+
+.clock {
+  grid-row: 1;
+}
+
+.caption {
+  grid-row: 2;
+}
+
+.elements {
+  grid-row: 3;
+  display: grid;
+  grid-template-rows: repeat(5, 1fr);
+  margin: 0px;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+}
+
+.video-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40%; /* Ajusta la altura del gradiente según sea necesario */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+  pointer-events: none;
 }
