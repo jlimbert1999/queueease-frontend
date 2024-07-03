@@ -33,8 +33,8 @@ export class AttentionService {
 
   nextRequest() {
     return this.http
-      .get<serviceRequestResponse | null>(`${this.url}/next`)
-      .pipe(map((resp) => (resp ? ServiceRequest.fromResponse(resp) : null)));
+      .get<serviceRequestResponse >(`${this.url}/next`)
+      .pipe(map((resp) => ServiceRequest.fromResponse(resp)));
   }
 
   handleRequest(id: string, status: ServiceStatus) {

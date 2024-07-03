@@ -19,7 +19,9 @@ type icons = 'error' | 'warning' | 'success' | 'loading' | 'security';
 export class AlertService {
   private dialogService = inject(DialogService);
 
-  isLoading = signal(new BehaviorSubject<boolean>(false));
+  private loader = new BehaviorSubject<boolean>(false);
+  loading$ = this.loader.asObservable();
+
   constructor() {}
 
   show({ header, width = 30, closable = true, ...props }: alertConfig) {
@@ -49,4 +51,15 @@ export class AlertService {
     });
     return ref.onClose;
   }
+
+
+  loadingOn() {
+    this.loader.next(true);
+  }
+
+  loadingOff() {
+    this.loader.next(false);
+  }
+
+  
 }

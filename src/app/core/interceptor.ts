@@ -17,6 +17,7 @@ export function loggingInterceptor(
 ): Observable<HttpEvent<unknown>> {
   const router = inject(Router);
   const authService = inject(AuthService);
+  const alertService = inject(AlertService);
   const messageService = inject(MessageService);
 
   const reqWithHeader = req.clone({
@@ -25,7 +26,7 @@ export function loggingInterceptor(
       `Bearer ${localStorage.getItem('token') || ''}`
     ),
   });
-
+  alertService.loadingOn();
   return next(reqWithHeader).pipe(
     catchError((error) => {
       if (error instanceof HttpErrorResponse) {
@@ -38,6 +39,8 @@ export function loggingInterceptor(
       }
       return throwError(() => Error);
     }),
-    finalize(() => {})
+    finalize(() => {
+      alertService.loadingOff()
+    })
   );
 }

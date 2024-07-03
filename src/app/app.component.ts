@@ -24,7 +24,5 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  get isLoading() {
-    return this.alertService.isLoading;
-  }
+
 }

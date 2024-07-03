@@ -140,31 +140,6 @@
     </div>
   </div>
 </div>
-
-<p-confirmDialog #cd>
-  <ng-template pTemplate="headless" let-message>
-    <div class="flex flex-column align-items-center p-4 surface-overlay">
-      <span class="font-bold text-2xl block mb-2 mt-4">
-        {{ message.header }}
-      </span>
-      <p class="mb-0">{{ message.message }}</p>
-      <div class="flex align-items-center gap-2 mt-4">
-        <button
-          pButton
-          label="Aceptar"
-          (click)="cd.accept()"
-          class="w-8rem"
-        ></button>
-        <button
-          pButton
-          label="Cancelar"
-          (click)="cd.reject()"
-          class="p-button-outlined w-8rem"
-        ></button>
-      </div>
-    </div>
-  </ng-template>
-</p-confirmDialog>
 <p-dialog
   header="Informacion Ventanilla"
   [(visible)]="isDialogOpen"

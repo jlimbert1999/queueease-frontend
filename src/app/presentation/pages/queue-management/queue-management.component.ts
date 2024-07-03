@@ -7,9 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DataViewModule } from 'primeng/dataview';
-import { ConfirmationService } from 'primeng/api';
 
 import { PrimengModule } from '../../../primeng.module';
 import {
@@ -22,21 +20,13 @@ import { ProfileComponent } from '../../components';
 import { ServiceRequest } from '../../../domain/models';
 import { ServiceStatus } from '../../../domain/enums/service-status.enum';
 
-
 @Component({
   selector: 'app-queue-management',
   standalone: true,
-  imports: [
-    CommonModule,
-    PrimengModule,
-    ConfirmDialogModule,
-    ProfileComponent,
-    DataViewModule,
-  ],
+  imports: [CommonModule, PrimengModule, ProfileComponent, DataViewModule],
   templateUrl: './queue-management.component.html',
   styleUrl: './queue-management.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ConfirmationService],
 })
 export class QueueManagementComponent implements OnInit {
   private groupwareService = inject(GroupwareService);
@@ -44,18 +34,16 @@ export class QueueManagementComponent implements OnInit {
   private timerService = inject(TimerService);
   private alertService = inject(AlertService);
 
+  readonly counter = this.attentionService.counter();
+
   requests = signal<ServiceRequest[]>([]);
   currentRequest = signal<ServiceRequest | null>(null);
-
-  readonly counter = this.attentionService.counter();
   isDialogOpen: boolean = false;
   isNotifying = signal<boolean>(false);
   isEnabledNextButton = computed(
     () => this.requests().length > 0 && this.currentRequest() === null
   );
   timer = computed(() => this.timerService.timer());
-
-  enum: typeof ServiceStatus = ServiceStatus;
 
   constructor() {
     this._connect();
@@ -77,17 +65,21 @@ export class QueueManagementComponent implements OnInit {
   getCurrentRequest(): void {
     this.attentionService.getCurrentRequest().subscribe((request) => {
       this.currentRequest.set(request);
+      if (request) this.timerService.start();
     });
   }
 
   getNextRequest(): void {
+    this.timerService.reset();
     this.attentionService.nextRequest().subscribe((request) => {
       this.currentRequest.set(request);
-      if (request) this._removeRequest(request.id);
+      this._removeRequest(request.id);
+      this.timerService.start();
     });
   }
 
   handleRequest(status: ServiceStatus.ATTENDED | ServiceStatus.ABSENT) {
+    if (!this.currentRequest()) return;
     this.alertService
       .question(
         'Confirmar accion',
@@ -101,6 +93,7 @@ export class QueueManagementComponent implements OnInit {
           .handleRequest(this.currentRequest()?.id!, status)
           .subscribe(() => {
             this.currentRequest.set(null);
+            this.timerService.stop();
           });
       });
   }
@@ -120,6 +113,10 @@ export class QueueManagementComponent implements OnInit {
 
   info() {
     this.isDialogOpen = true;
+  }
+
+  get enum() {
+    return ServiceStatus;
   }
 
   private _connect() {

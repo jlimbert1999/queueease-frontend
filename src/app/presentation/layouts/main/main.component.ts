@@ -7,7 +7,7 @@ import { PrimengModule } from '../../../primeng.module';
 import { LayoutService } from '../../services/app.layout.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map, shareReplay, tap } from 'rxjs';
-import { ToolbarComponent } from '../../components';
+import { LoaderComponent, ToolbarComponent } from '../../components';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { AuthService } from '../../services';
 
@@ -22,6 +22,7 @@ import { AuthService } from '../../services';
     SidebarModule,
     ToolbarComponent,
     SidebarComponent,
+    LoaderComponent
   ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',

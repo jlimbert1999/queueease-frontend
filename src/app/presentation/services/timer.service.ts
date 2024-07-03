@@ -1,4 +1,4 @@
-import { DestroyRef, Injectable, effect, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, signal } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
 
 import { FormatDate } from '../../helpers';
@@ -11,7 +11,7 @@ export class TimerService {
   private subscription: Subscription | null = null;
   private isStarted = false;
 
-  timer = signal<string>('00:00:00');
+  timer = computed(() => FormatDate.timeToHours(this.value()));
 
   constructor() {
     this._loadValue();
@@ -25,7 +25,6 @@ export class TimerService {
     this.isStarted = true;
     this.subscription = interval(1000).subscribe(() => {
       this.value.update((value) => (value += 1));
-      this.timer.set(FormatDate.timeToHours(this.value()));
     });
   }
 
@@ -37,6 +36,7 @@ export class TimerService {
   reset() {
     this.stop();
     this.value.set(0);
+    localStorage.removeItem('timer-attention');
   }
 
   private _loadValue() {
@@ -44,6 +44,5 @@ export class TimerService {
     const value = parseInt(data);
     if (isNaN(value)) return;
     this.value.set(value);
-    this.timer.set(FormatDate.timeToHours(this.value()));
   }
 }
