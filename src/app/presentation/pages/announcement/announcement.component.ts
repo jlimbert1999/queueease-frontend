@@ -4,7 +4,6 @@ import {
   Component,
   DestroyRef,
   OnInit,
-  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -12,7 +11,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { concatMap, filter, finalize, tap } from 'rxjs';
 import {
   AnnouncementService,
-  ConfigService,
   CustomerService,
   SoundService,
 } from '../../services';
@@ -30,24 +28,21 @@ import { ClockComponent } from '../../components';
 })
 export class AnnouncementComponent implements OnInit {
   private announcementService = inject(AnnouncementService);
-  private soundService = inject(SoundService);
-  private configService = inject(ConfigService);
   private customerService = inject(CustomerService);
+  private soundService = inject(SoundService);
   private destroyRef = inject(DestroyRef);
-
   private soundList: Record<string, string> = {};
 
   advertisements = signal<advertisementResponse[]>([]);
-  videoUrls = signal<string[]>([]);
+  videos = signal<string[]>([]);
   message = signal<string>('');
-  isLoaging = signal<boolean>(true);
 
   constructor() {
     this._listenAnnoucement();
   }
 
   ngOnInit(): void {
-    this._getAdvertisement();
+    this._setupConfig();
   }
 
   private _listenAnnoucement(): void {
@@ -78,13 +73,9 @@ export class AnnouncementComponent implements OnInit {
     });
   }
 
-  private _getAdvertisement() {
-    this.customerService
-      .getAdvertisement(this.configService.branch()!.id)
-      .subscribe(({ videos, message }) => {
-        this.videoUrls.set(videos);
-        this.message.set(message);
-        this.isLoaging.set(false);
-      });
+  private _setupConfig() {
+    const { videos, message } = this.customerService.branch();
+    this.videos.set(videos);
+    this.message.set(message);
   }
 }

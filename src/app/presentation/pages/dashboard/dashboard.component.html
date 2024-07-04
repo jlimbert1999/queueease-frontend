@@ -1,10 +1,4 @@
 <div class="card">
-  <!-- <p-menubar>
-    <ng-template pTemplate="start">
-      <img src="../../../../assets/svg/logo.svg" style="width: 30px" />
-    </ng-template>
-    <ng-template pTemplate="end"> </ng-template>
-  </p-menubar> -->
   <div class="dock-window dock-advanced">
     <p-dock [model]="dockItems" position="bottom">
       <ng-template pTemplate="item" let-item>
@@ -18,6 +12,7 @@
       [breakpoints]="{ '960px': '50vw' }"
       [style]="{ width: '30vw' }"
       [resizable]="false"
+      [closable]="false"
     >
       <div class="p-dialog-content">
         <div class="field">
@@ -25,14 +20,27 @@
           <dropdown
             id="branch"
             placeholder="Buscar sucursal"
-            [required]="true"
-            [value]="currentBranch()"
             [options]="branches()"
-            (onSearch)="searchBranches($event)"
             (onSelect)="selectBranch($event)"
-          ></dropdown>
+            (onSearch)="searchBranches($event)"
+            [value]="branch()"
+          />
         </div>
       </div>
+      <ng-template pTemplate="footer">
+        <p-button
+          label="Cancelar"
+          [text]="true"
+          severity="secondary"
+          (onClick)="cancel()"
+        />
+        <p-button
+          label="Aceptar"
+          [outlined]="true"
+          severity="secondary"
+          (onClick)="save()"
+        />
+      </ng-template>
     </p-dialog>
   </div>
 </div>

@@ -5,32 +5,33 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 
 import { brachResponse } from '../../../infrastructure/interfaces';
 import { DropdownComponent, SelectOption } from '../../components';
-import { ConfigService, CustomerService } from '../../services';
+import { CustomerService } from '../../services';
 import { PrimengModule } from '../../../primeng.module';
 
+interface branch {
+  id: string;
+  name: string;
+}
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, PrimengModule, DropdownComponent],
+  imports: [CommonModule, PrimengModule, DropdownComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
   private router = inject(Router);
-  private configService = inject(ConfigService);
   private customerService = inject(CustomerService);
 
-  branches = signal<SelectOption<brachResponse>[]>([]);
-  currentBranch = signal<brachResponse | null>(null);
+  branches = signal<SelectOption<branch>[]>([]);
+  branch = signal<branch | null>(null);
   isConfigDialogVisible = signal<boolean>(false);
-
   dockItems: MenuItem[] = [
     {
       label: 'Settings',
@@ -43,7 +44,7 @@ export class DashboardComponent {
       },
       icon: '../../../../assets/img/apps/cogwheel.png',
       command: () => {
-        this.setupConfig();
+        this._loadConfig();
       },
     },
     {
@@ -70,7 +71,7 @@ export class DashboardComponent {
         showDelay: 1000,
       },
       icon: '../../../../assets/img/apps/choice.png',
-      command: () => this.router.navigate(['attention']),
+      command: () => this.router.navigate(['attention/services']),
     },
     {
       label: 'Publicity',
@@ -82,26 +83,37 @@ export class DashboardComponent {
         showDelay: 1000,
       },
       icon: '../../../../assets/img/apps/web-advertising.png',
-      command: () => this.router.navigate(['advertisement']),
+      command: () => this.router.navigate(['attention/advertisement']),
     },
   ];
 
-  setupConfig() {
-    const branch = this.configService.branch();
-    if (branch) {
-      this.branches.set([{ value: branch, label: branch.name }]);
-      this.currentBranch.set(branch);
-    }
-    this.isConfigDialogVisible.set(true);
-  }
-
   searchBranches(value: string) {
     this.customerService.searchBranches(value).subscribe((branches) => {
-      this.branches.set(branches.map((el) => ({ value: el, label: el.name })));
+      this.branches.set(
+        branches.map(({ id, name }) => ({ value: { id, name }, label: name }))
+      );
     });
   }
 
-  selectBranch(branch: brachResponse | null) {
-    this.configService.updateBranch(branch!);
+  selectBranch(branch: branch | null) {
+    this.branch.set(branch ? { id: branch.id, name: branch.name } : null);
+  }
+
+  save() {
+    this.customerService.setBranch(this.branch());
+    this.isConfigDialogVisible.set(false);
+  }
+
+  cancel() {
+    this.isConfigDialogVisible.set(false);
+  }
+
+  private _loadConfig() {
+    const savedBranch = this.customerService.checkSavedBranch();
+    this.branch.set(savedBranch);
+    this.branches.set([
+      ...(savedBranch ? [{ value: savedBranch, label: savedBranch.name }] : []),
+    ]);
+    this.isConfigDialogVisible.set(true);
   }
 }

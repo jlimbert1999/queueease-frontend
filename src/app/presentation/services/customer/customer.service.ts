@@ -1,35 +1,33 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import {
-  brachResponse,
   menuResponse,
+  brachResponse,
+  branchConfigResponse,
 } from '../../../infrastructure/interfaces';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 
+interface savedBranch {
+  id: string;
+  name: string;
+}
 @Injectable({
   providedIn: 'root',
 })
 export class CustomerService {
   private readonly url = `${environment.base_url}/customers`;
   private http = inject(HttpClient);
-  constructor() {}
 
-  getMenu(id_branch: string) {
-    return this.http
-      .get<menuResponse[]>(`${this.url}/menu/${id_branch}`)
-      .pipe();
-  }
+  private _branch = signal<branchConfigResponse | null>(null);
+  branch = computed<branchConfigResponse>(() => this._branch()!);
+
+  constructor() {}
 
   searchBranches(term: string) {
     return this.http
       .get<brachResponse[]>(`${this.url}/branches/${term}`)
       .pipe();
-  }
-
-  getAdvertisement(id_branch: string) {
-    return this.http.get<{ message: string; videos: string[] }>(
-      `${this.url}/advertisement/${id_branch}`
-    );
   }
 
   createRequest(id_service: string, id_branch: string, priority: number) {
@@ -41,5 +39,35 @@ export class CustomerService {
         priority,
       }
     );
+  }
+
+  chechBranchConfig(): Observable<boolean> {
+    const savedBranch = this.checkSavedBranch();
+    if (!savedBranch) return of(false);
+    return this.http
+      .get<branchConfigResponse>(`${this.url}/branch/${savedBranch.id}`)
+      .pipe(
+        map((resp) => {
+          this._branch.set(resp);
+          return true;
+        }),
+        catchError(() => of(false))
+      );
+  }
+
+  setBranch(branch: savedBranch | null) {
+    console.log(branch);
+    if (branch) return localStorage.setItem('branch', JSON.stringify(branch));
+    localStorage.removeItem('branch');
+    this._branch.set(null);
+  }
+
+  checkSavedBranch(): savedBranch | null {
+    const savedBranch = localStorage.getItem('branch');
+    if (!savedBranch) return null;
+    const branch = JSON.parse(savedBranch ?? {});
+    const { id, name } = branch;
+    if (!id || !name) return null;
+    return { id, name };
   }
 }

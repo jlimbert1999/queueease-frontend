@@ -15,9 +15,9 @@ import {
   CustomerService,
   PrintService,
 } from '../../services';
-import { menuResponse } from '../../../infrastructure/interfaces';
 import { PrimengModule } from '../../../primeng.module';
 import { LoaderComponent } from '../../components';
+import { menuResponse } from '../../../infrastructure/interfaces';
 
 @Component({
   selector: 'app-attention',
@@ -93,11 +93,8 @@ export class AttentionComponent implements OnInit {
   }
 
   private _setupMenu() {
-    const branch = this.configService.branch();
-    if (!branch) return;
-    this.customerService.getMenu(branch.id).subscribe((menu) => {
-      this.stackOptions.set([{ name: 'Inicio', services: menu }]);
-    });
+    const branch = this.customerService.branch();
+    this.stackOptions.set([{ name: 'Inicio', services: branch.menu }]);
   }
 
   private _chechPrinter() {

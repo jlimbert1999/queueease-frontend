@@ -51,7 +51,7 @@ export const routes: Routes = [
       },
       {
         path: 'queue',
-        title:'Atencion',
+        title: 'Atencion',
         canActivate: [counterGuard],
         component: QueueManagementComponent,
       },
@@ -61,12 +61,11 @@ export const routes: Routes = [
   {
     path: 'attention',
     canActivate: [branchConfigGuard],
-    component: AttentionComponent,
-  },
-  {
-    path: 'advertisement',
-    canActivate: [branchConfigGuard],
-    component: AnnouncementComponent,
+    children: [
+      { path: '', redirectTo: 'services', pathMatch: 'full' },
+      { path: 'advertisement', component: AnnouncementComponent },
+      { path: 'services', component: AttentionComponent },
+    ],
   },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

@@ -34,6 +34,17 @@ export class VideoPlayerComponent implements OnInit {
 
   private _loadVideo() {
     this.videoElementRef().nativeElement.src = this.urls()[this.index];
-    this.videoElementRef().nativeElement.play();
+    this.videoElementRef().nativeElement.autoplay = true
+    const promise = this.videoElementRef().nativeElement.play();
+    promise
+      .then((_) => {
+        // Autoplay started!
+        console.log('load');
+      })
+      .catch((error) => {
+        console.log(error);
+        // Autoplay was prevented.
+        console.log('no play');
+      });
   }
 }
