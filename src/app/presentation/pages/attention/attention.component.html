@@ -24,13 +24,13 @@
       </div>
       } } @else {
       <div class="flex flex-column w-full sm:w-6 row-gap-4">
-        @for (item of prioritys; track $index) {
+        @for (item of preferences(); track $index) {
         <div
           class="flex align-items-center justify-content-center h-6rem shadow-2 border-round-3xl hover:shadow-8"
-          (click)="createRequest(item.value)"
+          (click)="createRequest(item.id)"
         >
           <span class="font-bold text-primary sm:text-4xl">
-            {{ item.label }}
+            {{ item.name }}
           </span>
         </div>
         }

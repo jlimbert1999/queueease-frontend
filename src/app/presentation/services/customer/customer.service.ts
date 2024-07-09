@@ -1,12 +1,13 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { catchError, map, Observable, of } from 'rxjs';
+
 import { environment } from '../../../../environments/environment';
 import {
-  menuResponse,
   brachResponse,
   branchConfigResponse,
 } from '../../../infrastructure/interfaces';
-import { catchError, map, Observable, of, throwError } from 'rxjs';
+
 
 interface savedBranch {
   id: string;
@@ -30,13 +31,13 @@ export class CustomerService {
       .pipe();
   }
 
-  createRequest(id_service: string, id_branch: string, priority: number) {
+  createRequest(id_service: string, id_branch: string, preferenceId: number) {
     return this.http.post<{ code: string; description: string; date: string }>(
       `${this.url}/request`,
       {
         id_service,
         id_branch,
-        priority,
+        preferenceId,
       }
     );
   }
@@ -56,7 +57,6 @@ export class CustomerService {
   }
 
   setBranch(branch: savedBranch | null) {
-    console.log(branch);
     if (branch) return localStorage.setItem('branch', JSON.stringify(branch));
     localStorage.removeItem('branch');
     this._branch.set(null);

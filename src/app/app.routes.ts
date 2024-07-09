@@ -20,6 +20,7 @@ import {
   branchConfigGuard,
 } from './presentation/guards';
 import { BackgroundComponent } from './presentation/pages/background/background.component';
+import { PreferencesComponent } from './presentation/pages/administration/preferences/preferences.component';
 
 export const routes: Routes = [
   {
@@ -47,6 +48,7 @@ export const routes: Routes = [
           { path: 'branches', component: BranchesComponent },
           { path: 'counters', component: CountersComponent },
           { path: 'users', component: UsersComponent },
+          { path: 'preferences', component: PreferencesComponent },
         ],
       },
       {

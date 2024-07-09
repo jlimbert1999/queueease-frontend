@@ -4,6 +4,7 @@ export interface branchConfigResponse {
   message: string;
   menu: menuResponse[];
   videos: string[];
+  preferences: preferece[];
 }
 
 export interface menuResponse {
@@ -12,3 +13,7 @@ export interface menuResponse {
   services: menuResponse[];
 }
 
+interface preferece {
+  id: number;
+  name: string;
+}

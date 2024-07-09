@@ -1,0 +1,47 @@
+<div class="p-dialog-content">
+  <form [formGroup]="FormPreference">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="name">Nombre</label>
+        <input
+          id="name"
+          type="text"
+          class="w-full"
+          pInputText
+          formControlName="name"
+        />
+      </div>
+      <div class="field col-12 md:col-6">
+        <label for="acronym">Sigla</label>
+        <input
+          id="acronym"
+          type="text"
+          class="w-full"
+          pInputText
+          formControlName="acronym"
+        />
+      </div>
+      <div class="field col-12 md:col-6">
+        <label for="priority">Numero</label>
+        <p-inputNumber
+          class="w-full"
+          styleClass="w-full"
+          inputId="priority"
+          [showButtons]="true"
+          formControlName="priority"
+          [min]="0"
+          [max]="2"
+          [inputStyle]="{ width: '100%' }"
+        />
+        <small> Prioridad por defecto: 0 </small>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="p-dialog-footer">
+  <p-button
+    label="Guardar"
+    [disabled]="FormPreference.invalid"
+    (onClick)="save()"
+  />
+</div>

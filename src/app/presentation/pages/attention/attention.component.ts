@@ -41,10 +41,7 @@ export class AttentionComponent implements OnInit {
     return this.stackOptions()[index - 1].services;
   });
 
-  prioritys = [
-    { label: 'Atencion General', value: 0 },
-    { label: '3ra. Edad / Discapacidad / Embarazadas', value: 1 },
-  ] as const;
+  preferences = computed(() => this.customerService.branch().preferences);
 
   ngOnInit() {
     this._setupMenu();
