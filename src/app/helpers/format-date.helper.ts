@@ -10,8 +10,11 @@ export const formatDate = (
 };
 
 export class FormatDate {
-  static timeToHours(time: number) {
-    const duration = moment.duration(time, 'seconds');
+  static duration(startDate: Date, endDate: Date) {
+    const duration = moment.duration(
+      endDate.getTime() - startDate.getTime(),
+      'seconds'
+    );
     return moment.utc(duration.as('milliseconds')).format('HH:mm:ss');
   }
 }

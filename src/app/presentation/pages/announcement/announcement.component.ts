@@ -51,15 +51,13 @@ export class AnnouncementComponent implements OnInit {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         filter((request) => !this.soundList[request.id]),
-        tap((request) => {
+        concatMap((request) => {
           this.soundList[request.id] = request.code;
           this.addAdvertisement(request);
-        }),
-        concatMap((request) =>
-          this.soundService
+          return this.soundService
             .speek(request)
-            .pipe(finalize(() => delete this.soundList[request.id]))
-        )
+            .pipe(finalize(() => delete this.soundList[request.id]));
+        })
       )
       .subscribe();
   }

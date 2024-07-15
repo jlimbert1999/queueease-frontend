@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { ServiceRequest } from '../../domain/models';
 import { ServiceStatus } from '../../domain/enums/service-status.enum';
 import {
+  attentionResponse,
   counterResponse,
   serviceRequestResponse,
 } from '../../infrastructure/interfaces';
@@ -26,19 +27,15 @@ export class AttentionService {
   }
 
   getCurrentRequest() {
-    return this.http
-      .get<serviceRequestResponse | null>(`${this.url}/current`)
-      .pipe(map((resp) => (resp ? ServiceRequest.fromResponse(resp) : null)));
+    return this.http.get<attentionResponse | null>(`${this.url}/current`);
   }
 
   nextRequest() {
-    return this.http
-      .get<serviceRequestResponse >(`${this.url}/next`)
-      .pipe(map((resp) => ServiceRequest.fromResponse(resp)));
+    return this.http.get<attentionResponse>(`${this.url}/next`);
   }
 
   handleRequest(id: string, status: ServiceStatus) {
-    return this.http.patch<{ message: string }>(`${this.url}/${id}`, {
+    return this.http.patch<{ message: string }>(`${this.url}/handle/${id}`, {
       status,
     });
   }

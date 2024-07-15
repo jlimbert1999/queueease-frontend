@@ -11,7 +11,7 @@ export class TimerService {
   private subscription: Subscription | null = null;
   private isStarted = false;
 
-  timer = computed(() => FormatDate.timeToHours(this.value()));
+  timer = computed(() => '');
 
   constructor() {
     this._loadValue();

@@ -1,0 +1,31 @@
+<div class="p-dialog-content">
+  <div class="formgrid grid">
+    <div class="field col-12 md:col-4">
+      <label for="ip">Plataforma</label>
+      <p-dropdown
+        [options]="platforms"
+       
+        styleClass="w-full"
+        placeholder="Seleccione una plataforma"
+        appendTo="body"
+      />
+    </div>
+    <div class="field col-12 md:col-8">
+      <label for="ip">URL</label>
+      <input
+        type="text"
+        class="w-full"
+        pInputText
+        [(ngModel)]="selectedPlatform"
+      />
+    </div>
+  </div>
+  @if(url()!==''){
+
+  <iframe [src]="url() | safe" class="w-full"></iframe>
+  }
+  <div></div>
+</div>
+<div class="p-dialog-footer">
+  <p-button label="Guardar" (onClick)="buildSecureurl()" />
+</div>

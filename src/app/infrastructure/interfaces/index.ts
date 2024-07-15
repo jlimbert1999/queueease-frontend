@@ -10,5 +10,6 @@ export * from './customer/branch-config.interface';
 export * from './auth/jwt-payload.interface';
 export * from './auth/menu-frontend.interface';
 export * from './customer/service-request-response.interface';
+
 export * from './ticketing/advertisement.interface';
-export * from './ticketing/counter-detail.interface';
+export * from './ticketing/attention-response.interface';

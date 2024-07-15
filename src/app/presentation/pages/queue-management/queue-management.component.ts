@@ -19,11 +19,19 @@ import {
 import { ProfileComponent } from '../../components';
 import { ServiceRequest } from '../../../domain/models';
 import { ServiceStatus } from '../../../domain/enums/service-status.enum';
+import { attentionResponse } from '../../../infrastructure/interfaces';
+import { StopwatchComponent } from '../../components/stopwatch/stopwatch.component';
 
 @Component({
   selector: 'app-queue-management',
   standalone: true,
-  imports: [CommonModule, PrimengModule, ProfileComponent, DataViewModule],
+  imports: [
+    CommonModule,
+    PrimengModule,
+    ProfileComponent,
+    DataViewModule,
+    StopwatchComponent,
+  ],
   templateUrl: './queue-management.component.html',
   styleUrl: './queue-management.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,7 +45,7 @@ export class QueueManagementComponent implements OnInit {
   readonly counter = this.attentionService.counter();
 
   requests = signal<ServiceRequest[]>([]);
-  currentRequest = signal<ServiceRequest | null>(null);
+  currentRequest = signal<attentionResponse | null>(null);
   isDialogOpen: boolean = false;
   isNotifying = signal<boolean>(false);
   isEnabledNextButton = computed(
@@ -73,7 +81,7 @@ export class QueueManagementComponent implements OnInit {
     this.timerService.reset();
     this.attentionService.nextRequest().subscribe((request) => {
       this.currentRequest.set(request);
-      this._removeRequest(request.id);
+      this._removeRequest(request.serviceRequest.id);
       this.timerService.start();
     });
   }
@@ -90,7 +98,7 @@ export class QueueManagementComponent implements OnInit {
       .subscribe((confirm) => {
         if (!confirm) return;
         this.attentionService
-          .handleRequest(this.currentRequest()?.id!, status)
+          .handleRequest(this.currentRequest()?.serviceRequest.id!, status)
           .subscribe(() => {
             this.currentRequest.set(null);
             this.timerService.stop();
@@ -101,11 +109,11 @@ export class QueueManagementComponent implements OnInit {
   notify() {
     if (!this.currentRequest() || !this.counter) return;
     this.isNotifying.set(true);
-    const { code, id } = this.currentRequest()!;
+    const { serviceRequest } = this.currentRequest()!;
     const { number, branch } = this.counter!;
     this.groupwareService.notifyRequest(branch.id, {
-      id,
-      code,
+      id: serviceRequest.id,
+      code: serviceRequest.code,
       counterNumber: number,
     });
     setTimeout(() => this.isNotifying.set(false), 5000);

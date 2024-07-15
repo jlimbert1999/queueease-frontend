@@ -13,6 +13,7 @@ import { brachResponse } from '../../../../infrastructure/interfaces';
 import { BranchComponent } from './branch/branch.component';
 import { PrimengModule } from '../../../../primeng.module';
 import { SecureUrlPipe } from '../../../pipes/secure-url.pipe';
+import { PublicationsComponent } from './publications/publications.component';
 
 @Component({
   selector: 'app-branches',
@@ -75,5 +76,12 @@ export class BranchesComponent {
           return [...values];
         });
       });
+  }
+
+  announce() {
+    const ref = this.dialogService.open(PublicationsComponent, {
+      header: 'Anunciar',
+      width: '60rem',
+    });
   }
 }

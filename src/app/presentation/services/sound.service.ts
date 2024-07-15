@@ -69,7 +69,6 @@ export class SoundService {
             const audio = new Audio(item.path);
             audio.volume = 1;
             audio.play();
-            // console.log('playing audio', item.path);
           }),
           delay(item.duration)
         )
