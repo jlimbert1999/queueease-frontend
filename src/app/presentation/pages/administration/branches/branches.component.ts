@@ -10,9 +10,9 @@ import { filter } from 'rxjs';
 import { DialogService } from 'primeng/dynamicdialog';
 import { BranchService } from '../../../services';
 import { brachResponse } from '../../../../infrastructure/interfaces';
-import { BranchComponent } from './branch/branch.component';
 import { PrimengModule } from '../../../../primeng.module';
 import { SecureUrlPipe } from '../../../pipes/secure-url.pipe';
+import { BranchComponent } from './branch/branch.component';
 import { PublicationsComponent } from './publications/publications.component';
 
 @Component({
@@ -81,7 +81,10 @@ export class BranchesComponent {
   announce() {
     const ref = this.dialogService.open(PublicationsComponent, {
       header: 'Anunciar',
-      width: '60rem',
+      width: '50%',
+      breakpoints: {
+        '960px': '90vw',
+      },
     });
   }
 }

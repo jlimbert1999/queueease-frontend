@@ -1,65 +1,89 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
+
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+
 import { ButtonModule } from 'primeng/button';
+import { ListboxModule } from 'primeng/listbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { SecureUrlPipe } from '../../../../pipes/secure-url.pipe';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
+import { BranchService } from '../../../../services';
+import { CustomFormValidators } from '../../../../../helpers';
+import { SecureUrlPipe } from '../../../../pipes/secure-url.pipe';
+import { brachResponse } from '../../../../../infrastructure/interfaces';
+import { FormErrorsComponent } from '../../../../components/forms/form-errors/form-errors.component';
 @Component({
   selector: 'app-publications',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     ButtonModule,
     InputTextModule,
     DropdownModule,
     SecureUrlPipe,
+    ListboxModule,
+    FormErrorsComponent,
   ],
   templateUrl: './publications.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PublicationsComponent {
-  platforms = ['YouTube', 'Facebook', 'Dailymotion'];
-  selectedPlatform: string = '';
+export class PublicationsComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private dialogRef = inject(DynamicDialogRef);
+  private branchServices = inject(BranchService);
 
-  url = signal<string>('');
+  branches = signal<brachResponse[]>([]);
+  FormPublication: FormGroup = this.fb.group({
+    url: ['', [Validators.required, CustomFormValidators.urlVideo]],
+    branches: [
+      '',
+      [Validators.required, CustomFormValidators.minLengthArray(1)],
+    ],
+  });
 
-  buildSecureurl() {
-    console.log(this.url);
-    if (this.selectedPlatform === 'YouTube') {
-      const id = this.extractYouTubeVideoId(this.url());
-      console.log(id);
-      this.url.set(
-        `https://www.youtube.com/embed/${id}?autoplay=1&playlist=${id}&loop=1&muted=0&controls=0`
-      );
-      return;
-    }
-    if (this.selectedPlatform === 'Facebook') {
-      this.url.set('');
-      return;
-    }
-    if (this.selectedPlatform === 'Dailymotion') {
-      this.url.set('');
-      return;
-    }
-    return '';
+  ngOnInit(): void {
+    this._getBranches();
   }
 
-   extractYouTubeVideoId(url: string): string | null {
-    console.log(url);
-    const youtubePatterns = [
-      /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=)?([^&=\n%\?]+)/,
-      /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^&=\n%\?]+)/
-    ];
-  
-    for (const pattern of youtubePatterns) {
-      const match = url.match(pattern);
-      if (match && match[1]) {
-        return match[1];
-      }
-    }
-    return null;
+  private _getBranches() {
+    this.branchServices.searchAvaibles().subscribe((branches) => {
+      this.branches.set(branches);
+    });
+  }
+
+  save() {
+    if (this.FormPublication.invalid) return;
+    const { url, branches } = this.FormPublication.value;
+    this.branchServices.announce(url, branches).subscribe(() => {
+      this.dialogRef.close();
+    });
+  }
+
+  remove() {
+    const { branches } = this.FormPublication.value;
+    this.branchServices.announce(null, branches).subscribe(() => {
+      this.dialogRef.close();
+    });
+  }
+
+  get isSelectedBranch() {
+    const value = this.FormPublication.get('branches')?.value as string[];
+    return value.length > 0;
   }
 }

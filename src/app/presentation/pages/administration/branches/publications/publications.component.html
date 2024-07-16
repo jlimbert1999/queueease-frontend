@@ -1,31 +1,61 @@
 <div class="p-dialog-content">
-  <div class="formgrid grid">
-    <div class="field col-12 md:col-4">
-      <label for="ip">Plataforma</label>
-      <p-dropdown
-        [options]="platforms"
-       
-        styleClass="w-full"
-        placeholder="Seleccione una plataforma"
-        appendTo="body"
-      />
-    </div>
-    <div class="field col-12 md:col-8">
+  <form
+    [formGroup]="FormPublication"
+    class="formgrid grid grid-nogutter nested-grid"
+  >
+    <div class="field col-12">
       <label for="ip">URL</label>
-      <input
-        type="text"
-        class="w-full"
-        pInputText
-        [(ngModel)]="selectedPlatform"
-      />
+      <input type="text" class="w-full" pInputText formControlName="url" />
     </div>
-  </div>
-  @if(url()!==''){
-
-  <iframe [src]="url() | safe" class="w-full"></iframe>
-  }
-  <div></div>
+    <div class="col-12 h-20rem mt-2">
+      <div class="grid h-full">
+        <div class="col-12 sm:col-5">
+          <p-listbox
+            class="w-full"
+            [options]="branches()"
+            optionLabel="name"
+            optionValue="id"
+            formControlName="branches"
+            [style]="{ width: '100%' }"
+            [multiple]="true"
+            [metaKeySelection]="false"
+            [checkbox]="true"
+            [filter]="true"
+            [listStyle]="{ 'max-height': '250px' }"
+          />
+        </div>
+        <div class="col-12 sm:col-7 surface-200">
+          @if(FormPublication.get('url')?.invalid &&
+          FormPublication.get('url')?.dirty){
+          <div class="flex align-items-center justify-content-center h-full">
+            <i class="pi pi-exclamation-triangle" style="font-size: 3rem"></i>
+          </div>
+          } @else {
+          <iframe
+            frameborder="0"
+            type="text/html"
+            [src]="FormPublication.get('url')?.value | safe"
+            class="w-full h-full"
+            title="Dailymotion Video Player"
+            allow="autoplay;"
+          >
+          </iframe>
+          }
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
 <div class="p-dialog-footer">
-  <p-button label="Guardar" (onClick)="buildSecureurl()" />
+  <p-button
+    label="Remover"
+    severity="danger"
+    [disabled]="!isSelectedBranch"
+    (onClick)="remove()"
+  />
+  <p-button
+    label="Guardar"
+    [disabled]="FormPublication.invalid"
+    (onClick)="save()"
+  />
 </div>

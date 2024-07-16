@@ -8,4 +8,13 @@ export class CustomFormValidators {
         : null;
     };
   }
+
+  static urlVideo(control: AbstractControl): ValidationErrors | null {
+    const url = control.value;
+    const isValid =
+      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|facebook\.com|dailymotion\.com)\/.+$/i.test(
+        url
+      );
+    return isValid ? null : { invalidUrl: true };
+  }
 }

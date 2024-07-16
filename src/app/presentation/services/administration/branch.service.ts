@@ -48,8 +48,11 @@ export class BranchService {
     return this.http.patch<brachResponse>(`${this.url}/${id}`, branchDto);
   }
 
-  searchAvaibles(term: string) {
-    return this.http.get<brachResponse[]>(`${this.url}/availables/${term}`);
+  searchAvaibles(term?: string) {
+    const params = new HttpParams({
+      fromObject: { ...(term ? { term } : {}) },
+    });
+    return this.http.get<brachResponse[]>(`${this.url}/availables`, { params });
   }
 
   getBranchServices(id: string) {
@@ -69,5 +72,9 @@ export class BranchService {
       `${environment.base_url}/files/branch`,
       formData
     );
+  }
+
+  announce(url: string | null, branches: string[]) {
+    return this.http.post(`${this.url}/announce`, { url, branches });
   }
 }

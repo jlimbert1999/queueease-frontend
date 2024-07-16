@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { Observable } from 'rxjs';
 
@@ -15,6 +15,7 @@ import { ServiceRequest } from '../../../domain/models';
 export class AnnouncementService {
   private readonly url = `${environment.base_url}/branches`;
   private socket: Socket;
+
   constructor() {
     this.socket = io(this.url, {
       auth: { branch: JSON.parse(localStorage.getItem('branch') ?? '') },
@@ -40,5 +41,15 @@ export class AnnouncementService {
         observable.next(data);
       });
     });
+  }
+
+  save(data: advertisementResponse[]): void {
+    sessionStorage.setItem('announcement', JSON.stringify(data));
+  }
+
+  load(): advertisementResponse[] {
+    const data = sessionStorage.getItem('announcement');
+    if (!data) return [];
+    return JSON.parse(data);
   }
 }

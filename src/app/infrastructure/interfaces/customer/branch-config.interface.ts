@@ -5,6 +5,7 @@ export interface branchConfigResponse {
   menu: menuResponse[];
   videos: string[];
   preferences: preferece[];
+  alertVideoUrl: string | undefined;
 }
 
 export interface menuResponse {

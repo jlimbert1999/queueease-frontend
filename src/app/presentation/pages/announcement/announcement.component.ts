@@ -17,11 +17,12 @@ import {
 import { advertisementResponse } from '../../../infrastructure/interfaces';
 import { VideoPlayerComponent } from '../../components/video-player/video-player.component';
 import { ClockComponent } from '../../components';
+import { SecureUrlPipe } from '../../pipes/secure-url.pipe';
 
 @Component({
   selector: 'app-announcement',
   standalone: true,
-  imports: [CommonModule, VideoPlayerComponent, ClockComponent],
+  imports: [CommonModule, VideoPlayerComponent, ClockComponent, SecureUrlPipe],
   templateUrl: './announcement.component.html',
   styleUrl: './announcement.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,9 +37,13 @@ export class AnnouncementComponent implements OnInit {
   advertisements = signal<advertisementResponse[]>([]);
   videos = signal<string[]>([]);
   message = signal<string>('');
+  alertVideoUrl = signal<string>('');
 
   constructor() {
     this._listenAnnoucement();
+    this.destroyRef.onDestroy(() => {
+      this.announcementService.save(this.advertisements());
+    });
   }
 
   ngOnInit(): void {
@@ -66,14 +71,17 @@ export class AnnouncementComponent implements OnInit {
     this.advertisements.update((values) => {
       const updated = values.filter(({ id }) => id !== advertisement.id);
       updated.unshift(advertisement);
-      if (values.length > 5) values.pop();
+      if (updated.length > 5) values.pop();
+      this.announcementService.save(updated);
       return updated;
     });
   }
 
   private _setupConfig() {
-    const { videos, message } = this.customerService.branch();
+    const { videos, message, alertVideoUrl } = this.customerService.branch();
     this.videos.set(videos);
     this.message.set(message);
+    this.alertVideoUrl.set(alertVideoUrl ?? '');
+    this.advertisements.set(this.announcementService.load());
   }
 }

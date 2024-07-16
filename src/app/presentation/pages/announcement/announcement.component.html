@@ -1,12 +1,24 @@
 <div class="flex flex-column h-screen bg-primary-100 overflow-auto">
   <div class="flex-grow-1 flex flex-column sm:flex-row">
     <div class="w-12 sm:w-8 flex flex-column" style="background-color: black">
-      <div class="block flex justify-content-center ">
+      <div class="block flex justify-content-center">
         <img class="h-8rem banner-logo" alt="Banner logo" />
       </div>
-  
+
       <div class="flex-1 align-content-center flex-wrap h-auto video-container">
+        @if(alertVideoUrl()===''){
         <video-player [urls]="videos()" />
+        } @else{
+        <iframe
+          frameborder="0"
+          type="text/html"
+          [src]="alertVideoUrl() | safe"
+          class="w-full h-full"
+          title="Dailymotion Video Player"
+          allow="autoplay;"
+        >
+        </iframe>
+        }
       </div>
     </div>
     <div class="w-12 sm:w-4 h-full">
@@ -35,7 +47,7 @@
               class="flex-grow-1 flex align-items-center justify-content-center"
             >
               <span class="text-xl lg:text-6xl font-bold theme-text">
-                {{item.code}}
+                {{ item.code }}
               </span>
             </div>
             <div
