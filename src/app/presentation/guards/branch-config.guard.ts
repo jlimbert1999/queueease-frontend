@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
-import { AlertService, CustomerService } from '../services';
 import { tap } from 'rxjs';
+import { AlertService, CustomerService } from '../services';
 
 export const branchConfigGuard: CanActivateFn = () => {
   const customerService = inject(CustomerService);
@@ -12,7 +12,7 @@ export const branchConfigGuard: CanActivateFn = () => {
       if (!isConfig) {
         alertService.show({
           header: 'Sin configuracion',
-          description: 'Seleccione una sucursal para acceder.',
+          description: 'Seleccione una sucursal para continuar.',
         });
         localStorage.removeItem('branch')
         router.navigateByUrl('/dashboard');

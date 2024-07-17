@@ -9,12 +9,7 @@ import {
 } from '@angular/core';
 import { delay } from 'rxjs';
 
-import {
-  AlertService,
-  ConfigService,
-  CustomerService,
-  PrintService,
-} from '../../services';
+import { AlertService, CustomerService, PrintService } from '../../services';
 import { PrimengModule } from '../../../primeng.module';
 import { LoaderComponent } from '../../components';
 import { menuResponse } from '../../../infrastructure/interfaces';
@@ -29,7 +24,6 @@ import { menuResponse } from '../../../infrastructure/interfaces';
 })
 export class AttentionComponent implements OnInit {
   private customerService = inject(CustomerService);
-  private configService = inject(ConfigService);
   private printService = inject(PrintService);
   private alertService = inject(AlertService);
 
@@ -58,7 +52,7 @@ export class AttentionComponent implements OnInit {
     this.customerService
       .createRequest(
         this.selectedService()!,
-        this.configService.branch()?.id!,
+        this.customerService.branch().id,
         priority
       )
       .pipe(delay(800))

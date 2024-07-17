@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
-import { AlertService, AttentionService } from '../services';
 import { tap } from 'rxjs';
+import { AlertService, AttentionService } from '../services';
 
 export const counterGuard: CanActivateFn = () => {
   const router = inject(Router);

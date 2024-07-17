@@ -40,19 +40,19 @@
       class="block text-center font-bold font-italic text-green-800 text-4xl py-3"
     >
       <i class="pi pi-clock mr-3" style="font-size: 2rem"></i>
-      @if(currentRequest()){
-<!-- 
+      @if(currentAttention()){
+      <!-- 
       <stopwatch
-        [startTime]="currentRequest()!.startTime"
-        [endTime]="currentRequest()!.endTime"
+        [startTime]="currentAttention()!.startTime"
+        [endTime]="currentAttention()!.endTime"
       /> -->
       }
     </div>
     <div
       class="block text-center text-8xl border-3 border-green-500 border-round-xl h-8rem"
     >
-      @if (currentRequest()) {
-      {{ currentRequest()?.serviceRequest?.code }}
+      @if (currentAttention()) {
+      {{ currentAttention()?.serviceRequest?.code }}
       }
     </div>
     <div class="flex-grow-1">
@@ -74,7 +74,7 @@
         <p-button
           severity="success"
           styleClass="flex justify-content-center w-full h-full"
-          [disabled]="isNotifying() || currentRequest() === null"
+          [disabled]="isNotifying() || currentAttention() === null"
           (onClick)="notify()"
         >
           <div>
@@ -85,7 +85,7 @@
         <p-button
           severity="success"
           styleClass="flex justify-content-center w-full h-full"
-          [disabled]="!currentRequest()"
+          [disabled]="!currentAttention()"
           (onClick)="handleRequest(enum.ATTENDED)"
         >
           <div>
@@ -96,7 +96,7 @@
         <p-button
           severity="success"
           styleClass="flex justify-content-center w-full h-full"
-          [disabled]="!currentRequest()"
+          [disabled]="!currentAttention()"
           (onClick)="handleRequest(enum.ABSENT)"
         >
           <div>
@@ -133,7 +133,7 @@
       class="block flex flex-wrap align-items-center justify-content-between border-top-2"
     >
       <span class="font-medium text-2xl">
-        VENTANILLA: {{ counter?.number }}
+        VENTANILLA: {{ counter.number }}
       </span>
       <p-button
         icon="pi pi-question-circle"
@@ -157,7 +157,7 @@
 >
   <div class="surface-section">
     <div class="font-medium text-3xl text-900 mb-3">
-      VENTANILLA Nro. {{ counter?.number }}
+      VENTANILLA Nro. {{ counter.number }}
     </div>
     <div class="text-500 mb-5">
       REGISTROS Y NOTIFICACIONES SE MOSTRARAN CON EL NUMERO DE LA VENTANILLA
@@ -168,7 +168,7 @@
       >
         <div class="text-500 w-6 md:w-2 font-medium">IP:</div>
         <div class="text-900 w-full md:w-10">
-          {{ counter?.ip }}
+          {{ counter.ip }}
         </div>
       </li>
       <li
@@ -176,7 +176,7 @@
       >
         <div class="text-500 w-6 md:w-2 font-medium">Sucursal</div>
         <div class="text-900 w-full md:w-10">
-          {{ counter?.branch?.name }}
+          {{ counter.branch.name }}
         </div>
       </li>
       <li
@@ -185,7 +185,7 @@
         <div class="text-500 w-6 md:w-2 font-medium">Servicios</div>
         <div class="text-800 w-full md:w-10">
           <ul class="list-disc">
-            @for (item of counter?.services; track $index) {
+            @for (item of counter.services; track $index) {
             <li class="text-md">{{ item.name }}</li>
             }
           </ul>

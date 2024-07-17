@@ -25,15 +25,18 @@ import { PreferencesComponent } from './presentation/pages/administration/prefer
 export const routes: Routes = [
   {
     path: 'dashboard',
+    title: 'Dashboard',
     component: DashboardComponent,
   },
   {
     path: 'login',
+    title: 'Autenticacion',
     canActivate: [isNotAuthenticatedGuard],
     component: LoginComponent,
   },
   {
     path: 'main',
+    title: 'Inicio',
     canActivate: [isAuthenticatedGuard],
     component: MainComponent,
     children: [

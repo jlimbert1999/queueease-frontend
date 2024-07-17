@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
 
@@ -18,7 +18,8 @@ export class AttentionService {
   private readonly url = `${environment.base_url}/attention`;
   private http = inject(HttpClient);
 
-  counter = signal<counterResponse | null>(null);
+  _counter = signal<counterResponse | null>(null);
+  counter = computed(() => this._counter()!);
 
   getServiceRequests() {
     return this.http
@@ -43,7 +44,7 @@ export class AttentionService {
   checkCounter(): Observable<boolean> {
     return this.http.get<counterResponse>(`${this.url}/check`).pipe(
       map((resp) => {
-        this.counter.set(resp);
+        this._counter.set(resp);
         return true;
       }),
       catchError(() => of(false))

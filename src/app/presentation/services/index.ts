@@ -5,7 +5,6 @@ export * from './administration/counter.service';
 export * from './administration/user.service';
 export * from './administration/preference.service';
 
-export * from './config.service';
 export * from './auth.service';
 export * from './attention.service';
 export * from './customer/customer.service';
