@@ -12,15 +12,14 @@ import { QueueManagementComponent } from './presentation/pages/queue-management/
 import { AnnouncementComponent } from './presentation/pages/announcement/announcement.component';
 import { UsersComponent } from './presentation/pages/administration/users/users.component';
 import { UnauthorizedComponent } from './presentation/pages/background/errors/unauthorized/unauthorized.component';
-
+import { BackgroundComponent } from './presentation/pages/background/background.component';
+import { PreferencesComponent } from './presentation/pages/administration/preferences/preferences.component';
 import {
   isNotAuthenticatedGuard,
   roleGuard,
   counterGuard,
   branchConfigGuard,
 } from './presentation/guards';
-import { BackgroundComponent } from './presentation/pages/background/background.component';
-import { PreferencesComponent } from './presentation/pages/administration/preferences/preferences.component';
 
 export const routes: Routes = [
   {
@@ -41,6 +40,7 @@ export const routes: Routes = [
     component: MainComponent,
     children: [
       {
+        title: 'Administracion',
         path: 'administration',
         data: { role: 'admin' },
         canActivate: [roleGuard],
@@ -68,8 +68,12 @@ export const routes: Routes = [
     canActivate: [branchConfigGuard],
     children: [
       { path: '', redirectTo: 'services', pathMatch: 'full' },
-      { path: 'advertisement', component: AnnouncementComponent },
-      { path: 'services', component: AttentionComponent },
+      {
+        title: 'Anuncios',
+        path: 'advertisement',
+        component: AnnouncementComponent,
+      },
+      { title: 'Atencion', path: 'services', component: AttentionComponent },
     ],
   },
   { path: 'unauthorized', component: UnauthorizedComponent },
