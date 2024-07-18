@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { concatMap, filter, finalize, tap } from 'rxjs';
+import { concatMap, filter, finalize } from 'rxjs';
 import {
   AnnouncementService,
   CustomerService,
@@ -71,7 +71,7 @@ export class AnnouncementComponent implements OnInit {
     this.advertisements.update((values) => {
       const updated = values.filter(({ id }) => id !== advertisement.id);
       updated.unshift(advertisement);
-      if (updated.length > 5) values.pop();
+      if (updated.length > 5) updated.pop();
       this.announcementService.save(updated);
       return updated;
     });
