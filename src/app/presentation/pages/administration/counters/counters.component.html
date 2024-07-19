@@ -3,7 +3,7 @@
     <div class="p-toolbar-group-start">
       <button pButton icon="pi pi-plus" (click)="create()"></button>
     </div>
-    <div class="p-toolbar-group-center">
+    <div class="p-toolbar-group-end">
       <span class="p-input-icon-left">
         <i class="pi pi-search"></i>
         <input
@@ -16,42 +16,71 @@
       </span>
     </div>
   </p-toolbar>
-  <p-table [value]="datasource()" [tableStyle]="{ 'min-width': '50rem' }">
+  <p-table
+    [value]="datasource()"
+    dataKey="id"
+    [rowExpandMode]="'single'"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
     <ng-template pTemplate="header">
       <tr>
-        <th>Numero</th>
-        <th>Direccion IP</th>
+        <th style="width: 55px"></th>
+        <th style="width: 10%">Ventanilla</th>
+        <th>IP</th>
         <th>Sucursal</th>
-        <th>Servicios</th>
         <th style="width: 55px"></th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-counter>
+    <ng-template pTemplate="body" let-counter let-expanded="expanded">
       <tr>
-        <td>VENTANILLA: {{ counter.number }}</td>
+        <td>
+          <p-button
+            type="button"
+            pRipple
+            [pRowToggler]="counter"
+            [text]="true"
+            [rounded]="true"
+            [plain]="true"
+            [icon]="expanded ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+          />
+        </td>
+        <td>Nro: {{ counter.number }}</td>
         <td>{{ counter.ip }}</td>
         <td>{{ counter.branch.name }}</td>
-        <td>
-          <ul>
-            @for (item of counter.services; track $index) {
-            <li>{{ item.name }}</li>
-            } @empty { -- SIN SERVICIOS -- }
-          </ul>
-        </td>
         <td>
           <p-button
             icon="pi pi-pencil"
             [rounded]="true"
             [text]="true"
             (onClick)="update(counter)"
-          ></p-button>
+          />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-counter>
+      <tr>
+        <td colspan="5">
+          <div class="px-4">
+            <p>SERVICIOS ASIGNADOS:</p>
+            <ul>
+              @for (item of counter.services; track $index) {
+              <li>{{ item.name }}</li>
+              } @empty { -- SIN SERVICIOS -- }
+            </ul>
+          </div>
         </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="5">Sin registros</td>
+        <td colspan="5" class="text-center">Sin registros</td>
       </tr>
     </ng-template>
   </p-table>
+  <paginator
+    [rows]="limit()"
+    [first]="offset()"
+    [length]="datasize()"
+    (onPageChange)="chagePage($event)"
+  />
 </div>

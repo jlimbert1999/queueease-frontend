@@ -13,11 +13,12 @@ import { UserComponent } from './user/user.component';
 import { PrimengModule } from '../../../../primeng.module';
 import { UserService } from '../../../services';
 import { userResponse } from '../../../../infrastructure/interfaces';
+import { PageProps, PaginatorComponent } from '../../../components';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, PrimengModule],
+  imports: [CommonModule, PrimengModule, PaginatorComponent],
   templateUrl: './users.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -78,5 +79,9 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  // TODO add search method
+  chagePage({ pageIndex, pageSize }: PageProps) {
+    this.index.set(pageIndex);
+    this.limit.set(pageSize);
+    this.getData();
+  }
 }

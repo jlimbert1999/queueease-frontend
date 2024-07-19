@@ -7,16 +7,17 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TableModule } from 'primeng/table';
-
-import { preferenceResponse } from '../../../../infrastructure/interfaces';
-import { PreferenceService } from '../../../services';
-import { PreferenceComponent } from './preference/preference.component';
-import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+
+import { PreferenceComponent } from './preference/preference.component';
+import { preferenceResponse } from '../../../../infrastructure/interfaces';
+import { PageProps, PaginatorComponent } from '../../../components';
+import { PreferenceService } from '../../../services';
 
 @Component({
   selector: 'app-preferences',
@@ -27,7 +28,8 @@ import { InputTextModule } from 'primeng/inputtext';
     ButtonModule,
     TableModule,
     FormsModule,
-    InputTextModule
+    InputTextModule,
+    PaginatorComponent,
   ],
   templateUrl: './preferences.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -89,6 +91,12 @@ export class PreferencesComponent implements OnInit {
 
   search() {
     this.index.set(0);
+    this.getData();
+  }
+
+  chagePage({ pageIndex, pageSize }: PageProps) {
+    this.index.set(pageIndex);
+    this.limit.set(pageSize);
     this.getData();
   }
 }

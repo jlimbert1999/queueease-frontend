@@ -42,8 +42,14 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="5">Sin registros</td>
+        <td colspan="4">Sin registros</td>
       </tr>
     </ng-template>
   </p-table>
+  <paginator
+    [rows]="limit()"
+    [first]="offset()"
+    [length]="datasize()"
+    (onPageChange)="chagePage($event)"
+  />
 </div>

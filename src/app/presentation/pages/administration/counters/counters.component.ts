@@ -13,11 +13,12 @@ import { CounterComponent } from './counter/counter.component';
 import { CounterService } from '../../../services';
 import { PrimengModule } from '../../../../primeng.module';
 import { Counter } from '../../../../domain/models';
+import { PageProps, PaginatorComponent } from '../../../components';
 
 @Component({
   selector: 'app-service-desks',
   standalone: true,
-  imports: [CommonModule, PrimengModule],
+  imports: [CommonModule, PrimengModule, PaginatorComponent],
   templateUrl: './counters.component.html',
   styleUrl: './counters.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +33,8 @@ export class CountersComponent implements OnInit {
   datasource = signal<Counter[]>([]);
   datasize = signal(0);
   term: string = '';
+
+  expandedRows = {};
 
   ngOnInit(): void {
     this.getData();
@@ -80,6 +83,12 @@ export class CountersComponent implements OnInit {
 
   search() {
     this.index.set(0);
+    this.getData();
+  }
+
+  chagePage({ pageIndex, pageSize }: PageProps) {
+    this.index.set(pageIndex);
+    this.limit.set(pageSize);
     this.getData();
   }
 }

@@ -13,11 +13,12 @@ import { PrimengModule } from '../../../../primeng.module';
 import { CategoryComponent } from './category/category.component';
 import { CategoryService } from '../../../services';
 import { categoryResponse } from '../../../../infrastructure/interfaces';
+import { PageProps, PaginatorComponent } from '../../../components';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule, PrimengModule, CategoryComponent],
+  imports: [CommonModule, PrimengModule, CategoryComponent, PaginatorComponent],
   templateUrl: './categories.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -74,5 +75,11 @@ export class CategoriesComponent implements OnInit {
       this.datasource.set(categories);
       this.datasize.set(length);
     });
+  }
+
+  chagePage({ pageIndex, pageSize }: PageProps) {
+    this.index.set(pageIndex);
+    this.limit.set(pageSize);
+    this.getData();
   }
 }

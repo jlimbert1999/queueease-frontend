@@ -12,13 +12,14 @@ import { BranchService } from '../../../services';
 import { brachResponse } from '../../../../infrastructure/interfaces';
 import { PrimengModule } from '../../../../primeng.module';
 import { SecureUrlPipe } from '../../../pipes/secure-url.pipe';
-import { BranchComponent } from './branch/branch.component';
 import { PublicationsComponent } from './publications/publications.component';
+import { PageProps, PaginatorComponent } from '../../../components';
+import { BranchComponent } from './branch/branch.component';
 
 @Component({
   selector: 'app-branches',
   standalone: true,
-  imports: [CommonModule, PrimengModule, SecureUrlPipe],
+  imports: [CommonModule, PrimengModule, SecureUrlPipe, PaginatorComponent],
   templateUrl: './branches.component.html',
   styleUrl: './branches.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -86,5 +87,11 @@ export class BranchesComponent {
         '960px': '90vw',
       },
     });
+  }
+
+  chagePage({ pageIndex, pageSize }: PageProps) {
+    this.index.set(pageIndex);
+    this.limit.set(pageSize);
+    this.getData();
   }
 }

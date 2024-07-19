@@ -34,8 +34,9 @@ export interface PageProps {
         (onPageChange)="changePage($event)"
         [showCurrentPageReport]="true"
         currentPageReportTemplate="{first} - {last} de {totalRecords}"
-        [showPageLinks]="false"
         [showFirstLastIcon]="true"
+        [showPageLinks]="false"
+        [rowsPerPageOptions]="[10, 20, 30, 50]"
       ></p-paginator>
     </div>
     }

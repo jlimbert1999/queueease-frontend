@@ -22,7 +22,7 @@
         <th>Nombre</th>
         <th>Login</th>
         <th>Rol</th>
-        <th style="width: 55px;"></th>
+        <th style="width: 55px"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-user>
@@ -46,4 +46,10 @@
       </tr>
     </ng-template>
   </p-table>
+  <paginator
+    [rows]="limit()"
+    [first]="offset()"
+    [length]="datasize()"
+    (onPageChange)="chagePage($event)"
+  />
 </div>

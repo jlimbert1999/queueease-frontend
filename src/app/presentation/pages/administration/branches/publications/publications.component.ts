@@ -21,7 +21,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { BranchService } from '../../../../services';
+import { AlertService, BranchService } from '../../../../services';
 import { CustomFormValidators } from '../../../../../helpers';
 import { SecureUrlPipe } from '../../../../pipes/secure-url.pipe';
 import { brachResponse } from '../../../../../infrastructure/interfaces';
@@ -44,12 +44,13 @@ import { FormErrorsComponent } from '../../../../components/forms/form-errors/fo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PublicationsComponent implements OnInit {
-  private fb = inject(FormBuilder);
+  private formBuilder = inject(FormBuilder);
   private dialogRef = inject(DynamicDialogRef);
   private branchServices = inject(BranchService);
+  private alertService = inject(AlertService);
 
   branches = signal<brachResponse[]>([]);
-  FormPublication: FormGroup = this.fb.group({
+  FormPublication: FormGroup = this.formBuilder.group({
     url: ['', [Validators.required, CustomFormValidators.urlVideo]],
     branches: [
       '',
@@ -61,12 +62,6 @@ export class PublicationsComponent implements OnInit {
     this._getBranches();
   }
 
-  private _getBranches() {
-    this.branchServices.searchAvaibles().subscribe((branches) => {
-      this.branches.set(branches);
-    });
-  }
-
   save() {
     if (this.FormPublication.invalid) return;
     const { url, branches } = this.FormPublication.value;
@@ -76,14 +71,27 @@ export class PublicationsComponent implements OnInit {
   }
 
   remove() {
-    const { branches } = this.FormPublication.value;
-    this.branchServices.announce(null, branches).subscribe(() => {
-      this.dialogRef.close();
-    });
+    this.alertService
+      .question(
+        '¿Elimiar Anuncios?',
+        'Las sucursales seleccionadas volveran a mostrar el contenido'
+      )
+      .subscribe(() => {
+        console.log('deleted');
+      });
+    // const { branches } = this.FormPublication.value;
+    // this.branchServices.announce(null, branches).subscribe(() => {
+    //   this.dialogRef.close();
+    // });
   }
 
   get isSelectedBranch() {
-    const value = this.FormPublication.get('branches')?.value as string[];
-    return value.length > 0;
+    return this.FormPublication.get('branches')?.valid;
+  }
+
+  private _getBranches() {
+    this.branchServices.searchAvaibles().subscribe((branches) => {
+      this.branches.set(branches);
+    });
   }
 }

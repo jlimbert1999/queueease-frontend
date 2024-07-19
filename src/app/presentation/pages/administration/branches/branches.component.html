@@ -7,7 +7,7 @@
         class="mr-2"
         (click)="create()"
       ></button>
-      <p-button icon="pi pi-megaphone" class="mr-2" (onClick)="announce()"/>
+      <p-button icon="pi pi-megaphone" class="mr-2" (onClick)="announce()" />
     </div>
     <div class="p-toolbar-group-end">
       <p-iconField iconPosition="left">
@@ -22,36 +22,58 @@
       </p-iconField>
     </div>
   </p-toolbar>
-  <p-table [value]="datasource()" [tableStyle]="{ 'min-width': '50rem' }">
+  <p-table
+    [value]="datasource()"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    dataKey="id"
+    [rowExpandMode]="'single'"
+  >
     <ng-template pTemplate="header">
       <tr>
+        <th></th>
         <th>Nombre</th>
-        <th>Servicios</th>
         <th>Mensaje</th>
         <th style="width: 50px"></th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-branch>
+    <ng-template pTemplate="body" let-branch let-expanded="expanded">
       <tr>
-        <td>{{ branch.name }}</td>
         <td>
-          <ul>
-            @for (item of branch.services; track $index) {
-            <li>{{ item.name }}</li>
-            } @empty { -- SIN SERVICIOS -- }
-          </ul>
+          <p-button
+            type="button"
+            pRipple
+            [pRowToggler]="branch"
+            [text]="true"
+            [rounded]="true"
+            [plain]="true"
+            [icon]="expanded ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+          />
         </td>
-        <td style="width: 40%" class="line-height-1">
+        <td>{{ branch.name }}</td>
+        <td style="width: 50%" class="line-height-1 font-italic">
           {{ branch.marqueeMessage }}
         </td>
-
-        <td>
+        <td style="width: 5%">
           <p-button
             icon="pi pi-pencil"
             [rounded]="true"
             [text]="true"
             (onClick)="update(branch)"
-          ></p-button>
+          />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-branch>
+      <tr>
+        <td colspan="5">
+          <div class="px-4">
+            <p>SERVICIOS ASIGNADOS:</p>
+            <ul>
+              @for (item of branch.services; track $index) {
+              <li>{{ item.name }}</li>
+              } @empty { -- SIN SERVICIOS -- }
+            </ul>
+          </div>
         </td>
       </tr>
     </ng-template>
@@ -61,4 +83,10 @@
       </tr>
     </ng-template>
   </p-table>
+  <paginator
+    [rows]="limit()"
+    [first]="offset()"
+    [length]="datasize()"
+    (onPageChange)="chagePage($event)"
+  />
 </div>

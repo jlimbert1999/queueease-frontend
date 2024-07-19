@@ -6,7 +6,13 @@
     <div class="p-toolbar-group-end">
       <p-iconField iconPosition="left">
         <p-inputIcon styleClass="pi pi-search" />
-        <input type="text" [(ngModel)]="term" (keyup.enter)="getData()" pInputText placeholder="Buscar categoria" />
+        <input
+          type="text"
+          [(ngModel)]="term"
+          (keyup.enter)="getData()"
+          pInputText
+          placeholder="Buscar categoria"
+        />
       </p-iconField>
     </div>
   </p-toolbar>
@@ -14,7 +20,7 @@
     <ng-template pTemplate="header">
       <tr>
         <th>Nombre</th>
-        <th style="width:50px"></th>
+        <th style="width: 50px"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-category>
@@ -36,4 +42,10 @@
       </tr>
     </ng-template>
   </p-table>
+  <paginator
+    [rows]="limit()"
+    [first]="offset()"
+    [length]="datasize()"
+    (onPageChange)="chagePage($event)"
+  />
 </div>
