@@ -65,7 +65,7 @@ export class PublicationsComponent implements OnInit {
   save() {
     if (this.FormPublication.invalid) return;
     const { url, branches } = this.FormPublication.value;
-    this.branchServices.announce(url, branches).subscribe(() => {
+    this.branchServices.announceVideo(url, branches).subscribe(() => {
       this.dialogRef.close();
     });
   }
@@ -73,16 +73,13 @@ export class PublicationsComponent implements OnInit {
   remove() {
     this.alertService
       .question(
-        '¿Elimiar Anuncios?',
+        '¿Eliminar Anuncios?',
         'Las sucursales seleccionadas volveran a mostrar el contenido'
       )
       .subscribe(() => {
-        console.log('deleted');
+        const { branches = [] } = this.FormPublication.value;
+        this.branchServices.announceVideo(null, branches).subscribe(() => {});
       });
-    // const { branches } = this.FormPublication.value;
-    // this.branchServices.announce(null, branches).subscribe(() => {
-    //   this.dialogRef.close();
-    // });
   }
 
   get isSelectedBranch() {

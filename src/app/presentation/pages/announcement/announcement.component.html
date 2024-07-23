@@ -1,72 +1,49 @@
-<div class="flex flex-column h-screen bg-primary-100 overflow-auto">
-  <div class="flex-grow-1 flex flex-column sm:flex-row">
-    <div class="w-12 sm:w-8 flex flex-column" style="background-color: black">
-      <div class="block flex justify-content-center">
-        <img class="h-8rem banner-logo" alt="Banner logo" />
+<div class="flex flex-column h-screen bg-blue-100">
+  <!-- CONTENT -->
+  <div class="flex-1 flex flex-row overflow-hidden">
+    <!-- LEFT CONTENT -->
+    <div class="w-8 flex flex-column justify-content-start bg-black-alpha-90">
+      <div class="flex justify-content-center align-items-center video-header">
+        <img alt="Header Image" class="header-image" />
       </div>
-
-      <div class="flex-1 align-content-center flex-wrap h-auto video-container">
-        @if(alertVideoUrl()===''){
-        <video-player [urls]="videos()" />
-        } @else{
-        <iframe
-          frameborder="0"
-          type="text/html"
-          [src]="alertVideoUrl() | safe"
-          class="w-full h-full"
-          title="Dailymotion Video Player"
-          allow="autoplay;"
-        >
-        </iframe>
-        }
+      <div class="flex-1 flex justify-content-center align-items-center overflow-hidden">
+        <video-player class="video" [urls]="videos()" />
+        <!-- @if(alertVideoUrl()===''){
+          <video-player [urls]="videos()" />
+          } @else{
+          <iframe
+            frameborder="0"
+            type="text/html"
+            [src]="alertVideoUrl() | safe"
+            class="w-full h-full"
+            title="Dailymotion Video Player"
+            allow="autoplay;"
+          >
+          </iframe>
+          } -->
       </div>
     </div>
-    <div class="w-12 sm:w-4 h-full">
-      <div class="container">
-        <div class="clock theme-color py-2">
-          <clock />
-        </div>
-        <div class="caption border-gray-300 border-bottom-3">
-          <div class="flex">
-            <div class="w-8 theme-text font-bold">
-              <p class="text-center m-0 font-italic text-sm lg:text-2xl">
-                Ficha
-              </p>
-            </div>
-            <div class="w-4 theme-text font-bold text-overflow-clip">
-              <p class="text-center m-0 font-italic text-sm lg:text-2xl">
-                Ventanilla
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="elements">
-          @for (item of advertisements(); track $index) {
-          <div class="flex" [ngClass]="{ 'animate-blink': $index === 0 }">
-            <div
-              class="flex-grow-1 flex align-items-center justify-content-center"
-            >
-              <span class="text-xl lg:text-6xl font-bold theme-text">
-                {{ item.code }}
-              </span>
-            </div>
-            <div
-              class="flex w-4 align-items-center justify-content-center surface-300"
-            >
-              <span class="text-xl lg:text-6xl font-semibold">
-                {{ item.counterNumber }}
-              </span>
-            </div>
-          </div>
-          }
+    <!-- RIGHT CONTENT -->
+    <div class="w-4 flex flex-column justify-content-start align-items-center">
+      <div class="w-full py-3 bg-blue-800">
+        <clock />
+      </div>
+      <div class="flex flex-row w-full font-italic font-bold py-2 text-blue-800 border-bottom-2">
+        <div class="flex align-items-center justify-content-center w-8 text-4xl">Ficha</div>
+        <div class="flex align-items-center justify-content-center w-4 text-2xl">Ventanilla</div>
+      </div>
+      <div class="flex flex-column h-full w-full p-2">
+        <div class="flex flex-row text-xl lg:text-6xl font-bold border-bottom-3 border-bluegray-200" *ngFor="let item of [].constructor(5)" style="height: calc(100% / 5);">
+          <div class="flex align-items-center justify-content-center w-9 text-blue-700">VUP2</div>
+          <div class="flex align-items-center justify-content-center w-3 surface-300">2</div>
         </div>
       </div>
     </div>
   </div>
-
-  <div class="marquee flex-shrink-0">
-    <p class="text-xl xl:text-6xl m-0 font-bold theme-text">
-      {{ message() }}
-    </p>
+  <!-- FOOTER  -->
+  <div class="w-full white-space-nowrap overflow-hidden relative marquee">
+    <span class="text-xl xl:text-6xl font-bold text-blue-700"
+      >{{ message() }}
+    </span>
   </div>
 </div>

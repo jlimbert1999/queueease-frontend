@@ -82,7 +82,7 @@ export class BranchesComponent {
   announce() {
     const ref = this.dialogService.open(PublicationsComponent, {
       header: 'Anunciar',
-      width: '50%',
+      width: '60%',
       breakpoints: {
         '960px': '90vw',
       },

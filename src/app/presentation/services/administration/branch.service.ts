@@ -74,7 +74,10 @@ export class BranchService {
     );
   }
 
-  announce(url: string | null, branches: string[]) {
-    return this.http.post(`${this.url}/announce`, { url, branches });
+  announceVideo(url: string | null, branches: string[]) {
+    return this.http.post<{ message: string }>(`${this.url}/announce`, {
+      url,
+      branches,
+    });
   }
 }

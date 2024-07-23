@@ -1,13 +1,9 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { Observable } from 'rxjs';
 
-import {
-  advertisementResponse,
-  serviceRequestResponse,
-} from '../../../infrastructure/interfaces';
+import { advertisementResponse } from '../../../infrastructure/interfaces';
 import { environment } from '../../../../environments/environment';
-import { ServiceRequest } from '../../../domain/models';
 
 @Injectable({
   providedIn: 'root',
@@ -35,9 +31,17 @@ export class AnnouncementService {
   //   });
   // }
 
-  listenAnncounce(): Observable<advertisementResponse> {
+  listenRequests(): Observable<advertisementResponse> {
     return new Observable((observable) => {
       this.socket.on('announce', (data: advertisementResponse) => {
+        observable.next(data);
+      });
+    });
+  }
+
+  listenAnnounces(): Observable<{ url: string | null }> {
+    return new Observable((observable) => {
+      this.socket.on('announce-video', (data: { url: string }) => {
         observable.next(data);
       });
     });

@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   OnInit,
+  ViewEncapsulation,
   input,
   viewChild,
 } from '@angular/core';
@@ -13,11 +14,11 @@ import {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './video-player.component.html',
+  styleUrl: './video-player.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VideoPlayerComponent implements OnInit {
-  videoElementRef =
-    viewChild.required<ElementRef<HTMLVideoElement>>('videoPlayer');
+  videoElementRef = viewChild.required<ElementRef<HTMLVideoElement>>('player');
 
   urls = input.required<string[]>();
   index: number = 0;
@@ -34,17 +35,13 @@ export class VideoPlayerComponent implements OnInit {
 
   private _loadVideo() {
     this.videoElementRef().nativeElement.src = this.urls()[this.index];
-    this.videoElementRef().nativeElement.autoplay = true
+    console.log(this.urls()[this.index]);
+    this.videoElementRef().nativeElement.autoplay = true;
     const promise = this.videoElementRef().nativeElement.play();
     promise
       .then((_) => {
         // Autoplay started!
-        console.log('load');
       })
-      .catch((error) => {
-        console.log(error);
-        // Autoplay was prevented.
-        console.log('no play');
-      });
+      .catch((error) => {});
   }
 }

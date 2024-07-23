@@ -40,7 +40,7 @@ export class AnnouncementComponent implements OnInit {
   alertVideoUrl = signal<string>('');
 
   constructor() {
-    this._listenAnnoucement();
+    this._listenRequests();
     this.destroyRef.onDestroy(() => {
       this.announcementService.save(this.advertisements());
     });
@@ -50,9 +50,9 @@ export class AnnouncementComponent implements OnInit {
     this._setupConfig();
   }
 
-  private _listenAnnoucement(): void {
+  private _listenRequests(): void {
     this.announcementService
-      .listenAnncounce()
+      .listenRequests()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         filter((request) => !this.soundList[request.id]),
@@ -65,6 +65,13 @@ export class AnnouncementComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  private _listenAnnouncements() {
+    this.announcementService
+      .listenAnnounces()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((data) => {});
   }
 
   private addAdvertisement(advertisement: advertisementResponse) {
