@@ -55,11 +55,11 @@ export class BranchesComponent {
       header: 'Crear Sucursal',
       width: '60rem',
     });
-    ref.onClose
-      .pipe(filter((result?: brachResponse) => !!result))
-      .subscribe((category) => {
-        this.datasource.update((values) => [category!, ...values]);
-      });
+    ref.onClose.subscribe((branch?: brachResponse) => {
+      console.log(branch);
+      if (!branch) return;
+      this.datasource.update((values) => [branch, ...values]);
+    });
   }
 
   update(branch: brachResponse) {

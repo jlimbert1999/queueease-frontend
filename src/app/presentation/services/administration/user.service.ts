@@ -28,9 +28,7 @@ export class UserService {
     );
   }
 
-  searchForAssign(term: string) {
-    return this.http.get<userResponse[]>(`${this.url}/search/assign/${term}`);
-  }
+
 
   create(form: Object) {
     const user = CreateUserDto.fromForm(form);

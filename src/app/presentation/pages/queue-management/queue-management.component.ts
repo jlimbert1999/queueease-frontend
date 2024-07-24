@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   OnInit,
   computed,
   inject,
@@ -17,21 +18,13 @@ import {
   AlertService,
 } from '../../services';
 import { ProfileComponent } from '../../components';
-import { ServiceRequest } from '../../../domain/models';
-import { ServiceStatus } from '../../../domain/enums/service-status.enum';
+import { ServiceRequest, ServiceStatus } from '../../../domain';
 import { attentionResponse } from '../../../infrastructure/interfaces';
-import { StopwatchComponent } from '../../components/stopwatch/stopwatch.component';
 
 @Component({
   selector: 'app-queue-management',
   standalone: true,
-  imports: [
-    CommonModule,
-    PrimengModule,
-    DataViewModule,
-    ProfileComponent,
-    StopwatchComponent,
-  ],
+  imports: [CommonModule, PrimengModule, DataViewModule, ProfileComponent],
   templateUrl: './queue-management.component.html',
   styleUrl: './queue-management.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,6 +34,7 @@ export class QueueManagementComponent implements OnInit {
   private attentionService = inject(AttentionService);
   private timerService = inject(TimerService);
   private alertService = inject(AlertService);
+  private destroyRef = inject(DestroyRef);
 
   readonly counter = this.attentionService.counter();
 
@@ -51,12 +45,15 @@ export class QueueManagementComponent implements OnInit {
   isEnabledNextButton = computed(
     () => this.requests().length > 0 && this.currentAttention() === null
   );
-  timer = computed(() => this.timerService.timer());
+  timer = computed(() => this.timerService.label());
 
   constructor() {
     this._connect();
     this._listenNewRequest();
     this._listenHandleRequest();
+    this.destroyRef.onDestroy(() => {
+      this.timerService.reset();
+    });
   }
 
   ngOnInit(): void {
@@ -73,16 +70,19 @@ export class QueueManagementComponent implements OnInit {
   getCurrentRequest(): void {
     this.attentionService.getCurrentRequest().subscribe((request) => {
       this.currentAttention.set(request);
-      if (request) this.timerService.start();
+      if (request) {
+        this.timerService.start(new Date(request.startTime).getTime());
+      }
     });
   }
 
   getNextRequest(): void {
-    this.timerService.reset();
     this.attentionService.nextRequest().subscribe((request) => {
       this.currentAttention.set(request);
       this._removeRequest(request.serviceRequest.id);
-      this.timerService.start();
+      if (request) {
+        this.timerService.start(new Date(request.startTime).getTime());
+      }
     });
   }
 
@@ -101,7 +101,7 @@ export class QueueManagementComponent implements OnInit {
           .handleRequest(this.currentAttention()?.serviceRequest.id!, status)
           .subscribe(() => {
             this.currentAttention.set(null);
-            this.timerService.stop();
+            this.timerService.reset();
           });
       });
   }

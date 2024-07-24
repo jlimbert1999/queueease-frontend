@@ -40,13 +40,7 @@
       class="block text-center font-bold font-italic text-green-800 text-4xl py-3"
     >
       <i class="pi pi-clock mr-3" style="font-size: 2rem"></i>
-      @if(currentAttention()){
-      <!-- 
-      <stopwatch
-        [startTime]="currentAttention()!.startTime"
-        [endTime]="currentAttention()!.endTime"
-      /> -->
-      }
+      <span>{{ timer() }}</span>
     </div>
     <div
       class="block text-center text-8xl border-3 border-green-500 border-round-xl h-8rem"

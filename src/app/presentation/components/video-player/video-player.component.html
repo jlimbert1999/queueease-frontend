@@ -1,3 +1,14 @@
+@if(alertVideoUrl()){
+<iframe
+  frameborder="0"
+  type="text/html"
+  [src]="alertVideoUrl()! | safe"
+  class="w-full h-full"
+  title="Dailymotion Video Player"
+  allow="autoplay;"
+>
+</iframe>
+} @else {
 <video
   class="h-full w-full"
   [volume]="0.1"
@@ -5,3 +16,4 @@
   autoplay="true"
   #player
 ></video>
+}

@@ -1,5 +1,5 @@
-import { Injectable, computed, effect, signal } from '@angular/core';
-import { Subscription, interval } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
+import { Subscription, timer } from 'rxjs';
 
 import { FormatDate } from '../../helpers';
 
@@ -7,24 +7,15 @@ import { FormatDate } from '../../helpers';
   providedIn: 'root',
 })
 export class TimerService {
-  private value = signal<number>(0);
   private subscription: Subscription | null = null;
   private isStarted = false;
+  label = signal<string>('00:00:00');
 
-  timer = computed(() => '');
-
-  constructor() {
-    this._loadValue();
-    effect(() => {
-      localStorage.setItem('timer-attention', this.value().toString());
-    });
-  }
-
-  start() {
+  start(init: number): void {
     if (this.isStarted) return;
     this.isStarted = true;
-    this.subscription = interval(1000).subscribe(() => {
-      this.value.update((value) => (value += 1));
+    this.subscription = timer(0, 1000).subscribe(() => {
+      this.label.set(FormatDate.duration(init, new Date().getTime()));
     });
   }
 
@@ -35,14 +26,6 @@ export class TimerService {
 
   reset() {
     this.stop();
-    this.value.set(0);
-    localStorage.removeItem('timer-attention');
-  }
-
-  private _loadValue() {
-    const data = localStorage.getItem('timer-attention') ?? '';
-    const value = parseInt(data);
-    if (isNaN(value)) return;
-    this.value.set(value);
+    this.label.set('00:00:00');
   }
 }

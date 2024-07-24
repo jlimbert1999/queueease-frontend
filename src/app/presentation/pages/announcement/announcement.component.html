@@ -7,20 +7,7 @@
         <img alt="Header Image" class="header-image" />
       </div>
       <div class="flex-1 flex justify-content-center align-items-center overflow-hidden">
-        <video-player class="video" [urls]="videos()" />
-        <!-- @if(alertVideoUrl()===''){
-          <video-player [urls]="videos()" />
-          } @else{
-          <iframe
-            frameborder="0"
-            type="text/html"
-            [src]="alertVideoUrl() | safe"
-            class="w-full h-full"
-            title="Dailymotion Video Player"
-            allow="autoplay;"
-          >
-          </iframe>
-          } -->
+        <video-player class="video" [urls]="branch.videos" [alertVideoUrl]="branch.alertVideoUrl" />
       </div>
     </div>
     <!-- RIGHT CONTENT -->
@@ -33,17 +20,19 @@
         <div class="flex align-items-center justify-content-center w-4 text-2xl">Ventanilla</div>
       </div>
       <div class="flex flex-column h-full w-full p-2">
-        <div class="flex flex-row text-xl lg:text-6xl font-bold border-bottom-3 border-bluegray-200" *ngFor="let item of [].constructor(5)" style="height: calc(100% / 5);">
-          <div class="flex align-items-center justify-content-center w-9 text-blue-700">VUP2</div>
-          <div class="flex align-items-center justify-content-center w-3 surface-300">2</div>
-        </div>
+        @for (item of advertisements(); track $index) {
+          <div class="flex flex-row text-xl lg:text-6xl font-bold border-bottom-3 border-bluegray-200" [ngClass]="{ 'animate-blink': $index === 0 && isAnnouncing()}" style="height: calc(100% / 5);">
+            <div class="flex align-items-center justify-content-center w-9 text-blue-700">{{item.code}}</div>
+            <div class="flex align-items-center justify-content-center w-3 surface-300">{{item.counterNumber}}</div>
+          </div>
+        }
       </div>
     </div>
   </div>
   <!-- FOOTER  -->
   <div class="w-full white-space-nowrap overflow-hidden relative marquee">
     <span class="text-xl xl:text-6xl font-bold text-blue-700"
-      >{{ message() }}
+      >{{ branch.message }}
     </span>
   </div>
 </div>
