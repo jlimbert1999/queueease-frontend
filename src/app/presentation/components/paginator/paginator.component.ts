@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   input,
   output,
 } from '@angular/core';
@@ -24,7 +25,7 @@ export interface PageProps {
   standalone: true,
   imports: [CommonModule, PaginatorModule],
   template: `
-    @if(length()>0){
+    @if(isEnabled()){
     <div class="flex align-items-center justify-content-end">
       <span class="mx-1 text-color">Pagina: </span>
       <p-paginator
@@ -48,6 +49,7 @@ export class PaginatorComponent {
   first = input.required<number>();
   length = input.required<number>();
   onPageChange = output<PageProps>();
+  isEnabled = computed<boolean>(() => this.length() > this.rows());
 
   changePage({ page = 0, rows = 10 }: PageEvent) {
     this.onPageChange.emit({ pageSize: rows, pageIndex: page });

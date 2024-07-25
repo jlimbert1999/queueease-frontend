@@ -13,22 +13,14 @@ export class UserService {
 
   constructor() {}
 
-  findAll(limit: number, offset: number) {
-    const params = new HttpParams({ fromObject: { limit, offset } });
+  findAll(limit: number, offset: number, term?: string) {
+    const params = new HttpParams({
+      fromObject: { limit, offset, ...(term && { term }) },
+    });
     return this.http.get<{ users: any[]; length: number }>(this.url, {
       params,
     });
   }
-
-  search(term: string, limit: number, offset: number) {
-    const params = new HttpParams({ fromObject: { limit, offset } });
-    return this.http.get<{ users: any[]; length: number }>(
-      `${this.url}/search/${term}`,
-      { params }
-    );
-  }
-
-
 
   create(form: Object) {
     const user = CreateUserDto.fromForm(form);

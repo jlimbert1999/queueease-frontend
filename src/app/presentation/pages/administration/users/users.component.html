@@ -1,22 +1,6 @@
 <div class="fadein animation-duration-500">
-  <p-toolbar>
-    <div class="p-toolbar-group-start">
-      <button pButton icon="pi pi-plus" (click)="create()"></button>
-    </div>
-    <div class="p-toolbar-group-end">
-      <p-iconField iconPosition="left">
-        <p-inputIcon styleClass="pi pi-search" />
-        <input
-          type="text"
-          [(ngModel)]="term"
-          (keyup.enter)="getData()"
-          pInputText
-          placeholder="Buscar usuario"
-        />
-      </p-iconField>
-    </div>
-  </p-toolbar>
-  <p-table [value]="datasource()" [tableStyle]="{ 'min-width': '50rem' }">
+  <toolbar title="Usuarios" (onSearch)="search($event)" (onCreate)="create()" />
+  <p-table [value]="datasource()" styleClass="p-datatable-sm text-sm">
     <ng-template pTemplate="header">
       <tr>
         <th>Nombre</th>

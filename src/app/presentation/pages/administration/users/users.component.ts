@@ -13,12 +13,16 @@ import { UserComponent } from './user/user.component';
 import { PrimengModule } from '../../../../primeng.module';
 import { UserService } from '../../../services';
 import { userResponse } from '../../../../infrastructure/interfaces';
-import { PageProps, PaginatorComponent } from '../../../components';
+import {
+  PageProps,
+  PaginatorComponent,
+  ToolbarComponent,
+} from '../../../components';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, PrimengModule, PaginatorComponent],
+  imports: [CommonModule, PrimengModule, PaginatorComponent, ToolbarComponent],
   templateUrl: './users.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -32,8 +36,9 @@ export class UsersComponent implements OnInit {
   limit = signal(10);
   index = signal(0);
   offset = computed(() => this.limit() * this.index());
-  term = '';
+  term = signal<string>('');
 
+  searchmode = false;
   ngOnInit(): void {
     this.getData();
   }
@@ -69,14 +74,18 @@ export class UsersComponent implements OnInit {
   }
 
   getData() {
-    const supscription =
-      this.term !== ''
-        ? this.userService.search(this.term, this.limit(), this.offset())
-        : this.userService.findAll(this.limit(), this.offset());
-    supscription.subscribe(({ users, length }) => {
-      this.datasource.set(users);
-      this.datasize.set(length);
-    });
+    this.userService
+      .findAll(this.limit(), this.offset(), this.term())
+      .subscribe(({ users, length }) => {
+        this.datasource.set(users);
+        this.datasize.set(length);
+      });
+  }
+
+  search(value: string) {
+    this.index.set(0);
+    this.term.set(value);
+    this.getData();
   }
 
   chagePage({ pageIndex, pageSize }: PageProps) {
