@@ -7,15 +7,15 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { filter } from 'rxjs';
 import { DialogService } from 'primeng/dynamicdialog';
 import { UserComponent } from './user/user.component';
-import { PrimengModule } from '../../../../primeng.module';
 import { UserService } from '../../../services';
+import { PrimengModule } from '../../../../primeng.module';
 import { userResponse } from '../../../../infrastructure/interfaces';
 import {
   PageProps,
   PaginatorComponent,
+  toolbarActions,
   ToolbarComponent,
 } from '../../../components';
 
@@ -38,7 +38,10 @@ export class UsersComponent implements OnInit {
   offset = computed(() => this.limit() * this.index());
   term = signal<string>('');
 
-  searchmode = false;
+  readonly actions: toolbarActions[] = [
+    { icon: 'pi pi-plus', value: 'create', tooltip: 'Crear' },
+  ];
+
   ngOnInit(): void {
     this.getData();
   }
@@ -48,29 +51,31 @@ export class UsersComponent implements OnInit {
       header: 'Crear Usuario',
       width: '40rem',
     });
-    ref.onClose
-      .pipe(filter((result?: userResponse) => !!result))
-      .subscribe((user) => {
-        this.datasource.update((values) => [user!, ...values]);
-        this.datasize.update((value) => (value += 1));
+    ref.onClose.subscribe((result?: userResponse) => {
+      if (!result) return;
+      this.datasource.update((values) => {
+        values.unshift(result);
+        if (values.length >= this.limit()) values.pop();
+        return [...values];
       });
+      this.datasize.update((value) => (value += 1));
+    });
   }
 
-  update(desk: any) {
+  update(user: userResponse) {
     const ref = this.dialogService.open(UserComponent, {
       header: 'Edicion Usuario',
-      width: '40rem',
-      data: desk,
+      width: '50rem',
+      data: user,
     });
-    ref.onClose
-      .pipe(filter((result?: userResponse) => !!result))
-      .subscribe((user) => {
-        this.datasource.update((users) => {
-          const index = users.findIndex((el) => el.id === desk.id);
-          users[index] = user!;
-          return [...users];
-        });
+    ref.onClose.subscribe((result?: userResponse) => {
+      if (!result) return;
+      this.datasource.update((users) => {
+        const index = users.findIndex((el) => el.id === user.id);
+        users[index] = result!;
+        return [...users];
       });
+    });
   }
 
   getData() {
@@ -88,9 +93,19 @@ export class UsersComponent implements OnInit {
     this.getData();
   }
 
-  chagePage({ pageIndex, pageSize }: PageProps) {
+  chagePage({ pageIndex, pageSize }: PageProps): void {
     this.index.set(pageIndex);
     this.limit.set(pageSize);
     this.getData();
+  }
+
+  handleActions(action: string) {
+    switch (action) {
+      case 'create':
+        this.create();
+        break;
+      default:
+        break;
+    }
   }
 }

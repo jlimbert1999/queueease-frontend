@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { categoryResponse } from '../../../infrastructure/interfaces';
 
@@ -12,18 +11,12 @@ export class CategoryService {
   private http = inject(HttpClient);
   constructor() {}
 
-  findAll(limit: number, offset: number) {
-    const params = new HttpParams({ fromObject: { limit, offset } });
+  findAll(limit: number, offset: number, term?: string) {
+    const params = new HttpParams({
+      fromObject: { limit, offset, ...(term && { term }) },
+    });
     return this.http.get<{ categories: categoryResponse[]; length: number }>(
       this.url,
-      { params }
-    );
-  }
-
-  search(term: string, limit: number, offset: number) {
-    const params = new HttpParams({ fromObject: { limit, offset } });
-    return this.http.get<{ categories: categoryResponse[]; length: number }>(
-      `${this.url}/search/${term}`,
       { params }
     );
   }

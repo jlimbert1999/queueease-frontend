@@ -12,8 +12,10 @@ export class PreferenceService {
 
   constructor() {}
 
-  findAll(limit: number, offset: number) {
-    const params = new HttpParams({ fromObject: { limit, offset } });
+  findAll(limit: number, offset: number, term?: string) {
+    const params = new HttpParams({
+      fromObject: { limit, offset, ...(term && { term }) },
+    });
     return this.http.get<{ preferences: preferenceResponse[]; length: number }>(
       this.url,
       {

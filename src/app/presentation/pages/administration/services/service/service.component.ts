@@ -7,7 +7,6 @@ import {
   signal,
 } from '@angular/core';
 import {
-  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
@@ -15,10 +14,11 @@ import {
 } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PrimengModule } from '../../../../../primeng.module';
-import { Service } from '../../../../../domain/models';
 import { ServiceService } from '../../../../services';
-import { categoryResponse } from '../../../../../infrastructure/interfaces';
-import { handleFormErrorMessages } from '../../../../../helpers';
+import {
+  categoryResponse,
+  serviceResponse,
+} from '../../../../../infrastructure/interfaces';
 
 @Component({
   selector: 'app-service',
@@ -30,7 +30,7 @@ import { handleFormErrorMessages } from '../../../../../helpers';
 export class ServiceComponent implements OnInit {
   private serviceService = inject(ServiceService);
   private fb = inject(FormBuilder);
-  private service?: Service = inject(DynamicDialogConfig).data;
+  private service?: serviceResponse = inject(DynamicDialogConfig).data;
   private ref = inject(DynamicDialogRef);
 
   categories = signal<categoryResponse[]>([]);
@@ -59,9 +59,5 @@ export class ServiceComponent implements OnInit {
     this.serviceService.getCategories().subscribe((categories) => {
       this.categories.set(categories);
     });
-  }
-
-  errorFormMessage(control: AbstractControl) {
-    return handleFormErrorMessages(control);
   }
 }

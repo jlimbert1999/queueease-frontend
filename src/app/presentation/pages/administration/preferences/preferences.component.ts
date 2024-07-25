@@ -8,15 +8,21 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
+
 import { DialogService } from 'primeng/dynamicdialog';
-import { ToolbarModule } from 'primeng/toolbar';
-import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
+import { ToolbarModule } from 'primeng/toolbar';
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
 
 import { PreferenceComponent } from './preference/preference.component';
 import { preferenceResponse } from '../../../../infrastructure/interfaces';
-import { PageProps, PaginatorComponent } from '../../../components';
+import {
+  PageProps,
+  PaginatorComponent,
+  toolbarActions,
+  ToolbarComponent,
+} from '../../../components';
 import { PreferenceService } from '../../../services';
 
 @Component({
@@ -30,6 +36,7 @@ import { PreferenceService } from '../../../services';
     FormsModule,
     InputTextModule,
     PaginatorComponent,
+    ToolbarComponent,
   ],
   templateUrl: './preferences.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,7 +51,12 @@ export class PreferencesComponent implements OnInit {
   limit = signal(10);
   index = signal(0);
   offset = computed(() => this.limit() * this.index());
-  term: string = '';
+  term = signal<string>('');
+
+  readonly actions: toolbarActions[] = [
+    { icon: 'pi pi-plus', value: 'create', tooltip: 'Crear' },
+  ];
+
 
   ngOnInit(): void {
     this.getData();
@@ -57,7 +69,11 @@ export class PreferencesComponent implements OnInit {
     });
     ref.onClose.subscribe((result?: preferenceResponse) => {
       if (!result) return;
-      this.datasource.update((values) => [result, ...values]);
+      this.datasource.update((values) => {
+        values.unshift(result);
+        if (values.length >= this.limit()) values.pop();
+        return [...values];
+      });
       this.datasize.update((value) => (value += 1));
     });
   }
@@ -79,17 +95,16 @@ export class PreferencesComponent implements OnInit {
   }
 
   getData() {
-    const supscription =
-      this.term !== ''
-        ? this.preferenceService.search(this.term, this.limit(), this.offset())
-        : this.preferenceService.findAll(this.limit(), this.offset());
-    supscription.subscribe(({ preferences, length }) => {
-      this.datasource.set(preferences);
-      this.datasize.set(length);
-    });
+    this.preferenceService
+      .findAll(this.limit(), this.offset(), this.term())
+      .subscribe(({ preferences, length }) => {
+        this.datasource.set(preferences);
+        this.datasize.set(length);
+      });
   }
 
-  search() {
+  search(value: string) {
+    this.term.set(value);
     this.index.set(0);
     this.getData();
   }
@@ -98,5 +113,15 @@ export class PreferencesComponent implements OnInit {
     this.index.set(pageIndex);
     this.limit.set(pageSize);
     this.getData();
+  }
+
+  handleActions(action: string) {
+    switch (action) {
+      case 'create':
+        this.create();
+        break;
+      default:
+        break;
+    }
   }
 }

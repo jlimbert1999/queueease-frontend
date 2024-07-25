@@ -1,22 +1,13 @@
 <div class="fadein animation-duration-500">
-  <p-toolbar>
-    <div class="p-toolbar-group-start">
-      <p-button icon="pi pi-plus" class="mr-2" (onClick)="create()" />
-    </div>
-    <div class="p-toolbar-group-end">
-      <p-iconField iconPosition="left">
-        <p-inputIcon styleClass="pi pi-search" />
-        <input
-          type="text"
-          [(ngModel)]="term"
-          (keyup.enter)="getData()"
-          pInputText
-          placeholder="Buscar categoria"
-        />
-      </p-iconField>
-    </div>
-  </p-toolbar>
-  <p-table [value]="datasource()" [tableStyle]="{ 'min-width': '50rem' }">
+  <toolbar
+    title="Categorias"
+    (onSearch)="search($event)"
+    (onCreate)="create()"
+    [actions]="actions"
+    (onAction)="handleActions($event)"
+  />
+
+  <p-table [value]="datasource()" styleClass="p-datatable-sm text-sm">
     <ng-template pTemplate="header">
       <tr>
         <th>Nombre</th>

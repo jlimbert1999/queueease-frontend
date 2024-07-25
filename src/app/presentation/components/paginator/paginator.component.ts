@@ -25,7 +25,7 @@ export interface PageProps {
   standalone: true,
   imports: [CommonModule, PaginatorModule],
   template: `
-    @if(isEnabled()){
+    @if(length()>0){
     <div class="flex align-items-center justify-content-end">
       <span class="mx-1 text-color">Pagina: </span>
       <p-paginator
@@ -49,7 +49,6 @@ export class PaginatorComponent {
   first = input.required<number>();
   length = input.required<number>();
   onPageChange = output<PageProps>();
-  isEnabled = computed<boolean>(() => this.length() > this.rows());
 
   changePage({ page = 0, rows = 10 }: PageEvent) {
     this.onPageChange.emit({ pageSize: rows, pageIndex: page });

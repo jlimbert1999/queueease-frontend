@@ -7,18 +7,29 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { filter } from 'rxjs';
 import { DialogService } from 'primeng/dynamicdialog';
-import { PrimengModule } from '../../../../primeng.module';
-import { CategoryComponent } from './category/category.component';
-import { CategoryService } from '../../../services';
+
 import { categoryResponse } from '../../../../infrastructure/interfaces';
-import { PageProps, PaginatorComponent } from '../../../components';
+import { CategoryComponent } from './category/category.component';
+import { PrimengModule } from '../../../../primeng.module';
+import { CategoryService } from '../../../services';
+import {
+  PageProps,
+  PaginatorComponent,
+  toolbarActions,
+  ToolbarComponent,
+} from '../../../components';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule, PrimengModule, CategoryComponent, PaginatorComponent],
+  imports: [
+    CommonModule,
+    PrimengModule,
+    CategoryComponent,
+    PaginatorComponent,
+    ToolbarComponent,
+  ],
   templateUrl: './categories.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -32,7 +43,11 @@ export class CategoriesComponent implements OnInit {
   limit = signal(10);
   index = signal(0);
   offset = computed(() => this.limit() * this.index());
-  term = '';
+  term = signal<string>('');
+
+  readonly actions: toolbarActions[] = [
+    { icon: 'pi pi-plus', value: 'create', tooltip: 'Crear' },
+  ];
 
   ngOnInit(): void {
     this.getData();
@@ -42,12 +57,15 @@ export class CategoriesComponent implements OnInit {
     const ref = this.dialogService.open(CategoryComponent, {
       header: 'Crear Categoría',
     });
-    ref.onClose
-      .pipe(filter((result?: categoryResponse) => !!result))
-      .subscribe((category) => {
-        this.datasource.update((values) => [category!, ...values]);
-        this.datasize.update((value) => (value += 1));
+    ref.onClose.subscribe((result?: categoryResponse) => {
+      if (!result) return;
+      this.datasource.update((values) => {
+        values.unshift(result);
+        if (values.length >= this.limit()) values.pop();
+        return [...values];
       });
+      this.datasize.update((value) => (value += 1));
+    });
   }
 
   edit(category: categoryResponse) {
@@ -55,31 +73,44 @@ export class CategoriesComponent implements OnInit {
       header: 'Editar Categoría',
       data: category,
     });
-    ref.onClose
-      .pipe(filter((result?: categoryResponse) => !!result))
-      .subscribe((result) => {
-        this.datasource.update((values) => {
-          const index = values.findIndex((el) => el.id === category.id);
-          values[index] = result!;
-          return [...values];
-        });
+    ref.onClose.subscribe((result) => {
+      if (!result) return;
+      this.datasource.update((values) => {
+        const index = values.findIndex((el) => el.id === category.id);
+        values[index] = result!;
+        return [...values];
       });
+    });
   }
 
   getData() {
-    const supscription =
-      this.term !== ''
-        ? this.categoryService.search(this.term, this.limit(), this.offset())
-        : this.categoryService.findAll(this.limit(), this.offset());
-    supscription.subscribe(({ categories, length }) => {
-      this.datasource.set(categories);
-      this.datasize.set(length);
-    });
+    this.categoryService
+      .findAll(this.limit(), this.offset(), this.term())
+      .subscribe(({ categories, length }) => {
+        this.datasource.set(categories);
+        this.datasize.set(length);
+      });
+  }
+
+  search(value: string) {
+    this.term.set(value);
+    this.index.set(0);
+    this.getData();
   }
 
   chagePage({ pageIndex, pageSize }: PageProps) {
     this.index.set(pageIndex);
     this.limit.set(pageSize);
     this.getData();
+  }
+
+  handleActions(action: string) {
+    switch (action) {
+      case 'create':
+        this.create();
+        break;
+      default:
+        break;
+    }
   }
 }

@@ -37,11 +37,6 @@
           pInputText
           formControlName="code"
         />
-        @if(FormService.controls['code'].touched && FormService.controls['code'].invalid){
-        <small class="text-red-500">
-          {{ errorFormMessage(FormService.get("code")!) }}
-        </small>
-        }
       </div>
     </div>
   </form>

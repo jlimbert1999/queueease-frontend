@@ -1,5 +1,11 @@
 <div class="fadein animation-duration-500">
-  <toolbar title="Usuarios" (onSearch)="search($event)" (onCreate)="create()" />
+  <toolbar
+    title="Usuarios"
+    (onSearch)="search($event)"
+    (onCreate)="create()"
+    [actions]="actions"
+    (onAction)="handleActions($event)"
+  />
   <p-table [value]="datasource()" styleClass="p-datatable-sm text-sm">
     <ng-template pTemplate="header">
       <tr>

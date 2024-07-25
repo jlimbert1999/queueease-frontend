@@ -6,22 +6,31 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { filter } from 'rxjs';
 import { DialogService } from 'primeng/dynamicdialog';
-import { BranchService } from '../../../services';
-import { brachResponse } from '../../../../infrastructure/interfaces';
 import { PrimengModule } from '../../../../primeng.module';
+import { brachResponse } from '../../../../infrastructure/interfaces';
 import { SecureUrlPipe } from '../../../pipes/secure-url.pipe';
 import { PublicationsComponent } from './publications/publications.component';
-import { PageProps, PaginatorComponent } from '../../../components';
+import { BranchService } from '../../../services';
+import {
+  PageProps,
+  PaginatorComponent,
+  ToolbarComponent,
+  toolbarActions,
+} from '../../../components';
 import { BranchComponent } from './branch/branch.component';
 
 @Component({
   selector: 'app-branches',
   standalone: true,
-  imports: [CommonModule, PrimengModule, SecureUrlPipe, PaginatorComponent],
+  imports: [
+    CommonModule,
+    PrimengModule,
+    SecureUrlPipe,
+    PaginatorComponent,
+    ToolbarComponent,
+  ],
   templateUrl: './branches.component.html',
-  styleUrl: './branches.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BranchesComponent {
@@ -33,21 +42,24 @@ export class BranchesComponent {
 
   datasource = signal<brachResponse[]>([]);
   datasize = signal(0);
-  term = '';
+  term = signal<string>('');
+
+  readonly actions: toolbarActions[] = [
+    { icon: 'pi pi-megaphone', value: 'announce', tooltip: 'Anunciar' },
+    { icon: 'pi pi-plus', value: 'create', tooltip: 'Crear' },
+  ];
 
   ngOnInit(): void {
     this.getData();
   }
 
   getData() {
-    const supscription =
-      this.term !== ''
-        ? this.branchService.search(this.term, this.limit(), this.offset())
-        : this.branchService.findAll(this.limit(), this.offset());
-    supscription.subscribe(({ branches, length }) => {
-      this.datasource.set(branches);
-      this.datasize.set(length);
-    });
+    this.branchService
+      .findAll(this.limit(), this.offset(), this.term())
+      .subscribe(({ branches, length }) => {
+        this.datasource.set(branches);
+        this.datasize.set(length);
+      });
   }
 
   create() {
@@ -56,7 +68,6 @@ export class BranchesComponent {
       width: '60rem',
     });
     ref.onClose.subscribe((branch?: brachResponse) => {
-      console.log(branch);
       if (!branch) return;
       this.datasource.update((values) => [branch, ...values]);
     });
@@ -68,15 +79,14 @@ export class BranchesComponent {
       width: '60rem',
       data: branch,
     });
-    ref.onClose
-      .pipe(filter((result?: brachResponse) => !!result))
-      .subscribe((result) => {
-        this.datasource.update((values) => {
-          const index = values.findIndex((el) => el.id === branch.id);
-          values[index] = result!;
-          return [...values];
-        });
+    ref.onClose.subscribe((result: brachResponse) => {
+      if (!result) return;
+      this.datasource.update((values) => {
+        const index = values.findIndex((el) => el.id === branch.id);
+        values[index] = result;
+        return [...values];
       });
+    });
   }
 
   announce() {
@@ -89,9 +99,28 @@ export class BranchesComponent {
     });
   }
 
+  search(value: string) {
+    this.index.set(0);
+    this.term.set(value);
+    this.getData();
+  }
+
   chagePage({ pageIndex, pageSize }: PageProps) {
     this.index.set(pageIndex);
     this.limit.set(pageSize);
     this.getData();
+  }
+
+  handleActions(action: string) {
+    switch (action) {
+      case 'create':
+        this.create();
+        break;
+      case 'announce':
+        this.announce();
+        break;
+      default:
+        break;
+    }
   }
 }

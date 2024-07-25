@@ -1,22 +1,12 @@
 <div class="fadein animation-duration-500">
-  <p-toolbar>
-    <div class="p-toolbar-group-start">
-      <button pButton icon="pi pi-plus" (click)="create()"></button>
-    </div>
-    <div class="p-toolbar-group-end">
-      <span class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input
-          type="text"
-          [(ngModel)]="term"
-          (keyup.enter)="search()"
-          pInputText
-          placeholder="Buscar preferencia"
-        />
-      </span>
-    </div>
-  </p-toolbar>
-  <p-table [value]="datasource()" [tableStyle]="{ 'min-width': '50rem' }">
+  <toolbar
+    title="Preferencias"
+    (onSearch)="search($event)"
+    (onCreate)="create()"
+    [actions]="actions"
+    (onAction)="handleActions($event)"
+  />
+  <p-table [value]="datasource()" styleClass="p-datatable-sm text-sm">
     <ng-template pTemplate="header">
       <tr>
         <th>Nombre</th>

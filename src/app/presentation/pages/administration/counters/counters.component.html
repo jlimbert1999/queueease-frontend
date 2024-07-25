@@ -1,26 +1,10 @@
 <div class="fadein animation-duration-500">
-  <p-toolbar>
-    <div class="p-toolbar-group-start">
-      <button pButton icon="pi pi-plus" (click)="create()"></button>
-    </div>
-    <div class="p-toolbar-group-end">
-      <span class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input
-          type="text"
-          [(ngModel)]="term"
-          (keyup.enter)="search()"
-          pInputText
-          placeholder="Buscar ventanilla"
-        />
-      </span>
-    </div>
-  </p-toolbar>
+  <toolbar title="Ventanillas" (onSearch)="search($event)" (onCreate)="create()" />
   <p-table
     [value]="datasource()"
     dataKey="id"
     [rowExpandMode]="'single'"
-    [tableStyle]="{ 'min-width': '50rem' }"
+    styleClass="p-datatable-sm text-sm"
   >
     <ng-template pTemplate="header">
       <tr>
@@ -73,7 +57,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="5" class="text-center">Sin registros</td>
+        <td colspan="5">Sin registros</td>
       </tr>
     </ng-template>
   </p-table>

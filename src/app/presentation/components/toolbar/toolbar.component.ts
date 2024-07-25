@@ -15,6 +15,13 @@ import { AutoFocusModule } from 'primeng/autofocus';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
+
+export type toolbarActions = {
+  icon: string;
+  value: string;
+  tooltip?: string;
+};
 @Component({
   selector: 'toolbar',
   standalone: true,
@@ -26,14 +33,18 @@ import { ButtonModule } from 'primeng/button';
     InputTextModule,
     InputGroupModule,
     AutoFocusModule,
+    TooltipModule,
   ],
   templateUrl: './toolbar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent {
   title = input.required<string>();
+  actions = input<toolbarActions[]>([]);
+  search = input<boolean>(true);
+
   onSearch = output<string>();
-  onCreate = output<void>();
+  onAction = output<string>();
 
   term = new FormControl('');
   isSearching = signal<boolean>(false);
@@ -54,9 +65,5 @@ export class ToolbarComponent {
     this.term.reset();
     this.isSearching.set(open);
     if (!open) this.onSearch.emit('');
-  }
-
-  create() {
-    this.onCreate.emit();
   }
 }

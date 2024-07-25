@@ -33,18 +33,9 @@ export class CategoryComponent implements OnInit {
   }
 
   save() {
-    if (!this.category) {
-      this.categoryService
-        .create(this.FormCategory.value)
-        .subscribe((category) => {
-          this.ref.close(category);
-        });
-    } else {
-      this.categoryService
-        .update(this.category.id, this.FormCategory.value)
-        .subscribe((category) => {
-          this.ref.close(category);
-        });
-    }
+    const subscription = this.category
+      ? this.categoryService.update(this.category.id, this.FormCategory.value)
+      : this.categoryService.create(this.FormCategory.value);
+    subscription.subscribe((resp) => this.ref.close(resp));
   }
 }

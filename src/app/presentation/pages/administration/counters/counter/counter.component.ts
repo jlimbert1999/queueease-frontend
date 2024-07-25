@@ -15,17 +15,15 @@ import {
 } from '@angular/forms';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import {
-  BranchService,
-  CounterService,
-  UserService,
-} from '../../../../services';
+import { BranchService, CounterService } from '../../../../services';
 
-import { serviceResponse } from '../../../../../infrastructure/interfaces';
+import {
+  counterResponse,
+  serviceResponse,
+} from '../../../../../infrastructure/interfaces';
 import { DropdownComponent, SelectOption } from '../../../../components';
 import { PrimengModule } from '../../../../../primeng.module';
 import { CustomFormValidators } from '../../../../../helpers';
-import { Counter } from '../../../../../domain/models';
 
 @Component({
   selector: 'service-desk',
@@ -45,7 +43,7 @@ export class CounterComponent implements OnInit {
   private ref = inject(DynamicDialogRef);
   private branchService = inject(BranchService);
   private counterService = inject(CounterService);
-  counter: Counter | undefined = inject(DynamicDialogConfig).data;
+  counter: counterResponse | undefined = inject(DynamicDialogConfig).data;
 
   branches = signal<SelectOption<string>[]>([]);
   services = signal<serviceResponse[]>([]);

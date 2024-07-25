@@ -1,32 +1,10 @@
 <div class="fadein animation-duration-500">
-  <p-toolbar>
-    <div class="p-toolbar-group-start">
-      <button
-        pButton
-        icon="pi pi-plus"
-        class="mr-2"
-        (click)="create()"
-      ></button>
-      <p-button icon="pi pi-megaphone" class="mr-2" (onClick)="announce()" />
-    </div>
-    <div class="p-toolbar-group-end">
-      <p-iconField iconPosition="left">
-        <p-inputIcon styleClass="pi pi-search" />
-        <input
-          type="text"
-          [(ngModel)]="term"
-          (keyup.enter)="getData()"
-          pInputText
-          placeholder="Buscar sucursal"
-        />
-      </p-iconField>
-    </div>
-  </p-toolbar>
+  <toolbar title="Sucursales" (onSearch)="search($event)" (onCreate)="create()" [actions]="actions" (onAction)="handleActions($event)" />
   <p-table
     [value]="datasource()"
-    [tableStyle]="{ 'min-width': '50rem' }"
     dataKey="id"
     [rowExpandMode]="'single'"
+    styleClass="p-datatable-sm text-sm"
   >
     <ng-template pTemplate="header">
       <tr>
@@ -79,7 +57,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="5">Sin registros</td>
+        <td colspan="4">Sin registros</td>
       </tr>
     </ng-template>
   </p-table>
