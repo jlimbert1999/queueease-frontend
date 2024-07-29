@@ -14,3 +14,4 @@ export * from './sockets/announcement.service';
 export * from './print.service';
 export * from './alert.service';
 export * from './timer.service';
+export * from './report.service';

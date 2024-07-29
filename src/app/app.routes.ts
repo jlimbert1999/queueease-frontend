@@ -20,6 +20,8 @@ import {
   counterGuard,
   branchConfigGuard,
 } from './presentation/guards';
+import { ReportServiceUserComponent } from './presentation/pages/reports/report-service-user/report-service-user.component';
+import { ReportWorkComponent } from './presentation/pages/reports/report-work/report-work.component';
 
 export const routes: Routes = [
   {
@@ -59,6 +61,16 @@ export const routes: Routes = [
         title: 'Atencion',
         canActivate: [counterGuard],
         component: QueueManagementComponent,
+      },
+      {
+        title: 'Reportes',
+        path: 'reports',
+        // data: { role: 'officer' },
+        canActivate: [roleGuard],
+        children: [
+          { path: 'service-user', component: ReportServiceUserComponent },
+          { path: 'work', component: ReportWorkComponent },
+        ],
       },
       { path: '', component: BackgroundComponent },
     ],
