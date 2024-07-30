@@ -15,3 +15,4 @@ export * from './print.service';
 export * from './alert.service';
 export * from './timer.service';
 export * from './report.service';
+export * from './pdf.service';

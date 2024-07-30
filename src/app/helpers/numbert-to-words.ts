@@ -1,23 +1,6 @@
 export function numerToWords(value: number) {
   return Miles(value);
 }
-
-// const numeroALetras = (num: number) => {
-//   let data = {
-//     numero: num,
-//     enteros: Math.floor(num),
-//     decimales: Math.round(num * 100) - Math.floor(num) * 100,
-//     letrasDecimales: '',
-//   };
-
-//   if (data.decimales > 0)
-//     data.letrasDecimales = ' PUNTO ' + Millones(data.decimales);
-
-//   if (data.enteros == 0) return 'CERO' + data.letrasDecimales;
-//   if (data.enteros == 1) return Millones(data.enteros) + data.letrasDecimales;
-//   else return Millones(data.enteros) + data.letrasDecimales;
-// };
-
 const Unidades = (num: number) => {
   const aLetras: Record<number, string> = {
     1: 'UNO',

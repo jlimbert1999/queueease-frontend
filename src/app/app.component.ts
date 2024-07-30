@@ -1,10 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { ToastModule } from 'primeng/toast';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { AlertComponent } from './presentation/components';
-import { AlertService } from './presentation/services';
 import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ToastModule } from 'primeng/toast';
+
+import { AlertComponent } from './presentation/components';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -12,17 +11,11 @@ import { CommonModule } from '@angular/common';
     CommonModule,
     RouterOutlet,
     ToastModule,
-    ProgressBarModule,
     AlertComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-   alertService = inject(AlertService);
-  title = 'queueease-front';
-
   ngOnInit(): void {}
-
-
 }

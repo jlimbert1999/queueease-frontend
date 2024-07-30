@@ -6,24 +6,42 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { AuthService, ReportService } from '../../../services';
+import { CalendarModule } from 'primeng/calendar';
+
+import { AuthService, PdfService, ReportService } from '../../../services';
+import { reportWorkResponse } from '../../../../infrastructure';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-report-work',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CalendarModule, FormsModule],
   templateUrl: './report-work.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReportWorkComponent implements OnInit {
   private reportService = inject(ReportService);
+  private pdfService = inject(PdfService);
   user = inject(AuthService).user;
-  datasource = signal<any[]>([]);
+  datasource = signal<reportWorkResponse[]>([]);
+
+  reportDate = new Date();
 
   ngOnInit(): void {
-    this.reportService.getWorkDetails().subscribe((data) => {
+    this.getData();
+  }
+
+  getData() {
+    this.reportService.getWorkDetails(this.reportDate).subscribe((data) => {
       console.log(data);
       this.datasource.set(data);
     });
+  }
+  generate() {
+    this.pdfService.generateReportWork(
+      'ds',
+      this.datasource(),
+      this.reportDate
+    );
   }
 }

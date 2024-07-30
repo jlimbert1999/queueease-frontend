@@ -3,8 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { ServiceRequest } from '../../domain/models';
-import { ServiceStatus } from '../../domain/enums/service-status.enum';
+import { ServiceRequest, ServiceStatus } from '../../domain';
 import {
   attentionResponse,
   counterResponse,
@@ -18,7 +17,7 @@ export class AttentionService {
   private readonly url = `${environment.base_url}/attention`;
   private http = inject(HttpClient);
 
-  _counter = signal<counterResponse | null>(null);
+  private _counter = signal<counterResponse | null>(null);
   counter = computed(() => this._counter()!);
 
   getServiceRequests() {

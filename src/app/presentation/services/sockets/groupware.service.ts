@@ -3,11 +3,11 @@ import { Socket, io } from 'socket.io-client';
 import { Observable } from 'rxjs';
 
 import {
-  advertisementResponse,
   counterResponse,
+  advertisementResponse,
   serviceRequestResponse,
 } from '../../../infrastructure/interfaces';
-import { ServiceRequest } from '../../../domain/models';
+import { ServiceRequest } from '../../../domain';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -16,8 +16,6 @@ import { environment } from '../../../../environments/environment';
 export class GroupwareService {
   private readonly url = `${environment.base_url}/users`;
   private socket: Socket | null = null;
-
-  constructor() {}
 
   connect({ services, branch, ...props }: counterResponse): void {
     this.socket = io(this.url, {
@@ -30,6 +28,11 @@ export class GroupwareService {
         },
       },
     });
+  }
+
+  disconect(): void {
+    this.socket?.removeAllListeners();
+    this.socket?.disconnect();
   }
 
   listenRequest() {

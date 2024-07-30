@@ -1,7 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { brachResponse, reportServiceUserResponse } from '../../infrastructure';
+import {
+  brachResponse,
+  reportServiceUserResponse,
+  reportWorkResponse,
+} from '../../infrastructure';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +34,15 @@ export class ReportService {
   }
 
   getWorkDetails(date?: Date) {
-    return this.http.get<any[]>(`${this.url}/work`);
+    return this.http
+      .get<reportWorkResponse[]>(`${this.url}/work`)
+      .pipe
+      // map((resp) =>
+      //   resp.map(({ details, ...props }) => ({
+      //     ...props,
+      //     details: details.map(({ status, total }) => ({ status:'aaa', total })),
+      //   }))
+      // )
+      ();
   }
 }

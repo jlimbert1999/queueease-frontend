@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { ProfileComponent } from '../profile/profile.component';
-import { LayoutService } from '../../services/app.layout.service';
-import { MenuItem } from 'primeng/api';
 import { AuthService } from '../../services';
 
 @Component({

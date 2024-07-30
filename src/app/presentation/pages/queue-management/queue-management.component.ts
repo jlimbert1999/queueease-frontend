@@ -53,6 +53,7 @@ export class QueueManagementComponent implements OnInit {
     this._listenHandleRequest();
     this.destroyRef.onDestroy(() => {
       this.timerService.reset();
+      this.groupwareService.disconect();
     });
   }
 
