@@ -31,7 +31,7 @@
             #autoComplete
             styleClass="w-full"
             appendTo="body"
-            [forceSelection]="true" 
+            [forceSelection]="true"
             [ngModel]="selectedServices"
             [suggestions]="services()"
             (completeMethod)="searchServices($event.query)"
@@ -56,6 +56,7 @@
         styleClass="w-full mb-3"
         [maxFileSize]="maxFileSize"
       />
+      <pre>{{ previewVideos() | json }}</pre>
       <div class="card overflow-y-scroll max-h-30rem">
         <div class="grid w-full">
           @for (item of previewVideos(); track $index) {
