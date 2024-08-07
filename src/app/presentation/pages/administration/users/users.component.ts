@@ -8,9 +8,10 @@ import {
   signal,
 } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
+import { TagModule } from 'primeng/tag';
+
 import { UserComponent } from './user/user.component';
 import { UserService } from '../../../services';
-import { PrimengModule } from '../../../../primeng.module';
 import { userResponse } from '../../../../infrastructure/interfaces';
 import {
   PageProps,
@@ -18,11 +19,20 @@ import {
   toolbarActions,
   ToolbarComponent,
 } from '../../../components';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, PrimengModule, PaginatorComponent, ToolbarComponent],
+  imports: [
+    CommonModule,
+    TagModule,
+    TableModule,
+    ButtonModule,
+    PaginatorComponent,
+    ToolbarComponent,
+  ],
   templateUrl: './users.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

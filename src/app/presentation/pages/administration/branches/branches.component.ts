@@ -65,7 +65,7 @@ export class BranchesComponent {
   create() {
     const ref = this.dialogService.open(BranchComponent, {
       header: 'Crear Sucursal',
-      width: '60rem',
+      width: '50rem',
     });
     ref.onClose.subscribe((branch?: brachResponse) => {
       if (!branch) return;
@@ -76,7 +76,7 @@ export class BranchesComponent {
   update(branch: brachResponse) {
     const ref = this.dialogService.open(BranchComponent, {
       header: 'Edicion Sucursal',
-      width: '60rem',
+      width: '50rem',
       data: branch,
     });
     ref.onClose.subscribe((result: brachResponse) => {

@@ -48,6 +48,7 @@ export class UserComponent implements OnInit {
       ['officer'],
       [Validators.required, CustomFormValidators.minLengthArray(1)],
     ],
+    isActive: [true, Validators.required],
   });
 
   constructor() {

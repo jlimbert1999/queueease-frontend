@@ -3,4 +3,5 @@ export interface userResponse {
   fullname: string;
   login: string;
   roles: string[];
+  isActive: boolean;
 }

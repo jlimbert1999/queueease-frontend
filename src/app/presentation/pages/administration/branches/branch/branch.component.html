@@ -1,4 +1,5 @@
 <div class="p-dialog-content">
+  <pre>{{ FormBranch.value | json }}</pre>
   <p-tabView>
     <p-tabPanel header="Datos sucursal">
       <form [formGroup]="FormBranch">
@@ -28,20 +29,18 @@
       <div class="card mt-3">
         <span class="p-fluid">
           <p-autoComplete
-            #autoComplete
             styleClass="w-full"
             appendTo="body"
             [forceSelection]="true"
-            [ngModel]="selectedServices"
+            [(ngModel)]="selectedServices"
             [suggestions]="services()"
             (completeMethod)="searchServices($event.query)"
-            (onSelect)="onSelectService($event.value)"
             field="name"
             [multiple]="true"
             [forceSelection]="true"
             placeholder="Buscar servicios"
             emptyMessage="Sin resultados"
-          ></p-autoComplete>
+          />
         </span>
       </div>
     </p-tabPanel>
@@ -56,7 +55,6 @@
         styleClass="w-full mb-3"
         [maxFileSize]="maxFileSize"
       />
-      <pre>{{ previewVideos() | json }}</pre>
       <div class="card overflow-y-scroll max-h-30rem">
         <div class="grid w-full">
           @for (item of previewVideos(); track $index) {

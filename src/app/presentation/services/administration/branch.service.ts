@@ -12,7 +12,6 @@ interface updateBranchProps {
   id: string;
   form: Partial<CreateBranchDto>;
   services: string[];
-  videos: string[];
 }
 @Injectable({
   providedIn: 'root',
@@ -31,13 +30,13 @@ export class BranchService {
     );
   }
 
-  create(form: Object, services: string[], videos: string[]) {
-    const branchDto = CreateBranchDto.fromForm(form, services, videos);
+  create(form: Object, services: string[]) {
+    const branchDto = CreateBranchDto.fromForm(form, services);
     return this.http.post<brachResponse>(`${this.url}`, branchDto);
   }
 
-  update({ id, videos, services, form }: updateBranchProps) {
-    const branchDto = { ...form, services, videos };
+  update({ id, services, form }: updateBranchProps) {
+    const branchDto = { ...form, services };
     return this.http.patch<brachResponse>(`${this.url}/${id}`, branchDto);
   }
 

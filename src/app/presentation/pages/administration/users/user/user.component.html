@@ -45,15 +45,6 @@
         />
         }
       </div>
-      @if(user){
-      <div class="field col-12 mb-4">
-        <p-checkbox
-          label="Actualizar contraseña"
-          [binary]="true"
-          (onChange)="togglePassword()"
-        />
-      </div>
-      }
       <div class="field col-12">
         <label for="roles">Roles</label>
         <p-multiSelect
@@ -63,6 +54,22 @@
           appendTo="body"
           [options]="roles"
           formControlName="roles"
+        />
+      </div>
+      <div class="field col-12 sm:col-4">
+        <p-checkbox
+          [disabled]="!user"
+          label="Actualizar contraseña"
+          [binary]="true"
+          (onChange)="togglePassword()"
+        />
+      </div>
+      <div class="field col-12 sm:col-4">
+        <p-checkbox
+          #stateCheck
+          [label]="stateCheck.checked() ? 'Habilitado' : 'Deshabilitado'"
+          [binary]="true"
+          formControlName="isActive"
         />
       </div>
     </div>

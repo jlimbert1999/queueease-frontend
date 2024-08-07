@@ -18,7 +18,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, debounceTime, switchMap } from 'rxjs';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { FileUpload } from 'primeng/fileupload';
+import { FileUpload, UploadEvent } from 'primeng/fileupload';
 import {
   brachResponse,
   serviceResponse,
@@ -55,10 +55,10 @@ export class BranchComponent implements OnInit {
   FormBranch: FormGroup = this.fb.group({
     name: ['', Validators.required],
     marqueeMessage: ['', Validators.required],
+    videos: [''],
   });
 
   @ViewChild('fileUpload') fileUpload!: FileUpload;
-  videos: File[] = [];
   previewVideos = signal<string[]>([]);
 
   constructor() {
@@ -70,22 +70,17 @@ export class BranchComponent implements OnInit {
   }
 
   save() {
-    const services = this.selectedServices.map(({ id }) => id);
-    this.brachService
-      .uploadVideos(this.videos)
-      .pipe(
-        switchMap(({ files }) =>
-          this.branch
-            ? this.brachService.update({
-                id: this.branch.id,
-                videos: files,
-                services: services,
-                form: this.FormBranch.value,
-              })
-            : this.brachService.create(this.FormBranch.value, services, files)
-        )
-      )
-      .subscribe((branch) => this.ref.close(branch));
+    if (this.FormBranch.invalid) return;
+    const serviceIds = this.selectedServices.map(({ id }) => id);
+    const service = this.branch
+      ? this.brachService.update({
+          id: this.branch.id,
+          services: serviceIds,
+          form: this.FormBranch.value,
+        })
+      : this.brachService.create(this.FormBranch.value, serviceIds);
+
+    service.subscribe((branch) => this.ref.close(branch));
   }
 
   onFilterDropdown(term: string) {
@@ -100,9 +95,11 @@ export class BranchComponent implements OnInit {
   }
 
   onSelectFiles(files: File[]) {
-    this.videos = files;
-    this.previewVideos.set(files.map((el) => URL.createObjectURL(el)));
-    this.fileUpload.clear();
+    this.brachService.uploadVideos(files).subscribe((data) => {
+      this.previewVideos.set(files.map((el) => URL.createObjectURL(el)));
+      this.FormBranch.get('videos')?.setValue(data.files);
+      this.fileUpload.clear();
+    });
   }
 
   onSelectService(service: serviceResponse) {

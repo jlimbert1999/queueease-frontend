@@ -11,7 +11,8 @@
       <tr>
         <th>Nombre</th>
         <th>Login</th>
-        <th>Rol</th>
+        <th style="width: 15%;">Estado</th>
+        <th style="width: 10%;">Rol</th>
         <th style="width: 55px"></th>
       </tr>
     </ng-template>
@@ -19,6 +20,13 @@
       <tr>
         <td>{{ user.fullname }}</td>
         <td>{{ user.login }}</td>
+        <td>
+          @if(user.isActive){
+          <p-tag severity="success" value="HABILITADO" />
+          } @else {
+          <p-tag severity="danger" value="DESHABILITADO" />
+          }
+        </td>
         <td>{{ user.roles }}</td>
         <td>
           <p-button
