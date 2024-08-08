@@ -26,16 +26,17 @@ import {
 import { BranchService, ServiceService } from '../../../../services';
 import { PrimengModule } from '../../../../../primeng.module';
 import { SecureUrlPipe } from '../../../../pipes/secure-url.pipe';
-
+import { BadgeModule } from 'primeng/badge';
 @Component({
   selector: 'app-branch',
   standalone: true,
   imports: [
     CommonModule,
-    PrimengModule,
     ReactiveFormsModule,
     FormsModule,
+    PrimengModule,
     SecureUrlPipe,
+    BadgeModule,
   ],
   templateUrl: './branch.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,7 +47,7 @@ export class BranchComponent implements OnInit {
   private ref = inject(DynamicDialogRef);
   private fb = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
-  private branch?: brachResponse = inject(DynamicDialogConfig).data;
+  branch?: brachResponse = inject(DynamicDialogConfig).data;
   private searchSubject$ = new Subject<string>();
 
   services = signal<serviceResponse[]>([]);
@@ -55,11 +56,12 @@ export class BranchComponent implements OnInit {
   FormBranch: FormGroup = this.fb.group({
     name: ['', Validators.required],
     marqueeMessage: ['', Validators.required],
-    videos: [''],
   });
 
   @ViewChild('fileUpload') fileUpload!: FileUpload;
   previewVideos = signal<string[]>([]);
+  videos: string[] = [];
+index: any;
 
   constructor() {
     this._listenDropdowChange();
@@ -72,15 +74,18 @@ export class BranchComponent implements OnInit {
   save() {
     if (this.FormBranch.invalid) return;
     const serviceIds = this.selectedServices.map(({ id }) => id);
-    const service = this.branch
-      ? this.brachService.update({
-          id: this.branch.id,
+    const subscription = this.branch
+      ? this.brachService.update(this.branch.id, {
           services: serviceIds,
-          form: this.FormBranch.value,
+          videos: this.videos,
+          ...this.FormBranch.value,
         })
-      : this.brachService.create(this.FormBranch.value, serviceIds);
-
-    service.subscribe((branch) => this.ref.close(branch));
+      : this.brachService.create(
+          this.FormBranch.value,
+          serviceIds,
+          this.videos
+        );
+    subscription.subscribe((branch) => this.ref.close(branch));
   }
 
   onFilterDropdown(term: string) {
@@ -96,8 +101,11 @@ export class BranchComponent implements OnInit {
 
   onSelectFiles(files: File[]) {
     this.brachService.uploadVideos(files).subscribe((data) => {
-      this.previewVideos.set(files.map((el) => URL.createObjectURL(el)));
-      this.FormBranch.get('videos')?.setValue(data.files);
+      this.videos.push(...data.files);
+      this.previewVideos.update((values) => [
+        ...values,
+        ...files.map((el) => URL.createObjectURL(el)),
+      ]);
       this.fileUpload.clear();
     });
   }
@@ -136,4 +144,6 @@ export class BranchComponent implements OnInit {
     this.selectedServices = services;
     this.previewVideos.set(videos);
   }
+
+
 }

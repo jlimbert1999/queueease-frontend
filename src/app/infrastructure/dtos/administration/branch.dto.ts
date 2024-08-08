@@ -11,14 +11,15 @@ export class CreateBranchDto {
   videos: string[];
   marqueeMessage: string;
 
-  static fromForm(form: any, services: string[]) {
+  static fromForm(form: any, services: string[], videos: string[]) {
     return new CreateBranchDto({
       name: form['name'],
       marqueeMessage: form['marqueeMessage'],
-      videos: form['videos'],
+      videos: videos,
       services: services,
     });
   }
+  
   constructor({ name, services, videos, marqueeMessage }: branchProps) {
     this.name = name;
     this.services = services;

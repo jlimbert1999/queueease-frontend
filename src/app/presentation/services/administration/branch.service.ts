@@ -1,18 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   brachResponse,
   serviceResponse,
-} from '../../../infrastructure/interfaces';
-import { CreateBranchDto } from '../../../infrastructure/dtos';
+  CreateBranchDto,
+} from '../../../infrastructure';
 
-interface updateBranchProps {
-  id: string;
-  form: Partial<CreateBranchDto>;
-  services: string[];
-}
 @Injectable({
   providedIn: 'root',
 })
@@ -30,14 +24,13 @@ export class BranchService {
     );
   }
 
-  create(form: Object, services: string[]) {
-    const branchDto = CreateBranchDto.fromForm(form, services);
+  create(form: Object, services: string[], videos: string[]) {
+    const branchDto = CreateBranchDto.fromForm(form, services, videos);
     return this.http.post<brachResponse>(`${this.url}`, branchDto);
   }
 
-  update({ id, services, form }: updateBranchProps) {
-    const branchDto = { ...form, services };
-    return this.http.patch<brachResponse>(`${this.url}/${id}`, branchDto);
+  update(id: string, data: Partial<CreateBranchDto>) {
+    return this.http.patch<brachResponse>(`${this.url}/${id}`, data);
   }
 
   searchAvaibles(term?: string) {
